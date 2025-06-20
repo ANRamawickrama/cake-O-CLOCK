@@ -40,43 +40,21 @@
 }
 
 
+@media only screen and (max-width:600px) {
+    .navbar .rightSide a {
+        display: none;
+    }
 
-
-
-@media only screen and (max-width: 600px) {
-    .navbar .links {
-    display: none;
-  }
-
-  .navbar .rightSide button {
-    display: none;
-  }
-
-  .navbar .links.hiddenLinks {
-    display: none;
-  }
-
-  .navbar .links {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    top: 80px;
-    right: 0;
-    background-color: #121619;
-    padding: 10px;
-    z-index: 10;
-  }
-
-  .navbar .links a {
-    margin: 10px 0;
-  }
-}
-
-@media only screen and (min-width: 70px) {
-    .navbar .links{
-        display: block;
+    .navbar .rightSide {
+        justify-content: flex-end;
+        padding-right: 50px;
     }
 }
 
 
+@media only screen and (min-width:600px) {
+    .navbar .rightSide button {
+        display: none;
+    }
+}
 
