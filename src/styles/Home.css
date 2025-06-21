@@ -33,24 +33,32 @@
 }
 
 .headerContainer button {
-    color: black;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    justify-content: center;
-    background-color: #121619;
-    height: 50px;
-    width: 180px;
-    color: white;
-    text-decoration: none;
-    font-size: 20px;
+  padding: 12px 28px;
+  font-size: 18px;
+  background-color: black;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(30px);
+  animation: slideUpFade 2s ease-out forwards;
+  animation-delay: 0.4s; 
 }
 
 .headerContainer button:hover {
-    background-color: #07090a;
-    cursor: pointer;
-    transition: 0.3s ease-in;
+  background-color: black;
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
+
+@keyframes slideUpFade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 @media only screen and (max-width:650px)
 {

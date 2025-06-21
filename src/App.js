@@ -3,6 +3,7 @@ import Navbar from "./component/Navbar";
 import Footer from "./component/Footer";
 import home from "./pages/home";
 import Menu from "./pages/Menu";
+import BirthdayCakes  from "./pages/Birthdaycake";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -14,6 +15,7 @@ function App() {
         <Routes>
           <Route path="/" exact Component={home} />
           <Route path="/menu" element={<Menu />} />
+          <Route path="/birthdaycake" element={<BirthdayCakes />} />
         </Routes>
         <Footer />
       </Router>

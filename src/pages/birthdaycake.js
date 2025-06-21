@@ -1,9 +1,21 @@
-import React from 'react';
+import React from "react";
+import { BirthdayCakes } from "../helpers/BirthdayLists";
+import "../styles/BirthdayList.css";
 
-function birthdaycake() {
+function BirthdayCake() {
   return (
-    <div>birthdaycake</div>
-  )
+    <div className="birthdayPage">
+      <div className="birthdayLists">
+        <h1 className="birthdayTitle">Choose your design in here...</h1>
+        {BirthdayCakes.map((cake, index) => (
+          <div key={index} className="cakeItem">
+            <img src={cake.image} alt={`Cake ${index + 1}`} />
+            <p>Rs {cake.price}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
 
-export default birthdaycake;
+export default BirthdayCake;
