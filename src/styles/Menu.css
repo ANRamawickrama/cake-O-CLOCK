@@ -1,42 +1,70 @@
 .menu {
-  padding: 40px 20px;
+  padding: 10px 5px;
   text-align: center;
   background-color: #f1d0e7;
-  border: black;
-  justify-content: center;
 }
 
 .menuTitle {
   font-size: 48px;
-  margin-bottom: 40px;
+  margin-bottom: 2rem;
   color: #333;
+  font-style: italic;
 }
 
 .menuLists {
-  grid-template-columns: repeat(3, 10fr); 
   display: grid;
-  flex-wrap: wrap;
-  justify-items: center;
+  grid-template-columns: repeat(3, 1fr);  
+  justify-items: center;                 
+  row-gap: 15px;                        
+  column-gap: 20px;                     
 }
 
-.menuLists p {
-    font-size: 30px;
-    font-style: oblique;
-    font-weight: bold;
+.menuItem {
+  width: 250px;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.menuLists img {
-  width: 115%;          
-  max-width: 300px;      
-  height: 60%;        
-  object-fit: cover;    
-  border-radius: 12px;
-  cursor: pointer;
-  border: black;
-  justify-content: center;
+.menuItem:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
 }
 
-.menuLists img:hover {
-  transform: scale(1.05);
+.menuItem img {
+  width: 100%;
+  height: 200px;              
+  object-fit: cover;          
+  border-radius: 8px 8px 0 0;
 }
+
+.menuItem p {
+  margin-top: 8px;
+  margin-bottom: 0;
+  font-size: 20px;
+  font-weight: bold;
+  font-style: oblique;
+  color: #333;
+  padding-bottom: 10px;
+}
+
+.menuTitle h1 {
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .menuLists {
+    grid-template-columns: repeat(2, 1fr);   
+    row-gap: 12px;
+  }
+}
+
+@media (max-width: 500px) {
+  .menuLists {
+    grid-template-columns: 1fr;              
+  }
+}
+
 
