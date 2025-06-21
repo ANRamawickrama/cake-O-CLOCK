@@ -58,3 +58,14 @@
     }
 }
 
+.hiddenLinks {
+  display: none;
+}
+
+#open .hiddenLinks {
+  display: block;
+  
+}
+#open img {
+    display: none;
+}
