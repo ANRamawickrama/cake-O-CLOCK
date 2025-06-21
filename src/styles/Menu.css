@@ -1,0 +1,41 @@
+.menu {
+  padding: 40px 20px;
+  text-align: center;
+  background-color: #f1d0e7;
+  border: black;
+}
+
+.menuTitle {
+  font-size: 48px;
+  margin-bottom: 40px;
+  color: #333;
+}
+
+.menuLists {
+  display: grid;
+  grid-template-columns: repeat(3, 10fr); 
+  gap: 30px;
+  justify-items: center;
+}
+
+.menuLists p {
+    font-size: 20px;
+    font-style: oblique;
+    font-weight: bold;
+}
+
+.menuLists img {
+  width: 100%;          
+  max-width: 300px;      
+  height: 80%;        
+  object-fit: cover;    
+  border-radius: 12px;
+  cursor: pointer;
+  border: black;
+}
+
+.menuLists img:hover {
+  transform: scale(1.05);
+  
+}
+

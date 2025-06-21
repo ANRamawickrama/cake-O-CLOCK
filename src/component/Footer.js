@@ -1,9 +1,18 @@
-import React from 'react'
+import React from "react";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import "../styles/Footer.css";
 
 function Footer() {
   return (
-    <div>Footer</div>
+    <div className='footer'>
+      <div className='socialMedia'>
+        <FacebookIcon />
+        <InstagramIcon />
+      </div>
+      <p>&copy; 2020 cake'o clock.com</p>
+    </div>
   )
 }
 
-export default Footer
+export default Footer;
