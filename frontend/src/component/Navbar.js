@@ -22,7 +22,7 @@ function Navbar() {
           <Link to="/about">About</Link>
           <Link to="/contact">Contact</Link>
           <Link to="/review">Review</Link>
-          <Link to="/upload">Owner Login</Link> {/* Added Owner Login link */}
+
         </div>
       </div>
 
@@ -32,7 +32,6 @@ function Navbar() {
         <Link to="/about">About</Link>
         <Link to="/contact">Contact</Link>
         <Link to="/review">Review</Link>
-        <Link to="/upload">Owner Login</Link> {/* Added Owner Login link */}
 
         <button onClick={togglNavbar}>
           <ReorderIcon />

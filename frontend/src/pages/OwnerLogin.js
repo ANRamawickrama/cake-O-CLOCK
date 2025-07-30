@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import '../styles/OwnerLogin.css'; 
 
 const OwnerLogin = () => {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -55,7 +56,7 @@ const OwnerLogin = () => {
     <div style={{ padding: '20px' }}>
       {!loggedIn ? (
         <>
-          <h2>Owner Login</h2>
+          <h2>Login</h2>
           <form onSubmit={handleLogin}>
             <input
               type="text"
