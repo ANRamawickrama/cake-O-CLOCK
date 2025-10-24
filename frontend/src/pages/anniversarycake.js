@@ -10,6 +10,7 @@ function AnniversaryCake() {
         {AnniversaryCakes.map((cake, index) => (
           <div key={index} className="cakeItem">
             <img src={cake.image} alt={`Cake ${index + 1}`} />
+            <p>Rs {cake.price}</p>
           </div>
         ))}
       </div>

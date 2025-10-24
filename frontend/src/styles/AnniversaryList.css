@@ -1,43 +1,42 @@
 .anniversaryPage {
-  padding: 40px 20px;
+  padding: 30px;
   text-align: center;
   background-color: #f1d0e7;
-  min-height: 100vh;
 }
 
 .anniversaryTitle {
-  font-size: 2.5rem;
-  color: #2c3e50;
+  font-size: 36px;
   margin-bottom: 30px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-style: italic;
+  font-weight: bold;
 }
 
 .anniversaryLists {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 24px;
-  justify-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
 }
 
 .cakeItem {
+  width: 250px;
   background-color: #fff;
-  border-radius: 12px;
+  border-radius: 10px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  width: 100%;
-  height: 100%;
-  max-width: 320px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.cakeItem:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .cakeItem img {
   width: 100%;
-  height: 230px;
+  height: 320px;
   object-fit: cover;
-  display: block;
+  border-radius: 8px;
+}
+
+.cakeItem p {
+  margin: 10px 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
 }
