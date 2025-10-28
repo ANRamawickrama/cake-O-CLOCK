@@ -1,17 +1,19 @@
 import "./App.css";
 import Navbar from "./component/Navbar";
 import Footer from "./component/Footer";
-import home from "./pages/home";
+
+import Home from "./pages/home";
 import Menu from "./pages/Menu";
-import BirthdayCakes  from "./pages/Birthdaycake";
+import BirthdayCakes from "./pages/Birthdaycake";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import CupCakes  from "./pages/cupcake";
-import AnniversaryCakes  from "./pages/anniversarycake";
-import WeddingStructures  from "./pages/weddingStructure";
+import CupCakes from "./pages/cupcake";
+import AnniversaryCakes from "./pages/anniversarycake";
+import WeddingStructures from "./pages/weddingStructure";
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ImageUpload from "./pages/ImageUpload";
-import OwnerLogin from './pages/OwnerLogin';
+import LoginPage from "./pages/LoginPage";
+import CakeManager from "./pages/CakeManager";
 
 function App() {
   return (
@@ -19,7 +21,7 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" exact Component={home} />
+          <Route path="/" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/birthdaycake" element={<BirthdayCakes />} />
           <Route path="/about" element={<About />} />
@@ -27,7 +29,8 @@ function App() {
           <Route path="/cupcake" element={<CupCakes />} />
           <Route path="/anniversarycake" element={<AnniversaryCakes />} />
           <Route path="/weddingStructures" element={<WeddingStructures />} />
-          <Route path="/upload" element={<OwnerLogin />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/manage" element={<CakeManager />} />
         </Routes>
         <Footer />
       </Router>

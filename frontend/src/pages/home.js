@@ -8,15 +8,19 @@ function Home() {
 
   return (
     <div className="home" style={{ backgroundImage: `url(${BannerImage})` }}>
+      <Link to="/login">
       <button className="loginBtn" onClick={() => navigate("/upload")}>
         Login
       </button>
+      </Link>
 
       {/* Centered content */}
       <div className="headerContainer">
         <h1>CAKE'O clock</h1>
         <Link to="/menu">
-          <button className="orderBtn">ORDER NOW</button>
+          <button className="orderBtn">
+            ORDER NOW
+          </button>
         </Link>
       </div>
     </div>

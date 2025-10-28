@@ -34,3 +34,48 @@
   line-height: 1.6;
   color: #444;
 }
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .aboutTop {
+    height: 450px;
+  }
+
+  .aboutBottom h1 {
+    font-size: 38px;
+  }
+
+  .aboutBottom p {
+    font-size: 16px;
+    padding: 0 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .aboutTop {
+    height: 350px;
+  }
+
+  .aboutBottom h1 {
+    font-size: 32px;
+  }
+
+  .aboutBottom p {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .aboutTop {
+    height: 250px;
+  }
+
+  .aboutBottom h1 {
+    font-size: 26px;
+  }
+
+  .aboutBottom p {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+}

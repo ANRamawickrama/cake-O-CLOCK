@@ -45,3 +45,56 @@
   color: #555;
   margin: 12px 0;
 }
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+  .cupcakeTitle {
+    font-size: 2.2rem;
+  }
+
+  .cakeItem img {
+    height: 200px;
+  }
+
+  .cakeItem p {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .cupcakeLists {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+  }
+
+  .cupcakeTitle {
+    font-size: 2rem;
+  }
+
+  .cakeItem img {
+    height: 180px;
+  }
+
+  .cakeItem p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cupcakeLists {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .cupcakeTitle {
+    font-size: 1.8rem;
+  }
+
+  .cakeItem img {
+    height: 150px;
+  }
+
+  .cakeItem p {
+    font-size: 0.95rem;
+  }
+}

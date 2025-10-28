@@ -1,46 +1,31 @@
 const express = require('express');
-const multer = require('multer');
-const path = require('path');
-const Cake = require('../models/cake.js');
-
+const Cake = require('../models/Cake');
+const auth = require('../middleware/authMiddleware');
 const router = express.Router();
 
-// Configure multer to store files in 'uploads/' folder
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // relative to root
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname)); // unique filename
-  }
+// Add new cake
+router.post('/', auth, async (req, res) => {
+  const cake = new Cake(req.body);
+  await cake.save();
+  res.json(cake);
 });
 
-const upload = multer({ storage });
-
-// POST /api/cakes - upload a cake image + data
-router.post('/', upload.single('image'), async (req, res) => {
-  try {
-    const { name, price } = req.body;
-    const newCake = new Cake({
-      name,
-      price,
-      imageUrl: req.file.path  // Save file path
-    });
-    await newCake.save();
-    res.status(201).json(newCake);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// GET /api/cakes - list all cakes
+// Get all cakes
 router.get('/', async (req, res) => {
-  try {
-    const cakes = await Cake.find();
-    res.json(cakes);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const cakes = await Cake.find();
+  res.json(cakes);
+});
+
+// Update cake
+router.put('/:id', auth, async (req, res) => {
+  const cake = await Cake.findByIdAndUpdate(req.params.id, req.body, { new: true });
+  res.json(cake);
+});
+
+// Delete cake
+router.delete('/:id', auth, async (req, res) => {
+  await Cake.findByIdAndDelete(req.params.id);
+  res.json({ message: 'Cake deleted' });
 });
 
 module.exports = router;

@@ -21,6 +21,7 @@
 
 .menuItem {
   width: 300px;
+  height: 400px;
   background-color: #fff;
   border-radius: 8px;
   overflow: hidden;
@@ -35,7 +36,7 @@
 
 .menuItem img {
   width: 100%;
-  height: 250px;              
+  height: 86%;              
   object-fit: cover;          
   border-radius: 8px 8px 0 0;
 }
