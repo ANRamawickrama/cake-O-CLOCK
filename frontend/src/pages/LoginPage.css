@@ -6,12 +6,16 @@
   flex-direction: column;
     min-height: 70vh;
   background: #f1d0e7;
+  background-image: url('C:\Users\ASUS\Desktop\cake-business-site\frontend\src\assets\homee.jpg'); 
+   background-size: cover; /* makes image cover entire area */
+  background-position: center; /* centers the image */
+  background-repeat: no-repeat; /* prevents tiling */
 }
 
 /* Header */
 .login-header {
   height: 50px;
-  background-color: #fff;
+  background-color: #f1d0e7;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -31,7 +35,7 @@
 
 /* Login form card */
 .login-form {
-  background-color: #fff;
+  background-color: #f1d0e7;
   padding: 60px 50px;
   border-radius: 25px;
   width: 450px;
