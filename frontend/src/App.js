@@ -14,6 +14,7 @@ import WeddingStructures from "./pages/weddingStructure";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import CakeManager from "./pages/CakeManager";
+import UploadCakePage from "./pages/UploardCakePage";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/weddingStructures" element={<WeddingStructures />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/manage" element={<CakeManager />} />
+          <Route path="/update" element={<UploadCakePage />} />
         </Routes>
         <Footer />
       </Router>
