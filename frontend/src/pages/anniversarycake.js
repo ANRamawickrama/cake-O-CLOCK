@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { AnniversaryCakes } from "../helpers/AnniversaryList";
 import "../styles/AnniversaryList.css";
 
@@ -11,6 +12,9 @@ function AnniversaryCake() {
           <div key={index} className="cakeItem">
             <img src={cake.image} alt={`Cake ${index + 1}`} />
             <p>Rs {cake.price}</p>
+            <Link to="/order ">
+              <button>Order</button>
+            </Link>
           </div>
         ))}
       </div>

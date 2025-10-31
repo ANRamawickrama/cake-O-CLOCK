@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import  { CupCakes } from "../helpers/CupcakeLists";
 import "../styles/Cupcake.css";
 
@@ -11,6 +12,9 @@ function cupcake() {
                 <div key={index} className="cakeItem">
                   <img src={cake.image} alt={`Cake ${index + 1}`} />
                   <p>Rs {cake.price}</p>
+                  <Link to="/order">
+                    <button>Order</button>
+                  </Link>
                 </div>
               ))}
             </div>

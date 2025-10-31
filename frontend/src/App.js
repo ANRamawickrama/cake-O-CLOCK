@@ -15,6 +15,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import CakeManager from "./pages/CakeManager";
 import UploadCakePage from "./pages/UploardCakePage";
+import OrderForm from "./pages/OrderForm";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/manage" element={<CakeManager />} />
           <Route path="/update" element={<UploadCakePage />} />
+          <Route path="/order" element={<OrderForm />} />
         </Routes>
         <Footer />
       </Router>

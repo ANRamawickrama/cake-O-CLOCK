@@ -46,3 +46,20 @@
   color: #444;
   margin: 12px 0 16px;
 }
+
+.cakeItem button {
+  background-color: #c84b8c;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-bottom: 15px;
+  font-size: 15px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cakeItem button:hover {
+  background-color: #a43c76;
+  transform: scale(1.05);
+}
