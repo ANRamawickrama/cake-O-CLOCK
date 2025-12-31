@@ -6,36 +6,31 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
+const ownerRoutes = require('./routes/ownerRoutes');
+const cakeRoutes = require('./routes/cakeRoutes');
+
 const app = express();
 
-// ===== Middleware =====
+// ===== Middleware (MUST BE BEFORE ROUTES) =====
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // extra safety
 
-// ===== Static Files (for uploaded images) =====
+// ===== Static Files =====
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// ===== Route Imports =====
-const orderRoutes = require('./routes/orderRoutes');
-const cakeRoutes = require('./routes/cakeRoutes');
-const authRoutes = require('./routes/authRoutes');
-
-// ===== API Routes =====
-app.use('/api/orders', orderRoutes);
-app.use('/api/cakes', cakeRoutes);       // Cake add/update/delete
-app.use('/api/auth', authRoutes);        // Owner login
+// ===== Routes =====
+app.use('/api/owner', ownerRoutes);
+app.use('/api/cakes', cakeRoutes);
 
 // ===== MongoDB Connection =====
-const MONGO_URI = process.env.MONGO_URI || process.env.mongo; // support both key names
+const MONGO_URI = process.env.MONGO_URI || process.env.mongo;
 
-mongoose.connect(MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
+mongoose.connect(MONGO_URI)
   .then(() => console.log('✅ MongoDB connected successfully'))
   .catch((err) => {
     console.error('❌ MongoDB connection error:', err);
-    process.exit(1); // Stop server if DB connection fails
+    process.exit(1);
   });
 
 // ===== Start Server =====

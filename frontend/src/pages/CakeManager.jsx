@@ -1,23 +1,33 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 export default function CakeManager() {
   const [cakes, setCakes] = useState([]);
   const [newCake, setNewCake] = useState({ name: "", price: "" });
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   useEffect(() => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     axios.get("http://localhost:5000/api/cakes").then(res => setCakes(res.data));
-  }, []);
+  }, [token, navigate]);
 
   const handleAdd = async () => {
+    if (!token) return navigate("/login");
     const res = await axios.post("http://localhost:5000/api/cakes", newCake, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setCakes([...cakes, res.data]);
+    setNewCake({ name: "", price: "" });
   };
 
   const handleDelete = async (id) => {
+    if (!token) return navigate("/login");
     await axios.delete(`http://localhost:5000/api/cakes/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -30,8 +40,10 @@ export default function CakeManager() {
 
       <div className="mb-4 flex gap-2">
         <input placeholder="Cake Name" className="border p-2"
+          value={newCake.name}
           onChange={(e) => setNewCake({ ...newCake, name: e.target.value })} />
-        <input placeholder="Price" className="border p-2"
+        <input placeholder="Price" className="border p-2" type="number" min="0"
+          value={newCake.price}
           onChange={(e) => setNewCake({ ...newCake, price: e.target.value })} />
         <button onClick={handleAdd} className="bg-pink-500 text-white px-4 rounded">Add</button>
       </div>

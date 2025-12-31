@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./component/Navbar";
 import Footer from "./component/Footer";
@@ -18,6 +19,16 @@ import UploadCakePage from "./pages/UploardCakePage";
 import OrderForm from "./pages/OrderForm";
 
 function App() {
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
+
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem("token", token);
+    } else {
+      localStorage.removeItem("token");
+    }
+  }, [token]);
+
   return (
     <div className="App">
       <Router>
@@ -31,7 +42,7 @@ function App() {
           <Route path="/cupcake" element={<CupCakes />} />
           <Route path="/anniversarycake" element={<AnniversaryCakes />} />
           <Route path="/weddingStructures" element={<WeddingStructures />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage setToken={setToken} />} />
           <Route path="/manage" element={<CakeManager />} />
           <Route path="/update" element={<UploadCakePage />} />
           <Route path="/order" element={<OrderForm />} />
