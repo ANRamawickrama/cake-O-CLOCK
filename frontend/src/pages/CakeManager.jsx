@@ -5,6 +5,7 @@ import axios from "axios";
 export default function CakeManager() {
   const [cakes, setCakes] = useState([]);
   const [newCake, setNewCake] = useState({ name: "", price: "" });
+  const [editingId, setEditingId] = useState(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -23,6 +24,26 @@ export default function CakeManager() {
       headers: { Authorization: `Bearer ${token}` },
     });
     setCakes([...cakes, res.data]);
+    setNewCake({ name: "", price: "" });
+  };
+
+  const startEdit = (cake) => {
+    setEditingId(cake._id);
+    setNewCake({ name: cake.name, price: cake.price });
+  };
+
+  const handleUpdate = async () => {
+    if (!token || !editingId) return navigate("/login");
+    const res = await axios.put(`http://localhost:5000/api/cakes/${editingId}`, newCake, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setCakes(cakes.map(c => (c._id === editingId ? res.data : c)));
+    setEditingId(null);
+    setNewCake({ name: "", price: "" });
+  };
+
+  const cancelEdit = () => {
+    setEditingId(null);
     setNewCake({ name: "", price: "" });
   };
 
@@ -45,14 +66,24 @@ export default function CakeManager() {
         <input placeholder="Price" className="border p-2" type="number" min="0"
           value={newCake.price}
           onChange={(e) => setNewCake({ ...newCake, price: e.target.value })} />
-        <button onClick={handleAdd} className="bg-pink-500 text-white px-4 rounded">Add</button>
+        {editingId ? (
+          <>
+            <button onClick={handleUpdate} className="bg-blue-500 text-white px-4 rounded">Save</button>
+            <button onClick={cancelEdit} className="bg-gray-300 px-4 rounded">Cancel</button>
+          </>
+        ) : (
+          <button onClick={handleAdd} className="bg-pink-500 text-white px-4 rounded">Add</button>
+        )}
       </div>
 
       <ul>
         {cakes.map(cake => (
           <li key={cake._id} className="flex justify-between border-b py-2">
             {cake.name} - Rs.{cake.price}
-            <button onClick={() => handleDelete(cake._id)} className="text-red-500">Delete</button>
+            <div className="flex gap-2">
+              <button onClick={() => startEdit(cake)} className="text-blue-500">Edit</button>
+              <button onClick={() => handleDelete(cake._id)} className="text-red-500">Delete</button>
+            </div>
           </li>
         ))}
       </ul>
