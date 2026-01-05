@@ -1,10 +1,30 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-  customerName: String,
+  customerName: {
+    type: String,
+    required: true
+  },
   customerEmail: String,
-  cakeName: String,
-  quantity: Number,
+  customerPhone: {
+    type: String,
+    required: true
+  },
+  cakeName: {
+    type: String,
+    required: true
+  },
+  quantity: {
+    type: Number,
+    default: 1
+  },
+  location: {
+    type: String,
+    required: true
+  },
+  description: String,
+  weight: String,
+  deliveryDate: Date,
   createdAt: {
     type: Date,
     default: Date.now

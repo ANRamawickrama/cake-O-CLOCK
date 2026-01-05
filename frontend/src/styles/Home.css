@@ -41,9 +41,33 @@
 }
 
 .headerContainer button:hover {
-    background-color: black;
+    background-color: #333;
     transform: translateY(-2px) scale(1.03);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.callBtn {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    padding: 10px 20px;
+    background-color: #c84b8c;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    z-index: 10;
+    transition: all 0.3s ease;
+    opacity: 1;
+    transform: translateY(0);
+    animation: none;
+}
+
+.callBtn:hover {
+    background-color: #a43c76;
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(168, 60, 118, 0.4);
 }
 
 /* Animate the ORDER NOW button */
@@ -114,6 +138,14 @@
     .headerContainer button:hover {
         background-color: rgb(225, 225, 225);
         color: #121619;
+    }
+
+    /* Position call button on mobile */
+    .callBtn {
+        top: 15px;
+        left: 15px;
+        font-size: 12px;
+        padding: 8px 16px;
     }
 
     /* Make login button smaller and reposition on mobile */

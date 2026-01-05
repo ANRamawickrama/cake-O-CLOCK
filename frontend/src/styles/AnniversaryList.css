@@ -2,6 +2,7 @@
   padding: 30px;
   text-align: center;
   background-color: #f1d0e7;
+  min-height: 100vh;
 }
 
 .anniversaryTitle {
@@ -9,55 +10,42 @@
   margin-bottom: 30px;
   font-style: italic;
   font-weight: bold;
+  color: #5a2a60;
 }
 
 .anniversaryLists {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 20px;
+  gap: 25px;
 }
 
 .cakeItem {
   width: 250px;
   background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cakeItem:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 .cakeItem img {
   width: 100%;
   height: 320px;
   object-fit: cover;
-  border-radius: 8px;
+  border-bottom: 3px solid #f1d0e7;
 }
 
 .cakeItem p {
-  margin: 10px 0;
+  margin: 12px 0 8px;
   font-size: 18px;
   font-weight: bold;
   color: #333;
-}
-
-/* Mobile Responsive */
-@media (max-width: 1024px) {
-  .cakeItem {
-    width: 220px;
-  }
-
-  .cakeItem img {
-    height: 280px;
-  }
-
-  .anniversaryTitle {
-    font-size: 32px;
-  }
-
-  .cakeItem p {
-    font-size: 16px;
-  }
 }
 
 .cakeItem button {
@@ -77,10 +65,28 @@
   transform: scale(1.05);
 }
 
+/* -------------------- Responsive Design -------------------- */
+@media (max-width: 1024px) {
+  .cakeItem {
+    width: 220px;
+  }
+
+  .cakeItem img {
+    height: 280px;
+  }
+
+  .anniversaryTitle {
+    font-size: 32px;
+  }
+
+  .cakeItem p {
+    font-size: 16px;
+  }
+}
 
 @media (max-width: 768px) {
   .cakeItem {
-    width: 45%; /* two items per row */
+    width: 45%; /* Two items per row */
   }
 
   .cakeItem img {
@@ -94,11 +100,20 @@
   .cakeItem p {
     font-size: 15px;
   }
+
+  .cakeItem button {
+    padding: 8px 18px;
+    font-size: 14px;
+  }
 }
 
 @media (max-width: 480px) {
+  .anniversaryPage {
+    padding: 20px;
+  }
+
   .cakeItem {
-    width: 90%; /* single item per row */
+    width: 90%; /* Single item per row */
   }
 
   .cakeItem img {
@@ -111,5 +126,10 @@
 
   .cakeItem p {
     font-size: 14px;
+  }
+
+  .cakeItem button {
+    padding: 8px 16px;
+    font-size: 13px;
   }
 }

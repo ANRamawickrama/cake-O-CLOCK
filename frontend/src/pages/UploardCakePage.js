@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "../styles/UploadCakePage.css";
 
 export default function UploadCakePage() {
@@ -8,6 +9,16 @@ export default function UploadCakePage() {
   const [price, setPrice] = useState("");
   const [image, setImage] = useState(null);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if user is logged in
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You must be logged in as owner to upload cakes");
+      navigate("/login");
+    }
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -17,6 +17,8 @@ import LoginPage from "./pages/LoginPage";
 import CakeManager from "./pages/CakeManager";
 import UploadCakePage from "./pages/UploardCakePage";
 import OrderForm from "./pages/OrderForm";
+import OrdersDashboard from "./pages/OrdersDashboard";
+import OwnerDashboard from "./pages/OwnerDashboard";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
@@ -43,9 +45,11 @@ function App() {
           <Route path="/anniversarycake" element={<AnniversaryCakes />} />
           <Route path="/weddingStructures" element={<WeddingStructures />} />
           <Route path="/login" element={<LoginPage setToken={setToken} />} />
+          <Route path="/dashboard" element={<OwnerDashboard />} />
           <Route path="/manage" element={<CakeManager />} />
           <Route path="/update" element={<UploadCakePage />} />
           <Route path="/order" element={<OrderForm />} />
+          <Route path="/orders" element={<OrdersDashboard />} />
         </Routes>
         <Footer />
       </Router>

@@ -10,6 +10,11 @@ function Footer() {
         <FacebookIcon />
         <InstagramIcon />
       </div>
+      <div className='contact-section'>
+        <p className='contact-text'>
+          📞 Call us: <a href="tel:+947710961790" className="footer-phone">+94 77 109 61790</a>
+        </p>
+      </div>
       <p>&copy; 2020 cake'o clock.com</p>
     </div>
   )

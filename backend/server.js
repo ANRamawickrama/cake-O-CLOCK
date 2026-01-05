@@ -8,6 +8,7 @@ require('dotenv').config();
 
 const ownerRoutes = require('./routes/ownerRoutes');
 const cakeRoutes = require('./routes/cakeRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // ===== Routes =====
 app.use('/api/owner', ownerRoutes);
 app.use('/api/cakes', cakeRoutes);
+app.use('/api/orders', orderRoutes);
 
 // ===== MongoDB Connection =====
 const MONGO_URI = process.env.MONGO_URI || process.env.mongo;

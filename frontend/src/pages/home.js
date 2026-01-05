@@ -6,6 +6,10 @@ import "../styles/Home.css";
 function Home() {
   const navigate = useNavigate();
 
+  const handleCall = () => {
+    window.location.href = "tel:+947710961790";
+  };
+
   return (
     <div className="home" style={{ backgroundImage: `url(${BannerImage})` }}>
       <Link to="/login">
@@ -13,6 +17,10 @@ function Home() {
         Login
       </button>
       </Link>
+
+      <button className="callBtn" onClick={handleCall}>
+        📞 CALL NOW
+      </button>
 
       {/* Centered content */}
       <div className="headerContainer">
