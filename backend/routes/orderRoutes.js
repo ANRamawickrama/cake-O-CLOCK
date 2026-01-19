@@ -6,13 +6,15 @@ const auth = require('../middleware/authMiddleware');
 // POST - Create a new order (public route for customers)
 router.post('/', async (req, res) => {
   try {
-    const { customerName, customerEmail, customerPhone, cakeName, quantity, location, description, weight, deliveryDate } = req.body;
+    const { customerName, customerEmail, customerPhone, cakeName, cakeImage, cakePrice, quantity, location, description, weight, deliveryDate } = req.body;
 
     const newOrder = new Order({
       customerName,
       customerEmail,
       customerPhone,
       cakeName,
+      cakeImage,
+      cakePrice,
       quantity,
       location,
       description,

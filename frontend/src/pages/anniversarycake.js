@@ -13,7 +13,7 @@ function AnniversaryCake() {
           <div key={index} className="cakeItem">
             <img src={cake.image} alt={`Anniversary Cake ${index + 1}`} />
             {cake.price && <p>Rs {cake.price}</p>}
-            <Link to="/order">
+            <Link to="/order" state={{ cake: { ...cake, name: `Anniversary Cake ${index + 1}` } }}>
               <button>Order</button>
             </Link>
           </div>
