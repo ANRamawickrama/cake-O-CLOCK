@@ -19,6 +19,7 @@ import UploadCakePage from "./pages/UploardCakePage";
 import OrderForm from "./pages/OrderForm";
 import OrdersDashboard from "./pages/OrdersDashboard";
 import OwnerDashboard from "./pages/OwnerDashboard";
+import ReviewsPage from "./pages/ReviewsPage";
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
@@ -50,6 +51,7 @@ function App() {
           <Route path="/update" element={<UploadCakePage />} />
           <Route path="/order" element={<OrderForm />} />
           <Route path="/orders" element={<OrdersDashboard />} />
+          <Route path="/reviews" element={<ReviewsPage />} />
         </Routes>
         <Footer />
       </Router>

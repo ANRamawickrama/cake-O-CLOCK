@@ -65,6 +65,139 @@
   transform: scale(1.05);
 }
 
+/* Cake Item Buttons */
+.cake-item-buttons {
+  display: flex;
+  gap: 10px;
+  padding: 0 10px 15px 10px;
+  justify-content: center;
+}
+
+.cake-item-buttons a {
+  flex: 1;
+}
+
+.order-small-btn,
+.review-small-btn {
+  width: 100%;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.order-small-btn {
+  background-color: #c84b8c;
+  color: white;
+}
+
+.order-small-btn:hover {
+  background-color: #a43c76;
+  transform: translateY(-2px);
+}
+
+.review-small-btn {
+  background-color: #ffc107;
+  color: #333;
+}
+
+.review-small-btn:hover {
+  background-color: #ffb300;
+  transform: translateY(-2px);
+}
+
+/* Cake Detail View */
+.cake-detail-view {
+  padding: 20px;
+  background: white;
+  border-radius: 15px;
+  margin: 20px;
+}
+
+.back-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cake-detail-container {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.cake-detail-image {
+  flex: 1;
+  min-width: 300px;
+  text-align: center;
+}
+
+.cake-detail-image img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.cake-detail-info {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.cake-detail-info h2 {
+  font-size: 2.5rem;
+  color: #333;
+  margin: 0 0 20px 0;
+}
+
+.cake-price {
+  font-size: 1.8rem;
+  color: #c84b8c;
+  margin-bottom: 30px;
+}
+
+.cake-price strong {
+  color: #333;
+}
+
+.order-btn {
+  background: linear-gradient(135deg, #c84b8c 0%, #a43c76 100%);
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(200, 75, 140, 0.3);
+  width: fit-content;
+}
+
+.order-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(200, 75, 140, 0.4);
+}
+
 /* -------------------- Responsive Design -------------------- */
 @media (max-width: 1024px) {
   .cakeItem {
@@ -81,6 +214,14 @@
 
   .cakeItem p {
     font-size: 16px;
+  }
+
+  .cake-detail-container {
+    gap: 20px;
+  }
+
+  .cake-detail-info h2 {
+    font-size: 2rem;
   }
 }
 
@@ -104,6 +245,20 @@
   .cakeItem button {
     padding: 8px 18px;
     font-size: 14px;
+  }
+
+  .cake-detail-container {
+    flex-direction: column;
+  }
+
+  .cake-detail-image,
+  .cake-detail-info {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .cake-detail-info h2 {
+    font-size: 1.8rem;
   }
 }
 
@@ -131,5 +286,18 @@
   .cakeItem button {
     padding: 8px 16px;
     font-size: 13px;
+  }
+
+  .cake-detail-info h2 {
+    font-size: 1.5rem;
+  }
+
+  .cake-price {
+    font-size: 1.4rem;
+  }
+
+  .order-btn {
+    padding: 12px 30px;
+    font-size: 1rem;
   }
 }

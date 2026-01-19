@@ -1,10 +1,27 @@
 const mongoose = require('mongoose');
 
 const cakeSchema = new mongoose.Schema({
-  name: String,
-  price: Number,
-  imageUrl: String,  // store file path
-  category: { type: String, default: 'general' }
+  name: {
+    type: String,
+    required: true
+  },
+  price: {
+    type: Number,
+    required: true
+  },
+  type: {
+    type: String,
+    required: true,
+    enum: ['Birthday Cake', 'Anniversary Cake', 'Cupcake', 'Wedding Cake', 'Wedding Structure', 'Jar Cake']
+  },
+  image: {
+    type: String,
+    required: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 module.exports = mongoose.model('Cake', cakeSchema);

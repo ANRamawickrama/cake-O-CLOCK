@@ -47,6 +47,133 @@
   margin: 12px 0 16px;
 }
 
+.cake-item-buttons {
+  display: flex;
+  gap: 10px;
+  padding: 0 10px 15px;
+  justify-content: center;
+}
+
+.order-small-btn, .review-small-btn {
+  flex: 1;
+  background-color: #c84b8c;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.review-small-btn {
+  background-color: #f0ad4e;
+}
+
+.order-small-btn:hover {
+  background-color: #a43c76;
+  transform: scale(1.05);
+}
+
+.review-small-btn:hover {
+  background-color: #d58512;
+  transform: scale(1.05);
+}
+
+.cake-detail-view {
+  padding: 20px;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.back-btn {
+  background-color: #6c757d;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.back-btn:hover {
+  background-color: #5a6268;
+}
+
+.cake-detail-container {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-bottom: 30px;
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cake-detail-image {
+  flex: 1;
+  max-width: 400px;
+}
+
+.cake-detail-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.cake-detail-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 15px;
+}
+
+.cake-detail-info h2 {
+  font-size: 28px;
+  color: #333;
+  margin: 0;
+}
+
+.cake-price {
+  font-size: 20px;
+  color: #5a2a60;
+  margin: 0;
+}
+
+.order-btn {
+  background-color: #28a745;
+  color: #fff;
+  border: none;
+  padding: 12px 25px;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.order-btn:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}
+
 .cakeItem button {
   background-color: #c84b8c;
   color: #fff;

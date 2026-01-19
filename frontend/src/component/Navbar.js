@@ -21,7 +21,7 @@ function Navbar() {
           <Link to="/menu">Menu</Link>
           <Link to="/about">About</Link>
           <Link to="/contact">Contact</Link>
-          <Link to="/review">Review</Link>
+          <Link to="/reviews">Reviews</Link>
 
         </div>
       </div>
@@ -31,7 +31,7 @@ function Navbar() {
         <Link to="/menu">Menu</Link>
         <Link to="/about">About</Link>
         <Link to="/contact">Contact</Link>
-        <Link to="/review">Review</Link>
+        <Link to="/reviews">Reviews</Link>
 
         <button onClick={togglNavbar}>
           <ReorderIcon />
