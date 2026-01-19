@@ -93,7 +93,8 @@ function OrderForm() {
       };
 
       console.log("Placing order with cake:", cake.name);
-      const response = await axios.post("http://localhost:5000/api/orders", orderData, {
+      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+      const response = await axios.post(`${API_URL}/api/orders`, orderData, {
         timeout: 10000
       });
       

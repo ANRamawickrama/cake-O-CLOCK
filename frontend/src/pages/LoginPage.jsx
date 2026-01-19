@@ -11,7 +11,8 @@ export default function LoginPage({ setToken }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/owner/login", { email, password });
+      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+      const res = await axios.post(`${API_URL}/api/owner/login`, { email, password });
       localStorage.setItem("token", res.data.token);
       setToken?.(res.data.token);
       navigate("/dashboard");

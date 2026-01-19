@@ -18,7 +18,8 @@ function jarcake() {
 
   const fetchCakes = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/cakes/type/Jar Cake");
+      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+      const response = await axios.get(`${API_URL}/api/cakes/type/Jar Cake`);
       if (response.data && response.data.length > 0) {
         setCakes([
           { image: JarCakeImage, price: 1500, name: "Jar Cake" },

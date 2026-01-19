@@ -77,8 +77,9 @@ export default function UploadCakePage() {
           };
 
           const token = localStorage.getItem("token");
+          const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
           const response = await axios.post(
-            "http://localhost:5000/api/cakes/upload",
+            `${API_URL}/api/cakes/upload`,
             cakeData,
             {
               headers: {
@@ -116,13 +117,12 @@ export default function UploadCakePage() {
   return (
     <div className="upload-container">
       <div className="upload-box">
-        <h2>🎂 Upload New Cakes</h2>
+        <h2>Upload New Cakes</h2>
         <p className="subtitle">Add a new cake to the menu</p>
         
         <form className="upload-form" onSubmit={handleSubmit}>
           {/* Cake Name */}
           <div className="form-group">
-            <label>Cake Name *</label>
             <input
               type="text"
               placeholder="e.g., Chocolate Truffle Cake"
@@ -134,7 +134,6 @@ export default function UploadCakePage() {
 
           {/* Cake Type Dropdown */}
           <div className="form-group">
-            <label>Cake Type *</label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value)}

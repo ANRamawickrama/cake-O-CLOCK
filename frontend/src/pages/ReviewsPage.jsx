@@ -30,7 +30,8 @@ function ReviewsPage() {
 
   const fetchAllReviews = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/reviews");
+      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+      const response = await axios.get(`${API_URL}/api/reviews`);
       setAllReviews(response.data || []);
       
       // Calculate stats for each cake type

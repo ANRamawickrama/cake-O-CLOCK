@@ -15,12 +15,14 @@ export default function CakeManager() {
       return;
     }
 
-    axios.get("http://localhost:5000/api/cakes").then(res => setCakes(res.data));
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    axios.get(`${API_URL}/api/cakes`).then(res => setCakes(res.data));
   }, [token, navigate]);
 
   const handleAdd = async () => {
     if (!token) return navigate("/login");
-    const res = await axios.post("http://localhost:5000/api/cakes", newCake, {
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    const res = await axios.post(`${API_URL}/api/cakes`, newCake, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setCakes([...cakes, res.data]);
@@ -33,8 +35,8 @@ export default function CakeManager() {
   };
 
   const handleUpdate = async () => {
-    if (!token || !editingId) return navigate("/login");
-    const res = await axios.put(`http://localhost:5000/api/cakes/${editingId}`, newCake, {
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    const res = await axios.put(`${API_URL}/api/cakes/${editingId}`, newCake, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setCakes(cakes.map(c => (c._id === editingId ? res.data : c)));
@@ -48,8 +50,8 @@ export default function CakeManager() {
   };
 
   const handleDelete = async (id) => {
-    if (!token) return navigate("/login");
-    await axios.delete(`http://localhost:5000/api/cakes/${id}`, {
+    const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    await axios.delete(`${API_URL}/api/cakes/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setCakes(cakes.filter(c => c._id !== id));

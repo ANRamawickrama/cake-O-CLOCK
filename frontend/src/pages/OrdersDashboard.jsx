@@ -26,7 +26,8 @@ export default function OrdersDashboard() {
     }
 
     try {
-      const res = await axios.get("http://localhost:5000/api/orders", {
+      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+      const res = await axios.get(`${API_URL}/api/orders`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setOrders(res.data);
@@ -48,7 +49,8 @@ export default function OrdersDashboard() {
 
     const token = localStorage.getItem("token");
     try {
-      await axios.delete(`http://localhost:5000/api/orders/${orderId}`, {
+      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+      await axios.delete(`${API_URL}/api/orders/${orderId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setOrders(orders.filter((order) => order._id !== orderId));

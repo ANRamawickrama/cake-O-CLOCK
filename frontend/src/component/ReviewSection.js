@@ -23,7 +23,8 @@ export default function ReviewSection({ cakeName }) {
 
   const fetchReviews = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/reviews/cake/${encodeURIComponent(cakeName)}`);
+      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+      const response = await axios.get(`${API_URL}/api/reviews/cake/${encodeURIComponent(cakeName)}`);
       setReviews(response.data || []);
       setLoading(false);
     } catch (error) {
@@ -34,7 +35,8 @@ export default function ReviewSection({ cakeName }) {
 
   const fetchRating = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/api/reviews/rating/${encodeURIComponent(cakeName)}`);
+      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+      const response = await axios.get(`${API_URL}/api/reviews/rating/${encodeURIComponent(cakeName)}`);
       setAverageRating(response.data.averageRating);
       setTotalReviews(response.data.totalReviews);
     } catch (error) {
@@ -62,8 +64,9 @@ export default function ReviewSection({ cakeName }) {
         comment: comment.trim()
       };
 
+      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
       const response = await axios.post(
-        'http://localhost:5000/api/reviews',
+        `${API_URL}/api/reviews`,
         reviewData
       );
 
