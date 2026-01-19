@@ -35,22 +35,24 @@ function OrderForm() {
       alert("Geolocation is not supported by your browser.");
     }
   };
-  // 📋 Convert image to Base64 Data URL
+  // 📋 Convert image to Base64 using Fetch
   const convertImageToBase64 = async (imageUrl) => {
     try {
-      // Fetch the image as a blob
       const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image`);
+      }
       const blob = await response.blob();
       
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onloadend = () => resolve(reader.result);
-        reader.onerror = reject;
+        reader.onerror = () => reject(new Error("Failed to read image"));
         reader.readAsDataURL(blob);
       });
     } catch (error) {
-      console.error("Error converting image:", error);
-      return imageUrl; // Fallback to original URL
+      console.error("Error converting image to base64:", error);
+      return ""; // Return empty string if conversion fails
     }
   };
 
@@ -71,7 +73,9 @@ function OrderForm() {
       // Convert cake image to base64 for storage
       let cakeImageBase64 = "";
       if (cake.image) {
+        console.log("Converting image to base64...");
         cakeImageBase64 = await convertImageToBase64(cake.image);
+        console.log("Image conversion completed");
       }
 
       const orderData = {
@@ -88,8 +92,10 @@ function OrderForm() {
         deliveryDate
       };
 
-      console.log("Sending order with image:", cakeImageBase64 ? "Base64 data present" : "No image data");
-      const response = await axios.post("http://localhost:5000/api/orders", orderData);
+      console.log("Placing order with cake:", cake.name);
+      const response = await axios.post("http://localhost:5000/api/orders", orderData, {
+        timeout: 10000
+      });
       
       if (response.status === 201) {
         alert("✅ Order placed successfully! The owner will contact you soon.");
@@ -97,7 +103,17 @@ function OrderForm() {
       }
     } catch (err) {
       console.error("Order submission error:", err);
-      setError(err.response?.data?.message || "Failed to place order. Please try again.");
+      let errorMessage = "Failed to place order. Please try again.";
+      
+      if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.message === "timeout of 10000ms exceeded") {
+        errorMessage = "Request took too long. Please check your internet connection and try again.";
+      } else if (err.message.includes("Network")) {
+        errorMessage = "Network error. Please check if the server is running and try again.";
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -106,14 +122,7 @@ function OrderForm() {
     <div className="orderPage" style={{ backgroundImage: `url(${BannerImage})` }}>
       {cake && (
         <div className="selectedCake">
-          <img 
-            src={cake.image} 
-            alt={cake.name}
-            onError={(e) => { 
-              e.target.onerror = null; 
-              e.target.src = BannerImage; 
-            }}
-          />
+          <img src={cake.image} alt={cake.name} />
           <h2>{cake.name}</h2>
           <p>Price: Rs {cake.price}</p>
         </div>
