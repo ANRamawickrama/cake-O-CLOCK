@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import Navbar from "./component/Navbar";
 import Footer from "./component/Footer";
+import ProtectedRoute from "./component/ProtectedRoute";
 
 import Home from "./pages/home";
 import Menu from "./pages/Menu";
@@ -46,11 +47,11 @@ function App() {
           <Route path="/anniversarycake" element={<AnniversaryCakes />} />
           <Route path="/weddingStructures" element={<WeddingStructures />} />
           <Route path="/login" element={<LoginPage setToken={setToken} />} />
-          <Route path="/dashboard" element={<OwnerDashboard />} />
-          <Route path="/manage" element={<CakeManager />} />
-          <Route path="/update" element={<UploadCakePage />} />
+          <Route path="/dashboard" element={<ProtectedRoute><OwnerDashboard /></ProtectedRoute>} />
+          <Route path="/manage" element={<ProtectedRoute><CakeManager /></ProtectedRoute>} />
+          <Route path="/update" element={<ProtectedRoute><UploadCakePage /></ProtectedRoute>} />
           <Route path="/order" element={<OrderForm />} />
-          <Route path="/orders" element={<OrdersDashboard />} />
+          <Route path="/orders" element={<ProtectedRoute><OrdersDashboard /></ProtectedRoute>} />
           <Route path="/reviews" element={<ReviewsPage />} />
         </Routes>
         <Footer />

@@ -27,6 +27,12 @@ app.use('/api/cakes', cakeRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reviews', reviewRoutes);
 
+// ===== Verify Token Route =====
+const auth = require('./middleware/authMiddleware');
+app.get('/api/verify', auth, (req, res) => {
+  res.json({ message: "Token is valid", userId: req.user.id });
+});
+
 // ===== MongoDB Connection =====
 const MONGO_URI = process.env.MONGO_URI || process.env.mongo;
 

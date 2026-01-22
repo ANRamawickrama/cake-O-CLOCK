@@ -17,6 +17,8 @@
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 24px;
   justify-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .cakeItem {
@@ -78,6 +80,110 @@
 .review-small-btn:hover {
   background-color: #d58512;
   transform: scale(1.05);
+}
+
+/* Tablet Responsive */
+@media (max-width: 1024px) {
+  .structureLists {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+  }
+
+  .cakeItem img {
+    height: 400px;
+  }
+
+  .structureTitle {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .structurePage {
+    padding: 30px 15px;
+  }
+
+  .structureTitle {
+    font-size: 2rem;
+    margin-bottom: 25px;
+  }
+
+  .structureLists {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+  }
+
+  .cakeItem img {
+    height: 350px;
+  }
+
+  .cakeItem p {
+    font-size: 1.1rem;
+  }
+
+  .order-small-btn,
+  .review-small-btn {
+    font-size: 13px;
+    padding: 9px 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .structurePage {
+    padding: 25px 12px;
+  }
+
+  .structureTitle {
+    font-size: 1.8rem;
+  }
+
+  .structureLists {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+  }
+
+  .cakeItem {
+    max-width: 100%;
+  }
+
+  .cakeItem img {
+    height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .structurePage {
+    padding: 20px 10px;
+  }
+
+  .structureTitle {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+
+  .structureLists {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .cakeItem img {
+    height: 350px;
+  }
+
+  .cakeItem p {
+    font-size: 1rem;
+  }
+
+  .cake-item-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .order-small-btn,
+  .review-small-btn {
+    width: 100%;
+    padding: 10px;
+  }
 }
 
 .cake-detail-view {

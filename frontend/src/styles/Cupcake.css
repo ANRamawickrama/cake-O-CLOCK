@@ -17,6 +17,8 @@
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   justify-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .cakeItem {
@@ -44,21 +46,6 @@
   font-size: 1.2rem;
   color: #555;
   margin: 12px 0;
-}
-
-/* Mobile Responsive */
-@media (max-width: 1024px) {
-  .cupcakeTitle {
-    font-size: 2.2rem;
-  }
-
-  .cakeItem img {
-    height: 200px;
-  }
-
-  .cakeItem p {
-    font-size: 1.1rem;
-  }
 }
 
 .cake-item-buttons {
@@ -92,6 +79,113 @@
 .review-small-btn:hover {
   background-color: #d58512;
   transform: scale(1.05);
+}
+
+/* Tablet Responsive */
+@media (max-width: 1024px) {
+  .cupcakeTitle {
+    font-size: 2.2rem;
+  }
+
+  .cupcakeLists {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  }
+
+  .cakeItem img {
+    height: 200px;
+  }
+
+  .cakeItem p {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .cupcakePage {
+    padding: 30px 15px;
+  }
+
+  .cupcakeTitle {
+    font-size: 2rem;
+    margin-bottom: 25px;
+  }
+
+  .cupcakeLists {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+  }
+
+  .cakeItem img {
+    height: 180px;
+  }
+
+  .cakeItem p {
+    font-size: 1rem;
+  }
+
+  .order-small-btn,
+  .review-small-btn {
+    font-size: 13px;
+    padding: 9px 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .cupcakePage {
+    padding: 25px 12px;
+  }
+
+  .cupcakeTitle {
+    font-size: 1.8rem;
+  }
+
+  .cupcakeLists {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+  }
+
+  .cakeItem {
+    max-width: 100%;
+  }
+
+  .cakeItem img {
+    height: 170px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cupcakePage {
+    padding: 20px 10px;
+  }
+
+  .cupcakeTitle {
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+
+  .cupcakeLists {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .cakeItem img {
+    height: 200px;
+  }
+
+  .cakeItem p {
+    font-size: 0.95rem;
+  }
+
+  .cake-item-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .order-small-btn,
+  .review-small-btn {
+    width: 100%;
+    padding: 10px;
+  }
 }
 
 .cake-detail-view {

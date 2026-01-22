@@ -121,10 +121,7 @@ function ReviewsPage() {
   return (
     <div className="reviews-page">
       <div className="reviews-header">
-        <h1>🎂 Customer Reviews & Ratings</h1>
-        <p className="reviews-subtitle">
-          See what our customers love about our cakes!
-        </p>
+        <h1>Customer Reviews & Ratings</h1>
       </div>
 
       {/* Stats Cards */}

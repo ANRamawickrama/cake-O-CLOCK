@@ -6,14 +6,13 @@ const router = express.Router();
 // Add new cake (protected) - accepts base64 image
 router.post('/upload', auth, async (req, res) => {
   try {
-    const { name, type, price, image } = req.body;
+    const { type, price, image } = req.body;
 
-    if (!name || !type || !price || !image) {
+    if (!type || !price || !image) {
       return res.status(400).json({ message: 'Please fill all fields' });
     }
 
     const newCake = new Cake({
-      name,
       type,
       price,
       image

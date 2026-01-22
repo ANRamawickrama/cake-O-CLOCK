@@ -1,6 +1,7 @@
 .home {
     width: 100%;
     height: 78vh;
+    min-height: 500px;
     display: flex;
     justify-content: center;
     align-items: left;
@@ -9,7 +10,7 @@
     background-repeat: no-repeat;
     background-size: cover;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    position: relative; /* Needed for absolute positioning of login button */
+    position: relative;
 }
 
 .headerContainer {
@@ -24,6 +25,7 @@
     font-size: 110px;
     height: 80px;
     color: black;
+    line-height: 1.1;
 }
 
 .headerContainer button {
@@ -38,6 +40,7 @@
     transform: translateY(30px);
     animation: slideUpFade 2s ease-out forwards;
     animation-delay: 0.4s;
+    transition: all 0.3s ease;
 }
 
 .headerContainer button:hover {
@@ -70,7 +73,6 @@
     box-shadow: 0 4px 12px rgba(168, 60, 118, 0.4);
 }
 
-/* Animate the ORDER NOW button */
 @keyframes slideUpFade {
     to {
         opacity: 1;
@@ -78,7 +80,6 @@
     }
 }
 
-/* 👇 Login Button (top right of banner) */
 .loginBtn {
     position: absolute;
     top: 20px;
@@ -98,41 +99,86 @@
     background-color: rgba(0, 0, 0, 0.9);
 }
 
-/* Responsive styles */
+/* Tablet Responsive - 768px to 1024px */
+@media only screen and (max-width: 1024px) {
+    .headerContainer h1 {
+        font-size: 80px;
+        height: 70px;
+    }
+
+    .headerContainer button {
+        font-size: 22px;
+        padding: 10px 24px;
+    }
+}
+
+/* Tablet/Mobile - 650px to 768px */
+@media only screen and (max-width: 768px) {
+    .home {
+        min-height: 400px;
+        height: 70vh;
+    }
+
+    .headerContainer h1 {
+        font-size: 60px;
+        height: 60px;
+    }
+
+    .headerContainer button {
+        font-size: 20px;
+        padding: 10px 22px;
+    }
+
+    .callBtn,
+    .loginBtn {
+        font-size: 13px;
+        padding: 9px 18px;
+    }
+}
+
+/* Mobile - 480px to 650px */
 @media only screen and (max-width: 650px) {
     .home {
         justify-content: center;
         align-items: center;
+        min-height: 350px;
+        height: 65vh;
     }
 
     .headerContainer {
         margin-left: 0px;
         border-radius: 10px;
-        padding: 10px;
-        width: 80%;
+        padding: 15px 20px;
+        width: 85%;
+        max-width: 400px;
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        background-color: #121619;
+        background-color: rgba(18, 22, 25, 0.9);
         color: white;
     }
 
     .headerContainer h1 {
-        font-size: 40px;
-        height: 30px;
+        font-size: 45px;
+        height: auto;
         color: white;
+        margin: 10px 0;
     }
 
     .headerContainer p {
-        font-size: 30px;
+        font-size: 18px;
         color: white;
+        margin: 5px 0;
     }
 
     .headerContainer button {
         background-color: white;
         color: #121619;
-        margin-bottom: 30px;
+        margin-bottom: 15px;
+        margin-top: 10px;
+        font-size: 18px;
+        padding: 10px 20px;
     }
 
     .headerContainer button:hover {
@@ -140,7 +186,6 @@
         color: #121619;
     }
 
-    /* Position call button on mobile */
     .callBtn {
         top: 15px;
         left: 15px;
@@ -148,11 +193,67 @@
         padding: 8px 16px;
     }
 
-    /* Make login button smaller and reposition on mobile */
     .loginBtn {
         top: 15px;
         right: 15px;
         font-size: 12px;
+        padding: 8px 16px;
+    }
+}
+
+/* Small Mobile - Below 480px */
+@media only screen and (max-width: 480px) {
+    .home {
+        min-height: 300px;
+        height: 60vh;
+    }
+
+    .headerContainer {
+        width: 90%;
+        padding: 12px 15px;
+    }
+
+    .headerContainer h1 {
+        font-size: 35px;
+    }
+
+    .headerContainer p {
+        font-size: 16px;
+    }
+
+    .headerContainer button {
+        font-size: 16px;
+        padding: 8px 18px;
+    }
+
+    .callBtn,
+    .loginBtn {
+        font-size: 11px;
+        padding: 7px 14px;
+        top: 10px;
+    }
+
+    .callBtn {
+        left: 10px;
+    }
+
+    .loginBtn {
+        right: 10px;
+    }
+}
+
+/* Extra Small Mobile - Below 360px */
+@media only screen and (max-width: 360px) {
+    .headerContainer h1 {
+        font-size: 28px;
+    }
+
+    .headerContainer p {
+        font-size: 14px;
+    }
+
+    .headerContainer button {
+        font-size: 14px;
         padding: 8px 16px;
     }
 }

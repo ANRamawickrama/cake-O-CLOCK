@@ -329,6 +329,35 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .review-section {
+    padding: 25px;
+    margin: 30px 15px;
+  }
+
+  .review-header h3 {
+    font-size: 1.7rem;
+  }
+
+  .rating-number {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .review-section {
+    padding: 22px;
+  }
+
+  .average-rating-display {
+    padding: 12px 18px;
+  }
+
+  .review-form {
+    padding: 22px;
+  }
+}
+
 @media (max-width: 768px) {
   .review-section {
     padding: 20px;
@@ -355,6 +384,26 @@
     width: 45px;
     height: 45px;
     font-size: 1.5rem;
+  }
+
+  .review-card {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 600px) {
+  .review-section {
+    padding: 18px 12px;
+    margin: 18px 8px;
+  }
+
+  .review-header h3 {
+    font-size: 1.5rem;
+  }
+
+  .review-btn {
+    padding: 10px 18px;
+    font-size: 0.95rem;
   }
 }
 
@@ -391,5 +440,30 @@
 
   .review-card {
     padding: 15px;
+  }
+
+  .review-btn {
+    width: 100%;
+  }
+
+  .review-form input,
+  .review-form textarea {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .review-section {
+    padding: 12px 8px;
+  }
+
+  .review-header h3 {
+    font-size: 1.2rem;
+  }
+
+  .star-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.2rem;
   }
 }

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import "../styles/OrdersDashboard.css";
 
 export default function OrdersDashboard() {
@@ -8,22 +7,13 @@ export default function OrdersDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchOrders();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchOrders = async () => {
     const token = localStorage.getItem("token");
-
-    if (!token) {
-      setError("You must be logged in to view orders");
-      setLoading(false);
-      navigate("/login");
-      return;
-    }
 
     try {
       const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
@@ -34,11 +24,8 @@ export default function OrdersDashboard() {
       setLoading(false);
     } catch (err) {
       console.error(err);
-      setError("Failed to load orders. Please login again.");
+      setError("Failed to load orders. Please try again.");
       setLoading(false);
-      if (err.response?.status === 401) {
-        navigate("/login");
-      }
     }
   };
 

@@ -1,5 +1,5 @@
 .birthdayPage {
-  padding: 30px;
+  padding: 30px 20px;
   text-align: center;
   background-color: #f1d0e7;
   min-height: 100vh;
@@ -14,14 +14,17 @@
 }
 
 .birthdayLists {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 25px;
+  max-width: 1400px;
+  margin: 0 auto;
+  justify-items: center;
 }
 
 .cakeItem {
-  width: 250px;
+  width: 100%;
+  max-width: 280px;
   background-color: #fff;
   border-radius: 15px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
@@ -65,7 +68,6 @@
   transform: scale(1.05);
 }
 
-/* Cake Item Buttons */
 .cake-item-buttons {
   display: flex;
   gap: 10px;
@@ -97,6 +99,106 @@
 .order-small-btn:hover {
   background-color: #a43c76;
   transform: translateY(-2px);
+}
+
+/* Tablet Responsive */
+@media (max-width: 1024px) {
+  .birthdayLists {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+  }
+
+  .cakeItem img {
+    height: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .birthdayPage {
+    padding: 25px 15px;
+  }
+
+  .birthdayTitle {
+    font-size: 30px;
+    margin-bottom: 25px;
+  }
+
+  .birthdayLists {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+  }
+
+  .cakeItem img {
+    height: 250px;
+  }
+
+  .cakeItem p {
+    font-size: 16px;
+  }
+
+  .order-small-btn,
+  .review-small-btn {
+    font-size: 13px;
+    padding: 9px 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .birthdayPage {
+    padding: 20px 12px;
+  }
+
+  .birthdayTitle {
+    font-size: 26px;
+  }
+
+  .birthdayLists {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+  }
+
+  .cakeItem {
+    max-width: 100%;
+  }
+
+  .cakeItem img {
+    height: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .birthdayPage {
+    padding: 18px 10px;
+  }
+
+  .birthdayTitle {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .birthdayLists {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .cakeItem img {
+    height: 250px;
+  }
+
+  .cakeItem p {
+    font-size: 15px;
+  }
+
+  .cake-item-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .order-small-btn,
+  .review-small-btn {
+    width: 100%;
+    padding: 10px;
+  }
 }
 
 .review-small-btn {

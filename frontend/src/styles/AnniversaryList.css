@@ -1,5 +1,5 @@
 .anniversaryPage {
-  padding: 30px;
+  padding: 30px 20px;
   text-align: center;
   background-color: #f1d0e7;
   min-height: 100vh;
@@ -14,14 +14,17 @@
 }
 
 .anniversaryLists {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 25px;
+  max-width: 1400px;
+  margin: 0 auto;
+  justify-items: center;
 }
 
 .cakeItem {
-  width: 250px;
+  width: 100%;
+  max-width: 280px;
   background-color: #fff;
   border-radius: 15px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
@@ -81,182 +84,102 @@
   transform: scale(1.05);
 }
 
-.cake-detail-view {
-  padding: 20px;
-  animation: slideUp 0.3s ease;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.back-btn {
-  background-color: #6c757d;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 25px;
-  cursor: pointer;
-  margin-bottom: 20px;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
-}
-
-.back-btn:hover {
-  background-color: #5a6268;
-}
-
-.cake-detail-container {
-  display: flex;
-  justify-content: center;
-  gap: 30px;
-  margin-bottom: 30px;
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.cake-detail-image {
-  flex: 1;
-  max-width: 400px;
-}
-
-.cake-detail-image img {
-  width: 100%;
-  height: auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.cake-detail-info {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 15px;
-}
-
-.cake-detail-info h2 {
-  font-size: 28px;
-  color: #333;
-  margin: 0;
-}
-
-.cake-price {
-  font-size: 20px;
-  color: #5a2a60;
-  margin: 0;
-}
-
-.order-btn {
-  background-color: #28a745;
-  color: #fff;
-  border: none;
-  padding: 12px 25px;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.order-btn:hover {
-  background-color: #218838;
-  transform: scale(1.05);
-}
-
-.cakeItem button {
-  background-color: #c84b8c;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 25px;
-  cursor: pointer;
-  margin-bottom: 15px;
-  font-size: 15px;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.cakeItem button:hover {
-  background-color: #a43c76;
-  transform: scale(1.05);
-}
-
-/* -------------------- Responsive Design -------------------- */
+/* Tablet Responsive */
 @media (max-width: 1024px) {
-  .cakeItem {
-    width: 220px;
+  .anniversaryLists {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
   }
 
   .cakeItem img {
     height: 280px;
   }
+}
+
+@media (max-width: 768px) {
+  .anniversaryPage {
+    padding: 25px 15px;
+  }
 
   .anniversaryTitle {
-    font-size: 32px;
+    font-size: 30px;
+    margin-bottom: 25px;
+  }
+
+  .anniversaryLists {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+  }
+
+  .cakeItem img {
+    height: 250px;
   }
 
   .cakeItem p {
     font-size: 16px;
   }
+
+  .order-small-btn,
+  .review-small-btn {
+    font-size: 13px;
+    padding: 9px 12px;
+  }
 }
 
-@media (max-width: 768px) {
-  .cakeItem {
-    width: 45%; /* Two items per row */
-  }
-
-  .cakeItem img {
-    height: 240px;
+@media (max-width: 600px) {
+  .anniversaryPage {
+    padding: 20px 12px;
   }
 
   .anniversaryTitle {
-    font-size: 28px;
+    font-size: 26px;
+  }
+
+  .anniversaryLists {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+  }
+
+  .cakeItem {
+    max-width: 100%;
+  }
+
+  .cakeItem img {
+    height: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .anniversaryPage {
+    padding: 18px 10px;
+  }
+
+  .anniversaryTitle {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .anniversaryLists {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .cakeItem img {
+    height: 250px;
   }
 
   .cakeItem p {
     font-size: 15px;
   }
 
-  .cakeItem button {
-    padding: 8px 18px;
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 480px) {
-  .anniversaryPage {
-    padding: 20px;
+  .cake-item-buttons {
+    flex-direction: column;
+    gap: 8px;
   }
 
-  .cakeItem {
-    width: 90%; /* Single item per row */
-  }
-
-  .cakeItem img {
-    height: 200px;
-  }
-
-  .anniversaryTitle {
-    font-size: 24px;
-  }
-
-  .cakeItem p {
-    font-size: 14px;
-  }
-
-  .cakeItem button {
-    padding: 8px 16px;
-    font-size: 13px;
+  .order-small-btn,
+  .review-small-btn {
+    width: 100%;
+    padding: 10px;
   }
 }

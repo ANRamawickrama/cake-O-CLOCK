@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import "../styles/UploadCakePage.css";
 
 const CAKE_TYPES = [
@@ -13,23 +12,12 @@ const CAKE_TYPES = [
 ];
 
 export default function UploadCakePage() {
-  const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [price, setPrice] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // Check if user is logged in as owner
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("You must be logged in as owner to upload cakes");
-      navigate("/login");
-    }
-  }, [navigate]);
 
   // Handle image selection and convert to base64
   const handleImageChange = (e) => {
@@ -50,7 +38,7 @@ export default function UploadCakePage() {
     setMessage("");
 
     // Validation
-    if (!name.trim() || !type || !price || !image) {
+    if (!type || !price || !image) {
       setMessage("⚠️ Please fill all fields");
       return;
     }
@@ -70,7 +58,6 @@ export default function UploadCakePage() {
           const imageBase64 = reader.result;
           
           const cakeData = {
-            name: name.trim(),
             type,
             price: Number(price),
             image: imageBase64
@@ -89,14 +76,12 @@ export default function UploadCakePage() {
             }
           );
 
-          setMessage("✅ Cake uploaded successfully!");
           // Reset form
-          setName("");
           setType("");
           setPrice("");
           setImage(null);
           setImagePreview(null);
-          
+          setMessage("✅ Cake uploaded successfully!");
           // Clear success message after 2 seconds
           setTimeout(() => setMessage(""), 2000);
         } catch (err) {
@@ -121,17 +106,6 @@ export default function UploadCakePage() {
         <p className="subtitle">Add a new cake to the menu</p>
         
         <form className="upload-form" onSubmit={handleSubmit}>
-          {/* Cake Name */}
-          <div className="form-group">
-            <input
-              type="text"
-              placeholder="e.g., Chocolate Truffle Cake"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={loading}
-            />
-          </div>
-
           {/* Cake Type Dropdown */}
           <div className="form-group">
             <select
@@ -139,7 +113,7 @@ export default function UploadCakePage() {
               onChange={(e) => setType(e.target.value)}
               disabled={loading}
             >
-              <option value="">-- Select Cake Type --</option>
+              <option value="">Select Cake Type</option>
               {CAKE_TYPES.map((cakeType) => (
                 <option key={cakeType} value={cakeType}>
                   {cakeType}
@@ -150,10 +124,9 @@ export default function UploadCakePage() {
 
           {/* Price */}
           <div className="form-group">
-            <label>Price (LKR) *</label>
             <input
               type="number"
-              placeholder="e.g., 3500"
+              placeholder="Price"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
               disabled={loading}
@@ -163,7 +136,7 @@ export default function UploadCakePage() {
 
           {/* Image Upload */}
           <div className="form-group">
-            <label>Cake Image *</label>
+            <label>Upload Cake Image</label>
             <input
               type="file"
               accept="image/*"
@@ -181,7 +154,7 @@ export default function UploadCakePage() {
 
           {/* Submit Button */}
           <button type="submit" disabled={loading} className="submit-btn">
-            {loading ? "Uploading..." : "🚀 Upload Cake"}
+            {loading ? "Uploading..." : " Upload Cake"}
           </button>
         </form>
 

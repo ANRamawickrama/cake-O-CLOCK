@@ -1,17 +1,8 @@
-import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "../styles/OwnerDashboard.css";
 
 export default function OwnerDashboard() {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("You must be logged in as owner");
-      navigate("/login");
-    }
-  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");

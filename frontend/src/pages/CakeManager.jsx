@@ -1,26 +1,18 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function CakeManager() {
   const [cakes, setCakes] = useState([]);
   const [newCake, setNewCake] = useState({ name: "", price: "" });
   const [editingId, setEditingId] = useState(null);
-  const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-
     const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
     axios.get(`${API_URL}/api/cakes`).then(res => setCakes(res.data));
-  }, [token, navigate]);
+  }, []);
 
   const handleAdd = async () => {
-    if (!token) return navigate("/login");
     const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
     const res = await axios.post(`${API_URL}/api/cakes`, newCake, {
       headers: { Authorization: `Bearer ${token}` },
