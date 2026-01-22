@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import ReviewSection from "../component/ReviewSection";
 import WeddingCakeImage from "../assets/weddingcake.jpg";
+import "../styles/Cupcake.css";
 import "../styles/ReviewSection.css";
 
 function weddingcake() {
@@ -14,6 +15,19 @@ function weddingcake() {
 
   useEffect(() => {
     fetchCakes();
+    
+    // Refetch when page becomes visible (user returns to tab)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchCakes();
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, []);
 
   const fetchCakes = async () => {
@@ -25,10 +39,19 @@ function weddingcake() {
           { image: WeddingCakeImage, price: 8000, name: "Wedding Cake" },
           ...response.data
         ]);
+      } else {
+        // If no cakes from API, keep default
+        setCakes([
+          { image: WeddingCakeImage, price: 8000, name: "Wedding Cake" }
+        ]);
       }
       setLoading(false);
     } catch (error) {
       console.error("Error fetching cakes:", error);
+      // Keep default cakes even if API fails
+      setCakes([
+        { image: WeddingCakeImage, price: 8000, name: "Wedding Cake" }
+      ]);
       setLoading(false);
     }
   };
@@ -36,8 +59,6 @@ function weddingcake() {
   return (
     <div className="cupcakePage">
       <h1 className="cupcakeTitle">Our Wedding Cakes</h1>
-      
-      {loading && <p style={{ textAlign: "center", fontSize: "1.2rem" }}>Loading cakes...</p>}
       
       {selectedCake ? (
         <div className="cake-detail-view">
@@ -57,25 +78,31 @@ function weddingcake() {
           <ReviewSection cakeName={selectedCake.name || `Wedding Cake`} />
         </div>
       ) : (
-        <div className="cupcakeLists">
-          {cakes.map((cake, index) => (
-            <div key={index} className="cakeItem">
-              <img src={cake.image} alt={cake.name || `Wedding Cake ${index + 1}`} />
-              <p>Rs {cake.price}</p>
-              <div className="cake-item-buttons">
-                <Link to="/order" state={{ cake: { ...cake, name: cake.name || `Wedding Cake ${index + 1}` } }}>
-                  <button className="order-small-btn">Order</button>
-                </Link>
-                <button 
-                  className="review-small-btn"
-                  onClick={() => setSelectedCake(cake)}
-                >
-                  Reviews
-                </button>
-              </div>
+        <>
+          {loading && <p style={{ textAlign: "center", fontSize: "1.2rem", padding: "20px" }}>Loading cakes...</p>}
+          {!loading && cakes.length === 0 && <p style={{ textAlign: "center", fontSize: "1.2rem", padding: "20px" }}>No cakes available</p>}
+          {cakes.length > 0 && (
+            <div className="cupcakeLists">
+              {cakes.map((cake, index) => (
+                <div key={index} className="cakeItem">
+                  <img src={cake.image} alt={cake.name || `Wedding Cake ${index + 1}`} />
+                  <p>Rs {cake.price}</p>
+                  <div className="cake-item-buttons">
+                    <Link to="/order" state={{ cake: { ...cake, name: cake.name || `Wedding Cake ${index + 1}` } }}>
+                      <button className="order-small-btn">Order</button>
+                    </Link>
+                    <button 
+                      className="review-small-btn"
+                      onClick={() => setSelectedCake(cake)}
+                    >
+                      Reviews
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   );

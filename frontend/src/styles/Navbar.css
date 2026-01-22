@@ -1,13 +1,13 @@
 .navbar {
     width: 100%;
-    height: 100px;
+    height: 120px;
     background-color: #121619;
     display: flex;
     flex-direction: row;
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.4);
 }
 
 .navbar .leftSide {
@@ -19,12 +19,12 @@
 }
 
 .navbar .leftSide img {
-    width: 98px;
+    width: 115px;
     transition: transform 0.3s ease;
 }
 
 .navbar .leftSide img:hover {
-    transform: scale(1.05);
+    transform: scale(1.08);
 }
 
 .navbar .rightSide {
@@ -185,6 +185,10 @@
     .navbar .leftSide {
         padding-left: 40px;
     }
+    
+    .navbar .leftSide img {
+        width: 105px;
+    }
 
     .navbar .rightSide {
         font-size: 120%;
@@ -200,7 +204,7 @@
 /* Mobile Responsive */
 @media only screen and (max-width: 600px) {
     .navbar {
-        height: 70px;
+        height: 80px;
     }
 
     .navbar .leftSide {
@@ -208,7 +212,7 @@
     }
 
     .navbar .leftSide img {
-        width: 70px;
+        width: 85px;
     }
 
     .navbar .rightSide a {
@@ -221,8 +225,8 @@
     }
 
     .hiddenLinks {
-        top: 70px;
-        height: calc(100vh - 70px);
+        top: 80px;
+        height: calc(100vh - 80px);
         border-left: 4px solid #c84b8c;
     }
 

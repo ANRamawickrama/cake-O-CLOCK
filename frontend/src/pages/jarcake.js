@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import ReviewSection from "../component/ReviewSection";
 import JarCakeImage from "../assets/jar.jpg";
+import "../styles/Cupcake.css";
 import "../styles/ReviewSection.css";
 
 function jarcake() {
@@ -21,6 +22,7 @@ function jarcake() {
       const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
       const response = await axios.get(`${API_URL}/api/cakes/type/Jar Cake`);
       if (response.data && response.data.length > 0) {
+        // Combine default cake with uploaded cakes
         setCakes([
           { image: JarCakeImage, price: 1500, name: "Jar Cake" },
           ...response.data
@@ -36,9 +38,9 @@ function jarcake() {
   return (
     <div className="cupcakePage">
       <h1 className="cupcakeTitle">Our Jar Cakes</h1>
-      
+
       {loading && <p style={{ textAlign: "center", fontSize: "1.2rem" }}>Loading cakes...</p>}
-      
+
       {selectedCake ? (
         <div className="cake-detail-view">
           <button className="back-btn" onClick={() => setSelectedCake(null)}>← Back to Cakes</button>
@@ -78,6 +80,10 @@ function jarcake() {
         </div>
       )}
     </div>
+  );
+}
+
+export default jarcake;
   );
 }
 
