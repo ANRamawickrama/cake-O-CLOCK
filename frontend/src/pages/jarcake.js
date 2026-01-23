@@ -6,7 +6,7 @@ import JarCakeImage from "../assets/jar.jpg";
 import "../styles/Cupcake.css";
 import "../styles/ReviewSection.css";
 
-function jarcake() {
+function JarCake() {
   const [cakes, setCakes] = useState([
     { image: JarCakeImage, price: 1500, name: "Jar Cake" }
   ]);
@@ -20,7 +20,8 @@ function jarcake() {
   const fetchCakes = async () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-      const response = await axios.get(`${API_URL}/api/cakes/type/Jar Cake`);
+      const response = await axios.get(`${API_URL}/api/cakes/type/${encodeURIComponent('Jar Cake')}`);
+      console.log("Jar cakes API response:", response.data);
       if (response.data && response.data.length > 0) {
         // Combine default cake with uploaded cakes
         setCakes([
@@ -83,8 +84,4 @@ function jarcake() {
   );
 }
 
-export default jarcake;
-  );
-}
-
-export default jarcake;
+export default JarCake;

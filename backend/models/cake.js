@@ -1,9 +1,15 @@
 const mongoose = require('mongoose');
 
 const cakeSchema = new mongoose.Schema({
+  ownerId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Owner',
+    required: true
+  },
   price: {
     type: Number,
-    required: true
+    required: true,
+    min: 0
   },
   type: {
     type: String,
@@ -14,7 +20,15 @@ const cakeSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  description: {
+    type: String,
+    default: ''
+  },
   createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
     type: Date,
     default: Date.now
   }

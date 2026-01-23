@@ -6,7 +6,7 @@ import WeddingCakeImage from "../assets/weddingcake.jpg";
 import "../styles/Cupcake.css";
 import "../styles/ReviewSection.css";
 
-function weddingcake() {
+function Weddingcake() {
   const [cakes, setCakes] = useState([
     { image: WeddingCakeImage, price: 8000, name: "Wedding Cake" }
   ]);
@@ -15,43 +15,23 @@ function weddingcake() {
 
   useEffect(() => {
     fetchCakes();
-    
-    // Refetch when page becomes visible (user returns to tab)
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        fetchCakes();
-      }
-    };
-    
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
   }, []);
 
   const fetchCakes = async () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-      const response = await axios.get(`${API_URL}/api/cakes/type/Wedding Cake`);
+      const response = await axios.get(`${API_URL}/api/cakes/type/${encodeURIComponent('Wedding Cake')}`);
+      console.log("Wedding cakes API response:", response.data);
       if (response.data && response.data.length > 0) {
+        // Combine default cakes with uploaded cakes
         setCakes([
           { image: WeddingCakeImage, price: 8000, name: "Wedding Cake" },
           ...response.data
         ]);
-      } else {
-        // If no cakes from API, keep default
-        setCakes([
-          { image: WeddingCakeImage, price: 8000, name: "Wedding Cake" }
-        ]);
       }
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching cakes:", error);
-      // Keep default cakes even if API fails
-      setCakes([
-        { image: WeddingCakeImage, price: 8000, name: "Wedding Cake" }
-      ]);
+      console.error("Error fetching Wedding cakes:", error);
       setLoading(false);
     }
   };
@@ -59,7 +39,9 @@ function weddingcake() {
   return (
     <div className="cupcakePage">
       <h1 className="cupcakeTitle">Our Wedding Cakes</h1>
-      
+
+      {loading && <p style={{ textAlign: "center", fontSize: "1.2rem" }}>Loading cakes...</p>}
+
       {selectedCake ? (
         <div className="cake-detail-view">
           <button className="back-btn" onClick={() => setSelectedCake(null)}>← Back to Cakes</button>
@@ -78,34 +60,28 @@ function weddingcake() {
           <ReviewSection cakeName={selectedCake.name || `Wedding Cake`} />
         </div>
       ) : (
-        <>
-          {loading && <p style={{ textAlign: "center", fontSize: "1.2rem", padding: "20px" }}>Loading cakes...</p>}
-          {!loading && cakes.length === 0 && <p style={{ textAlign: "center", fontSize: "1.2rem", padding: "20px" }}>No cakes available</p>}
-          {cakes.length > 0 && (
-            <div className="cupcakeLists">
-              {cakes.map((cake, index) => (
-                <div key={index} className="cakeItem">
-                  <img src={cake.image} alt={cake.name || `Wedding Cake ${index + 1}`} />
-                  <p>Rs {cake.price}</p>
-                  <div className="cake-item-buttons">
-                    <Link to="/order" state={{ cake: { ...cake, name: cake.name || `Wedding Cake ${index + 1}` } }}>
-                      <button className="order-small-btn">Order</button>
-                    </Link>
-                    <button 
-                      className="review-small-btn"
-                      onClick={() => setSelectedCake(cake)}
-                    >
-                      Reviews
-                    </button>
-                  </div>
-                </div>
-              ))}
+        <div className="cupcakeLists">
+          {cakes.map((cake, index) => (
+            <div key={index} className="cakeItem">
+              <img src={cake.image} alt={cake.name || `Wedding Cake ${index + 1}`} />
+              <p>Rs {cake.price}</p>
+              <div className="cake-item-buttons">
+                <Link to="/order" state={{ cake: { ...cake, name: cake.name || `Wedding Cake ${index + 1}` } }}>
+                  <button className="order-small-btn">Order</button>
+                </Link>
+                <button 
+                  className="review-small-btn"
+                  onClick={() => setSelectedCake(cake)}
+                >
+                  Reviews
+                </button>
+              </div>
             </div>
-          )}
-        </>
+          ))}
+        </div>
       )}
     </div>
   );
 }
 
-export default weddingcake;
+export default Weddingcake;

@@ -6,16 +6,22 @@ const router = express.Router();
 // Add new cake (protected) - accepts base64 image
 router.post('/upload', auth, async (req, res) => {
   try {
-    const { type, price, image } = req.body;
+    const { type, price, image, description } = req.body;
 
     if (!type || !price || !image) {
-      return res.status(400).json({ message: 'Please fill all fields' });
+      return res.status(400).json({ message: 'Please fill all required fields' });
+    }
+
+    if (price <= 0) {
+      return res.status(400).json({ message: 'Price must be greater than 0' });
     }
 
     const newCake = new Cake({
+      ownerId: req.user.id,
       type,
       price,
-      image
+      image,
+      description: description || ''
     });
 
     await newCake.save();
@@ -46,25 +52,70 @@ router.get('/type/:type', async (req, res) => {
   }
 });
 
-// Update cake (protected)
-router.put('/:id', auth, async (req, res) => {
+// Get owner's cakes (protected)
+router.get('/owner/my-cakes', auth, async (req, res) => {
   try {
-    const cake = await Cake.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!cake) return res.status(404).json({ message: 'Cake not found' });
-    res.json(cake);
+    const cakes = await Cake.find({ ownerId: req.user.id }).sort({ createdAt: -1 });
+    res.json(cakes);
   } catch (err) {
-    res.status(400).json({ message: 'Failed to update cake' });
+    res.status(500).json({ message: 'Failed to load your cakes' });
   }
 });
 
-// Delete cake (protected)
+// Update cake (protected) - Only owner can update their own cakes
+router.put('/:id', auth, async (req, res) => {
+  try {
+    const cake = await Cake.findById(req.params.id);
+    
+    if (!cake) {
+      return res.status(404).json({ message: 'Cake not found' });
+    }
+
+    // Authorization: Check if owner matches
+    if (cake.ownerId.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'You are not authorized to update this cake' });
+    }
+
+    // Validate price if being updated
+    if (req.body.price !== undefined && req.body.price <= 0) {
+      return res.status(400).json({ message: 'Price must be greater than 0' });
+    }
+
+    // Update allowed fields
+    const allowedFields = ['type', 'price', 'image', 'description'];
+    allowedFields.forEach(field => {
+      if (req.body[field] !== undefined) {
+        cake[field] = req.body[field];
+      }
+    });
+
+    cake.updatedAt = new Date();
+    await cake.save();
+    
+    res.json({ message: 'Cake updated successfully', cake });
+  } catch (err) {
+    res.status(400).json({ message: 'Failed to update cake', error: err.message });
+  }
+});
+
+// Delete cake (protected) - Only owner can delete their own cakes
 router.delete('/:id', auth, async (req, res) => {
   try {
-    const deleted = await Cake.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ message: 'Cake not found' });
-    res.json({ message: 'Cake deleted' });
+    const cake = await Cake.findById(req.params.id);
+    
+    if (!cake) {
+      return res.status(404).json({ message: 'Cake not found' });
+    }
+
+    // Authorization: Check if owner matches
+    if (cake.ownerId.toString() !== req.user.id) {
+      return res.status(403).json({ message: 'You are not authorized to delete this cake' });
+    }
+
+    await Cake.findByIdAndDelete(req.params.id);
+    res.json({ message: 'Cake deleted successfully' });
   } catch (err) {
-    res.status(400).json({ message: 'Failed to delete cake' });
+    res.status(400).json({ message: 'Failed to delete cake', error: err.message });
   }
 });
 

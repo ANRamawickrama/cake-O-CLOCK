@@ -18,7 +18,8 @@ function BirthdayCake() {
   const fetchCakes = async () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-      const response = await axios.get(`${API_URL}/api/cakes/type/Birthday Cake`);
+      const response = await axios.get(`${API_URL}/api/cakes/type/${encodeURIComponent('Birthday Cake')}`);
+      console.log("Birthday cakes API response:", response.data);
       if (response.data && response.data.length > 0) {
         // Combine default cakes with uploaded cakes
         setCakes([...BirthdayCakes, ...response.data]);
@@ -77,5 +78,6 @@ function BirthdayCake() {
     </div>
   );
 }
+
 
 export default BirthdayCake;

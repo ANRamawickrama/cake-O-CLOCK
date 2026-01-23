@@ -43,6 +43,10 @@ export default function CakeManager() {
 
   const handleDelete = async (id) => {
     const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+    // Confirm before deleting
+    const ok = window.confirm("Delete this cake permanently?");
+    if (!ok) return;
+
     await axios.delete(`${API_URL}/api/cakes/${id}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -73,7 +77,7 @@ export default function CakeManager() {
       <ul>
         {cakes.map(cake => (
           <li key={cake._id} className="flex justify-between border-b py-2">
-            {cake.name} - Rs.{cake.price}
+            {(cake.type || cake.name || "Unnamed")} - Rs.{cake.price}
             <div className="flex gap-2">
               <button onClick={() => startEdit(cake)} className="text-blue-500">Edit</button>
               <button onClick={() => handleDelete(cake._id)} className="text-red-500">Delete</button>

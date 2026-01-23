@@ -6,7 +6,7 @@ import { CupCakes } from "../helpers/CupcakeLists";
 import "../styles/Cupcake.css";
 import "../styles/ReviewSection.css";
 
-function cupcake() {
+function Cupcake() {
   const [cakes, setCakes] = useState([...CupCakes]);
   const [loading, setLoading] = useState(true);
   const [selectedCake, setSelectedCake] = useState(null);
@@ -18,7 +18,8 @@ function cupcake() {
   const fetchCakes = async () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-      const response = await axios.get(`${API_URL}/api/cakes/type/Cupcake`);
+      const response = await axios.get(`${API_URL}/api/cakes/type/${encodeURIComponent('Cupcake')}`);
+      console.log("Cupcakes API response:", response.data);
       if (response.data && response.data.length > 0) {
         setCakes([...CupCakes, ...response.data]);
       }
@@ -77,4 +78,4 @@ function cupcake() {
   );
 }
 
-export default cupcake;
+export default Cupcake;
