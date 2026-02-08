@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/CakeManagementPage.css";
@@ -18,12 +18,7 @@ export default function CakeManagementPage() {
   const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
   const token = localStorage.getItem("token");
 
-  // Fetch all cakes from menu (no auth required for viewing)
-  useEffect(() => {
-    fetchCakes();
-  }, []);
-
-  const fetchCakes = async () => {
+  const fetchCakes = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get(`${API_URL}/api/cakes`);
@@ -35,7 +30,12 @@ export default function CakeManagementPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_URL]);
+
+  // Fetch all cakes from menu (no auth required for viewing)
+  useEffect(() => {
+    fetchCakes();
+  }, [fetchCakes]);
 
   // Filter cakes based on search and type
   useEffect(() => {

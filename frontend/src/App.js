@@ -17,8 +17,6 @@ import JarCakes from "./pages/jarcake";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
-import CakeManager from "./pages/CakeManager";
-import CakeManagementPage from "./pages/CakeManagementPage";
 import CakeTypeSelectorPage from "./pages/CakeTypeSelectorPage";
 import UploadCakePage from "./pages/UploardCakePage";
 import OrderForm from "./pages/OrderForm";

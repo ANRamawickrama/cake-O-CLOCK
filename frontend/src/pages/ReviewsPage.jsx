@@ -1,6 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import "../styles/ReviewsPage.css";
+
+const CAKE_TYPES = [
+  "Birthday Cake",
+  "Anniversary Cake",
+  "Cupcake",
+  "Wedding Cake",
+  "Wedding Structure",
+  "Jar Cake"
+];
 
 function ReviewsPage() {
   const [allReviews, setAllReviews] = useState([]);
@@ -11,24 +20,7 @@ function ReviewsPage() {
   const [sortBy, setSortBy] = useState("newest");
   const [cakesWithStats, setCakesWithStats] = useState([]);
 
-  const CAKE_TYPES = [
-    "Birthday Cake",
-    "Anniversary Cake",
-    "Cupcake",
-    "Wedding Cake",
-    "Wedding Structure",
-    "Jar Cake"
-  ];
-
-  useEffect(() => {
-    fetchAllReviews();
-  }, []);
-
-  useEffect(() => {
-    applyFiltersAndSort();
-  }, [allReviews, searchTerm, filterCake, sortBy]);
-
-  const fetchAllReviews = async () => {
+  const fetchAllReviews = useCallback(async () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
       const response = await axios.get(`${API_URL}/api/reviews`);
@@ -52,9 +44,9 @@ function ReviewsPage() {
       console.error("Error fetching reviews:", error);
       setLoading(false);
     }
-  };
+  }, []);
 
-  const applyFiltersAndSort = () => {
+  const applyFiltersAndSort = useCallback(() => {
     let filtered = [...allReviews];
 
     // Filter by cake type
@@ -88,7 +80,15 @@ function ReviewsPage() {
     });
 
     setFilteredReviews(filtered);
-  };
+  }, [allReviews, searchTerm, filterCake, sortBy]);
+
+  useEffect(() => {
+    fetchAllReviews();
+  }, [fetchAllReviews]);
+
+  useEffect(() => {
+    applyFiltersAndSort();
+  }, [applyFiltersAndSort]);
 
   const renderStars = (rating) => {
     return (

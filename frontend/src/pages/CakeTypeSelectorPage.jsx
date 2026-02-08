@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../styles/CakeTypeSelectorPage.css";
@@ -33,14 +33,7 @@ export default function CakeTypeSelectorPage() {
     }
   }, [token, navigate]);
 
-  // Fetch cakes when type changes
-  useEffect(() => {
-    if (selectedType) {
-      fetchCakesByType(selectedType);
-    }
-  }, [selectedType]);
-
-  const fetchCakesByType = async (type) => {
+  const fetchCakesByType = useCallback(async (type) => {
     try {
       setLoading(true);
       setError("");
@@ -53,7 +46,14 @@ export default function CakeTypeSelectorPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_URL]);
+
+  // Fetch cakes when type changes
+  useEffect(() => {
+    if (selectedType) {
+      fetchCakesByType(selectedType);
+    }
+  }, [selectedType, fetchCakesByType]);
 
   const startEdit = (cake) => {
     setEditingId(cake._id);

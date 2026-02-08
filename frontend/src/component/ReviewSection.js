@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 export default function ReviewSection({ cakeName }) {
@@ -16,12 +16,7 @@ export default function ReviewSection({ cakeName }) {
   const [message, setMessage] = useState('');
   const [showForm, setShowForm] = useState(false);
 
-  useEffect(() => {
-    fetchReviews();
-    fetchRating();
-  }, [cakeName]);
-
-  const fetchReviews = async () => {
+  const fetchReviews = useCallback(async () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
       const response = await axios.get(`${API_URL}/api/reviews/cake/${encodeURIComponent(cakeName)}`);
@@ -31,9 +26,9 @@ export default function ReviewSection({ cakeName }) {
       console.error('Error fetching reviews:', error);
       setLoading(false);
     }
-  };
+  }, [cakeName]);
 
-  const fetchRating = async () => {
+  const fetchRating = useCallback(async () => {
     try {
       const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
       const response = await axios.get(`${API_URL}/api/reviews/rating/${encodeURIComponent(cakeName)}`);
@@ -42,7 +37,12 @@ export default function ReviewSection({ cakeName }) {
     } catch (error) {
       console.error('Error fetching rating:', error);
     }
-  };
+  }, [cakeName]);
+
+  useEffect(() => {
+    fetchReviews();
+    fetchRating();
+  }, [fetchReviews, fetchRating]);
 
   const handleSubmitReview = async (e) => {
     e.preventDefault();
