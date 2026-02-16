@@ -1,12 +1,10 @@
 
-
 /* Page layout */
 .login-page {
   display: flex;
   flex-direction: column;
     min-height: 70vh;
   background: #f1d0e7;
-  background-image: url('C:\Users\ASUS\Desktop\cake-business-site\frontend\src\assets\homee.jpg'); 
    background-size: cover; /* makes image cover entire area */
   background-position: center; /* centers the image */
   background-repeat: no-repeat; /* prevents tiling */

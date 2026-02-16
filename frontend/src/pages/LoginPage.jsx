@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./LoginPage.css";
+import homee from "../assets/homee.jpg";
+
 
 export default function LoginPage({ setToken }) {
   const [email, setEmail] = useState("");
@@ -22,7 +24,7 @@ export default function LoginPage({ setToken }) {
   };
 
   return (
-    <div className="login-page">
+    <div className="login-page" style={{ backgroundImage: `url(${homee})` }}>
 
   <main className="login-main">
     <form onSubmit={handleLogin} className="login-form">
