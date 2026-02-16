@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import ReviewSection from "../component/ReviewSection";
 import { weddingStructure } from "../helpers/StructureList";
 import "../styles/StructureList.css";
-import "../styles/ReviewSection.css";
 
 function WeddingStructures() {
   const [cakes, setCakes] = useState([...weddingStructure]);
@@ -51,7 +49,6 @@ function WeddingStructures() {
               </Link>
             </div>
           </div>
-          <ReviewSection cakeName={selectedCake.name || `Wedding Structure`} />
         </div>
       ) : (
         <div className="structureLists">
@@ -63,12 +60,6 @@ function WeddingStructures() {
                 <Link to="/order" state={{ cake: { ...cake, name: cake.name || `Wedding Structure ${index + 1}` } }}>
                   <button className="order-small-btn">Order</button>
                 </Link>
-                <button 
-                  className="review-small-btn"
-                  onClick={() => setSelectedCake(cake)}
-                >
-                  Reviews
-                </button>
               </div>
             </div>
           ))}

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import ReviewSection from "../component/ReviewSection";
 import { BirthdayCakes } from "../helpers/BirthdayLists";
 import "../styles/BirthdayList.css";
-import "../styles/ReviewSection.css";
 
 function BirthdayCake() {
   const [cakes, setCakes] = useState([...BirthdayCakes]);
@@ -52,7 +50,6 @@ function BirthdayCake() {
               </Link>
             </div>
           </div>
-          <ReviewSection cakeName={selectedCake.name || `Birthday Cake`} />
         </div>
       ) : (
         <div className="birthdayLists">
@@ -64,12 +61,6 @@ function BirthdayCake() {
                 <Link to="/order" state={{ cake: { ...cake, name: cake.name || `Birthday Cake ${index + 1}` } }}>
                   <button className="order-small-btn">Order</button>
                 </Link>
-                <button 
-                  className="review-small-btn"
-                  onClick={() => setSelectedCake(cake)}
-                >
-                  Reviews
-                </button>
               </div>
             </div>
           ))}

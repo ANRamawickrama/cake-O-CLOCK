@@ -94,7 +94,8 @@
     top: 70px;
     left: 0;
     width: 100%;
-    height: calc(100vh - 70px);
+    height: auto;
+    max-height: calc(100vh - 70px);
     padding: 0;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(241, 208, 231, 0.15);
     animation: slideDownFull 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -226,7 +227,8 @@
 
     .hiddenLinks {
         top: 80px;
-        height: calc(100vh - 80px);
+        height: auto;
+        max-height: calc(100vh - 80px);
         border-left: 4px solid #c84b8c;
     }
 

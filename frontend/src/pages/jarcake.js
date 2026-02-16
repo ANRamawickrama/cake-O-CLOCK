@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import ReviewSection from "../component/ReviewSection";
 import JarCakeImage from "../assets/jar.jpg";
 import "../styles/Cupcake.css";
-import "../styles/ReviewSection.css";
 
 function JarCake() {
   const [cakes, setCakes] = useState([
@@ -57,7 +55,6 @@ function JarCake() {
               </Link>
             </div>
           </div>
-          <ReviewSection cakeName={selectedCake.name || `Jar Cake`} />
         </div>
       ) : (
         <div className="cupcakeLists">
@@ -69,12 +66,6 @@ function JarCake() {
                 <Link to="/order" state={{ cake: { ...cake, name: cake.name || `Jar Cake ${index + 1}` } }}>
                   <button className="order-small-btn">Order</button>
                 </Link>
-                <button 
-                  className="review-small-btn"
-                  onClick={() => setSelectedCake(cake)}
-                >
-                  Reviews
-                </button>
               </div>
             </div>
           ))}

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import ReviewSection from "../component/ReviewSection";
 import { AnniversaryCakes } from "../helpers/AnniversaryList";
 import "../styles/AnniversaryList.css";
-import "../styles/ReviewSection.css";
 
 function AnniversaryCake() {
   const [cakes, setCakes] = useState([...AnniversaryCakes]);
@@ -51,7 +49,6 @@ function AnniversaryCake() {
               </Link>
             </div>
           </div>
-          <ReviewSection cakeName={selectedCake.name || `Anniversary Cake`} />
         </div>
       ) : (
         <div className="anniversaryLists">
@@ -63,12 +60,6 @@ function AnniversaryCake() {
                 <Link to="/order" state={{ cake: { ...cake, name: cake.name || `Anniversary Cake ${index + 1}` } }}>
                   <button className="order-small-btn">Order</button>
                 </Link>
-                <button 
-                  className="review-small-btn"
-                  onClick={() => setSelectedCake(cake)}
-                >
-                  Reviews
-                </button>
               </div>
             </div>
           ))}

@@ -38,27 +38,31 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/menu" element={<Menu />} />
-          <Route path="/birthdaycake" element={<BirthdayCakes />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/cupcake" element={<CupCakes />} />
-          <Route path="/anniversarycake" element={<AnniversaryCakes />} />
-          <Route path="/weddingStructures" element={<WeddingStructures />} />
-          <Route path="/weddingcakes" element={<WeddingCakes />} />
-          <Route path="/jarcake" element={<JarCakes />} />
-          <Route path="/login" element={<LoginPage setToken={setToken} />} />
-          <Route path="/dashboard" element={<ProtectedRoute><OwnerDashboard /></ProtectedRoute>} />
-          <Route path="/manage" element={<ProtectedRoute><CakeTypeSelectorPage /></ProtectedRoute>} />
-          <Route path="/update" element={<ProtectedRoute><UploadCakePage /></ProtectedRoute>} />
-          <Route path="/order" element={<OrderForm />} />
-          <Route path="/orders" element={<ProtectedRoute><OrdersDashboard /></ProtectedRoute>} />
-          <Route path="/reviews" element={<ReviewsPage />} />
-        </Routes>
-        <Footer />
+        <div className="appShell">
+          <Navbar />
+          <main className="appContent">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/menu" element={<Menu />} />
+              <Route path="/birthdaycake" element={<BirthdayCakes />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/cupcake" element={<CupCakes />} />
+              <Route path="/anniversarycake" element={<AnniversaryCakes />} />
+              <Route path="/weddingStructures" element={<WeddingStructures />} />
+              <Route path="/weddingcakes" element={<WeddingCakes />} />
+              <Route path="/jarcake" element={<JarCakes />} />
+              <Route path="/login" element={<LoginPage setToken={setToken} />} />
+              <Route path="/dashboard" element={<ProtectedRoute><OwnerDashboard /></ProtectedRoute>} />
+              <Route path="/manage" element={<ProtectedRoute><CakeTypeSelectorPage /></ProtectedRoute>} />
+              <Route path="/update" element={<ProtectedRoute><UploadCakePage /></ProtectedRoute>} />
+              <Route path="/order" element={<OrderForm />} />
+              <Route path="/orders" element={<ProtectedRoute><OrdersDashboard /></ProtectedRoute>} />
+              <Route path="/reviews" element={<ReviewsPage />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
       </Router>
     </div>
   );
