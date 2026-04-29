@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { getApiBaseUrl } from "../helpers/apiBaseUrl";
 
 export default function ProtectedRoute({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -22,8 +23,8 @@ export default function ProtectedRoute({ children }) {
 
       try {
         // Verify token with backend
-        const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-        const response = await axios.get(`${API_URL}/api/verify`, {
+        const apiBaseUrl = getApiBaseUrl();
+        const response = await axios.get(`${apiBaseUrl}/api/verify`, {
           headers: { Authorization: `Bearer ${token}` },
           timeout: 5000
         });

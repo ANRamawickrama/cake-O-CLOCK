@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./LoginPage.css";
 import homee from "../assets/homee.jpg";
+import { getApiBaseUrl } from "../helpers/apiBaseUrl";
 
 
 export default function LoginPage({ setToken }) {
@@ -13,13 +14,15 @@ export default function LoginPage({ setToken }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-      const res = await axios.post(`${API_URL}/api/owner/login`, { email, password });
+      const apiBaseUrl = getApiBaseUrl();
+      const res = await axios.post(`${apiBaseUrl}/api/owner/login`, { email, password });
       localStorage.setItem("token", res.data.token);
       setToken?.(res.data.token);
       navigate("/dashboard");
     } catch (err) {
-      alert("Invalid login");
+      console.error(err.response?.data || err);
+      const message = err.response?.data?.message || err.response?.data?.error || "Invalid login";
+      alert(message);
     }
   };
 

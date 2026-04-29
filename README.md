@@ -44,7 +44,9 @@ Optional frontend environment file `frontend/.env`:
 REACT_APP_API_URL=http://localhost:5000
 ```
 
-If not set, frontend code already falls back to `http://localhost:5000`.
+For local development, `http://localhost:5000` is correct.
+For deployment, set `REACT_APP_API_URL` to your real backend URL before building.
+If a deployed frontend still has a local `REACT_APP_API_URL`, the app now falls back to the current site origin instead of trying to call the local machine.
 
 ## Installation
 
@@ -146,5 +148,5 @@ Token is returned from `POST /api/owner/login` and signed with `JWT_SECRET`.
 
 - Build frontend with `npm run build` in `frontend/`.
 - Deploy frontend and backend separately or behind a reverse proxy.
-- Set `REACT_APP_API_URL` to your deployed backend URL.
+- Set `REACT_APP_API_URL` to your deployed backend URL before building, unless the frontend and backend are served from the same origin.
 - Ensure CORS policy in backend matches your frontend domain.

@@ -2,6 +2,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "../styles/OwnerDashboard.css";
+import { getApiBaseUrl } from "../helpers/apiBaseUrl";
 
 export default function OwnerDashboard() {
   const navigate = useNavigate();
@@ -12,8 +13,8 @@ export default function OwnerDashboard() {
     // Verify token and get owner info
     const verifyToken = async () => {
       try {
-        const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-        const response = await axios.get(`${API_URL}/api/owner/verify`, {
+        const apiBaseUrl = getApiBaseUrl();
+        const response = await axios.get(`${apiBaseUrl}/api/owner/verify`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setOwnerInfo(response.data.owner);
