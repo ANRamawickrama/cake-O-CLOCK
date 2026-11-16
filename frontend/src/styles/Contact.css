@@ -1,0 +1,250 @@
+/* ==========================================================================
+   Contact page
+   ========================================================================== */
+
+.contactPage {
+  background: var(--cream-100);
+}
+
+/* --- Hero --- */
+
+.contactHero {
+  padding-block: clamp(44px, 6vw, 80px);
+  background: radial-gradient(
+      110% 120% at 85% 10%,
+      var(--brand-100) 0%,
+      transparent 60%
+    ),
+    linear-gradient(180deg, var(--cream-50) 0%, var(--brand-50) 100%);
+  border-bottom: 1px solid var(--cream-300);
+}
+
+.contactHeroInner {
+  max-width: 760px;
+  text-align: center;
+}
+
+.contactTitle {
+  margin: 0 0 14px;
+  font-size: clamp(2.2rem, 5.2vw, 3.8rem);
+}
+
+.contactTitle em {
+  font-style: italic;
+  color: var(--brand-500);
+}
+
+.contactText {
+  max-width: 58ch;
+  margin: 0 auto;
+  color: var(--ink-500);
+  font-size: 1.04rem;
+}
+
+/* --- Layout --- */
+
+.contactLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(22px, 3.5vw, 40px);
+  align-items: start;
+}
+
+.contactAside {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.contactCard {
+  padding: 26px 24px;
+  border: 1px solid var(--cream-300);
+  border-radius: var(--r-xl);
+  background: var(--cream-50);
+  box-shadow: var(--shadow-xs);
+}
+
+.contactCardTitle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 20px;
+  font-size: 1.2rem;
+}
+
+.contactCardTitle svg {
+  color: var(--brand-500);
+}
+
+.contactList {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contactList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+}
+
+.contactListIcon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--brand-50);
+  color: var(--brand-600);
+}
+
+.contactListLabel {
+  display: block;
+  color: var(--ink-400);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.contactListValue {
+  display: block;
+  margin-top: 2px;
+  font-weight: 700;
+  transition: color var(--t-fast) var(--ease);
+}
+
+a.contactListValue:hover {
+  color: var(--brand-600);
+}
+
+.contactHours {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+}
+
+.contactHours li {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--cream-200);
+  font-size: 0.9rem;
+}
+
+.contactHours li span:last-child {
+  color: var(--ink-500);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.contactNote {
+  margin: 0;
+  padding: 13px 15px;
+  border-radius: var(--r-sm);
+  background: var(--brand-50);
+  color: var(--brand-700);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+/* --- Form panel --- */
+
+.contactPanel {
+  padding: clamp(24px, 3.5vw, 42px);
+  border: 1px solid var(--cream-300);
+  border-radius: var(--r-xl);
+  background: var(--cream-50);
+  box-shadow: var(--shadow-lg);
+}
+
+.contactPanelHead {
+  margin-bottom: 22px;
+}
+
+.contactPanelTitle {
+  margin: 0 0 8px;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+}
+
+.contactPanelSub {
+  margin: 0;
+  color: var(--ink-500);
+  font-size: 0.95rem;
+}
+
+.contactPanel .alert {
+  margin-bottom: 18px;
+}
+
+.contactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.contactFormGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+/* --- Success --- */
+
+.contactSent {
+  padding: 24px 0;
+  text-align: center;
+}
+
+.contactSentIcon {
+  display: inline-grid;
+  place-items: center;
+  width: 70px;
+  height: 70px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.contactSentTitle {
+  margin: 0 0 10px;
+  font-size: clamp(1.6rem, 3.4vw, 2.2rem);
+}
+
+.contactSentText {
+  max-width: 46ch;
+  margin: 0 auto 26px;
+  color: var(--ink-500);
+}
+
+.contactSentActions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .contactLayout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .contactFormGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .contactSentActions .btn {
+    width: 100%;
+  }
+}

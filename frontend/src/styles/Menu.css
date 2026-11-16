@@ -1,71 +1,385 @@
-.menu {
-  padding: 10px 5px;
-  text-align: center;
-  background-color: #f1d0e7;
+/* ==========================================================================
+   Menu page
+   ========================================================================== */
+
+.menuPage {
+  background: var(--cream-100);
 }
 
-.menuTitle {
-  font-size: 48px;
-  margin-bottom: 2rem;
-  color: #333;
-  font-style: italic;
-}
+/* --- Hero --- */
 
-.menuLists {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);  
-  justify-items: center;                 
-  row-gap: 15px;                        
-  column-gap: 20px;                     
-}
-
-.menuItem {
-  width: 300px;
-  height: 400px;
-  background-color: #fff;
-  border-radius: 8px;
+.menuHero {
+  position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  padding-block: clamp(24px, 3.5vw, 42px);
+  background: radial-gradient(
+      120% 100% at 12% 0%,
+      var(--brand-50) 0%,
+      transparent 58%
+    ),
+    linear-gradient(180deg, var(--cream-50) 0%, var(--cream-100) 100%);
+  border-bottom: 1px solid var(--cream-300);
 }
 
-.menuItem:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+.menuHero::before {
+  content: '';
+  position: absolute;
+  right: -120px;
+  top: -120px;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(194, 69, 111, 0.12) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
 }
 
-.menuItem img {
-  width: 100%;
-  height: 86%;              
-  object-fit: cover;          
-  border-radius: 8px 8px 0 0;
+.menuHeroInner {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.75fr);
+  align-items: center;
+  gap: clamp(28px, 4vw, 56px);
 }
 
-.menuItem p {
-  margin-top: 8px;
-  margin-bottom: 0;
-  font-size: 20px;
-  font-weight: bold;
-  font-style: oblique;
-  color: #333;
-  padding-bottom: 10px;
+.menuHeroTitle {
+  margin: 0 0 14px;
+  font-size: clamp(2rem, 4.4vw, 3.35rem);
+  line-height: 1.08;
 }
 
-.menuTitle h1 {
+.menuHeroTitle em {
   font-style: italic;
+  color: var(--brand-500);
 }
 
-@media (max-width: 768px) {
-  .menuLists {
-    grid-template-columns: repeat(2, 1fr);   
-    row-gap: 12px;
+.menuHeroText {
+  max-width: 58ch;
+  margin: 0;
+  color: var(--ink-500);
+  font-size: clamp(0.98rem, 1.4vw, 1.08rem);
+}
+
+.menuHeroActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.menuHeroPanel {
+  display: grid;
+  gap: 14px;
+  padding: 22px 24px;
+  border: 1px solid var(--cream-300);
+  border-radius: var(--r-xl);
+  background: var(--cream-50);
+  box-shadow: var(--shadow-sm);
+}
+
+.menuHeroStat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.menuHeroStat + .menuHeroStat {
+  padding-top: 14px;
+  border-top: 1px solid var(--cream-200);
+}
+
+.menuHeroStat strong {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.6vw, 1.95rem);
+  font-weight: 700;
+  color: var(--brand-600);
+  line-height: 1;
+}
+
+.menuHeroStat span {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-400);
+}
+
+@media (max-width: 880px) {
+  .menuHeroInner {
+    grid-template-columns: 1fr;
+  }
+
+  .menuHeroPanel {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .menuHeroStat + .menuHeroStat {
+    padding-top: 0;
+    padding-left: 16px;
+    border-top: 0;
+    border-left: 1px solid var(--cream-200);
   }
 }
 
-@media (max-width: 500px) {
-  .menuLists {
-    grid-template-columns: 1fr;              
+@media (max-width: 560px) {
+  .menuHeroPanel {
+    grid-template-columns: 1fr;
+  }
+
+  .menuHeroStat + .menuHeroStat {
+    padding-top: 12px;
+    padding-left: 0;
+    border-left: 0;
+    border-top: 1px solid var(--cream-200);
   }
 }
+
+#collections {
+  scroll-margin-top: 96px;
+}
+
+#collections.section--tight {
+  padding-block: clamp(32px, 4vw, 52px);
+}
+
+/* --- Category grid --- */
+
+.menuGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: clamp(22px, 3vw, 34px);
+}
+
+.menuCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--cream-300);
+  border-radius: var(--r-xl);
+  background: var(--cream-50);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--t-med) var(--ease),
+    box-shadow var(--t-med) var(--ease), border-color var(--t-med) var(--ease);
+  animation: cardIn 0.6s var(--ease) backwards;
+  animation-delay: var(--delay, 0ms);
+}
+
+@keyframes cardIn {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.menuCard:hover {
+  transform: translateY(-8px);
+  border-color: var(--brand-200);
+  box-shadow: var(--shadow-lg);
+}
+
+.menuCardMedia {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--cream-200);
+}
+
+.menuCardMedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s var(--ease);
+}
+
+.menuCard:hover .menuCardMedia img {
+  transform: scale(1.08);
+}
+
+.menuCardBadge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 6px 14px;
+  border-radius: var(--r-pill);
+  background: rgba(255, 253, 251, 0.92);
+  backdrop-filter: blur(8px);
+  color: var(--ink-900);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  box-shadow: var(--shadow-xs);
+}
+
+.menuCardBody {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 24px 24px 22px;
+}
+
+.menuCardTagline {
+  margin: 0 0 8px;
+  color: var(--accent, var(--brand-500));
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.menuCardTitle {
+  margin: 0 0 10px;
+  font-size: 1.55rem;
+}
+
+.menuCardText {
+  margin: 0 0 20px;
+  color: var(--ink-500);
+  font-size: 0.93rem;
+  line-height: 1.6;
+}
+
+.menuCardFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--cream-200);
+}
+
+.menuCardPrice {
+  font-size: 0.94rem;
+  font-weight: 800;
+  color: var(--ink-900);
+}
+
+.menuCardArrow {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--brand-50);
+  color: var(--brand-600);
+  transition: all var(--t-med) var(--ease);
+}
+
+.menuCard:hover .menuCardArrow {
+  background: var(--brand-500);
+  color: #fff;
+  transform: translateX(4px);
+}
+
+.menuOfflineNote {
+  margin: 26px 0 0;
+  text-align: center;
+  color: var(--ink-400);
+  font-size: 0.86rem;
+}
+
+/* --- Highlights --- */
+
+.highlightGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 20px;
+}
+
+.highlightCard {
+  padding: 28px 24px;
+  border: 1px solid var(--brand-100);
+  border-radius: var(--r-lg);
+  background: var(--cream-50);
+  text-align: center;
+  transition: transform var(--t-med) var(--ease),
+    box-shadow var(--t-med) var(--ease);
+}
+
+.highlightCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.highlightIcon {
+  display: inline-grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
+  color: #fff;
+  box-shadow: 0 10px 22px -12px rgba(194, 69, 111, 0.9);
+}
+
+.highlightTitle {
+  margin: 0 0 8px;
+  font-size: 1.16rem;
+}
+
+.highlightText {
+  margin: 0;
+  color: var(--ink-500);
+  font-size: 0.9rem;
+}
+
+/* --- CTA band --- */
+
+.menuCta {
+  padding-block: clamp(40px, 6vw, 68px);
+  background: linear-gradient(
+    120deg,
+    var(--brand-900) 0%,
+    var(--brand-700) 60%,
+    var(--brand-600) 100%
+  );
+  color: #fff;
+}
+
+.menuCtaInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.menuCtaTitle {
+  margin: 0 0 8px;
+  font-size: clamp(1.7rem, 3vw, 2.35rem);
+  color: #fff;
+}
+
+.menuCtaText {
+  margin: 0;
+  max-width: 52ch;
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.menuCtaActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 620px) {
+  .menuHeroStats {
+    gap: 24px;
+  }
+
+  .menuCardBody {
+    padding: 20px;
+  }
+}
+
 
 

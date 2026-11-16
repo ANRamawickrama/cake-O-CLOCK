@@ -1,165 +1,234 @@
-import { useState } from "react";
-import axios from "axios";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import api, { apiErrorMessage } from "../services/api";
+import { CAKE_CATEGORIES } from "../helpers/cakeCatalog";
 import "../styles/UploadCakePage.css";
 
-const CAKE_TYPES = [
-  'Birthday Cake',
-  'Anniversary Cake',
-  'Cupcake',
-  'Wedding Cake',
-  'Wedding Structure',
-  'Jar Cake'
-];
+const CAKE_TYPES = CAKE_CATEGORIES.map((category) => category.type);
+const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
 
 export default function UploadCakePage() {
+  const navigate = useNavigate();
+  const fileInputRef = useRef(null);
+
   const [type, setType] = useState("");
+  const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Handle image selection and convert to base64
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImage(file);
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+  useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      navigate("/login");
     }
-  };
+  }, [navigate]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMessage("");
+  useEffect(() => {
+    return () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview);
+    };
+  }, [imagePreview]);
 
-    // Validation
-    if (!type || !price || !image) {
-      setMessage("⚠️ Please fill all fields");
+  const handleImageChange = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setMessageType("error");
+      setMessage("Please choose an image file.");
       return;
     }
 
-    if (isNaN(price) || price <= 0) {
-      setMessage("⚠️ Please enter a valid price");
+    if (file.size > MAX_IMAGE_BYTES) {
+      setMessageType("error");
+      setMessage("That image is larger than 8 MB. Please choose a smaller file.");
+      return;
+    }
+
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
+
+    setImage(file);
+    setImagePreview(URL.createObjectURL(file));
+    setMessage("");
+  };
+
+  const resetForm = () => {
+    setType("");
+    setName("");
+    setPrice("");
+    setDescription("");
+    setImage(null);
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setMessage("");
+
+    if (!type || !price || !image) {
+      setMessageType("error");
+      setMessage("Please choose a type, a price and an image.");
+      return;
+    }
+
+    if (Number.isNaN(Number(price)) || Number(price) <= 0) {
+      setMessageType("error");
+      setMessage("Please enter a price greater than zero.");
       return;
     }
 
     setLoading(true);
 
     try {
-      // Convert image to base64
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        try {
-          const imageBase64 = reader.result;
-          
-          const cakeData = {
-            type,
-            price: Number(price),
-            image: imageBase64
-          };
+      const formData = new FormData();
+      formData.append("type", type);
+      formData.append("name", name.trim());
+      formData.append("price", String(Number(price)));
+      formData.append("description", description.trim());
+      formData.append("image", image);
 
-          const token = localStorage.getItem("token");
-          const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-          await axios.post(
-            `${API_URL}/api/cakes/upload`,
-            cakeData,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`
-              },
-              timeout: 10000
-            }
-          );
+      await api.post("/api/cakes/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+        timeout: 45000,
+      });
 
-          // Reset form
-          setType("");
-          setPrice("");
-          setImage(null);
-          setImagePreview(null);
-          setMessage("✅ Cake uploaded successfully!");
-          // Clear success message after 2 seconds
-          setTimeout(() => setMessage(""), 2000);
-        } catch (err) {
-          console.error("Upload error:", err);
-          setMessage("❌ " + (err.response?.data?.message || "Upload failed. Try again!"));
-        } finally {
-          setLoading(false);
-        }
-      };
-      reader.readAsDataURL(image);
+      setMessageType("success");
+      setMessage("Cake uploaded successfully!");
+      resetForm();
+
+      setTimeout(() => {
+        navigate("/manage");
+      }, 1200);
     } catch (err) {
-      console.error(err);
-      setMessage("❌ Error processing image");
+      setMessageType("error");
+      setMessage(apiErrorMessage(err, "Upload failed. Please try again."));
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="upload-container">
-      <div className="upload-box">
-        <h2>Upload New Cakes</h2>
-        <p className="subtitle">Add a new cake to the menu</p>
-        
-        <form className="upload-form" onSubmit={handleSubmit}>
-          {/* Cake Type Dropdown */}
-          <div className="form-group">
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              disabled={loading}
+    <div className="uploadPage">
+      <div className="container uploadInner">
+        <div className="uploadPanel">
+          <header className="uploadHeader">
+            <p className="eyebrow">Menu management</p>
+            <h1 className="uploadTitle">Upload a new cake</h1>
+            <p className="uploadSub">
+              Add a design to your menu. Customers see it on your category page
+              straight away.
+            </p>
+          </header>
+
+          {message && (
+            <div
+              className={`alert ${messageType === "success" ? "alert-success" : "alert-error"}`}
             >
-              <option value="">Select Cake Type</option>
-              {CAKE_TYPES.map((cakeType) => (
-                <option key={cakeType} value={cakeType}>
-                  {cakeType}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Price */}
-          <div className="form-group">
-            <input
-              type="number"
-              placeholder="Price"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              disabled={loading}
-              min="1"
-            />
-          </div>
-
-          {/* Image Upload */}
-          <div className="form-group">
-            <label>Upload Cake Image</label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              disabled={loading}
-            />
-          </div>
-
-          {/* Image Preview */}
-          {imagePreview && (
-            <div className="image-preview">
-              <img src={imagePreview} alt="Preview" />
+              {messageType === "success" && (
+                <CheckCircleIcon fontSize="small" />
+              )}
+              {message}
             </div>
           )}
 
-          {/* Submit Button */}
-          <button type="submit" disabled={loading} className="submit-btn">
-            {loading ? "Uploading..." : " Upload Cake"}
-          </button>
-        </form>
+          <form className="uploadForm" onSubmit={handleSubmit}>
+            <div className="field">
+              <label htmlFor="upload-type">Cake type</label>
+              <select
+                id="upload-type"
+                value={type}
+                onChange={(event) => setType(event.target.value)}
+                disabled={loading}
+                required
+              >
+                <option value="">Select a cake type</option>
+                {CAKE_TYPES.map((cakeType) => (
+                  <option key={cakeType} value={cakeType}>
+                    {cakeType}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-        {/* Message */}
-        {message && <p className={`message ${message.includes('✅') ? 'success' : 'error'}`}>{message}</p>}
+            <div className="field">
+              <label htmlFor="upload-name">Design name</label>
+              <input
+                id="upload-name"
+                type="text"
+                placeholder="e.g. Rose Gold Celebration Tier"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                disabled={loading}
+                maxLength={120}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="upload-price">Price (Rs.)</label>
+              <input
+                id="upload-price"
+                type="number"
+                placeholder="5500"
+                value={price}
+                onChange={(event) => setPrice(event.target.value)}
+                disabled={loading}
+                min="1"
+                step="0.01"
+                required
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="upload-description">Description</label>
+              <textarea
+                id="upload-description"
+                placeholder="Flavour, size, finishing details..."
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+                disabled={loading}
+                rows="3"
+                maxLength={600}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="upload-image">Cake image</label>
+              <label className="uploadDropzone" htmlFor="upload-image">
+                {imagePreview ? (
+                  <img src={imagePreview} alt="Selected cake" />
+                ) : (
+                  <>
+                    <CloudUploadIcon fontSize="large" />
+                    <span className="uploadDropzoneTitle">Choose an image</span>
+                    <span className="uploadDropzoneHint">
+                      JPG, PNG, WEBP or GIF · up to 8 MB
+                    </span>
+                  </>
+                )}
+              </label>
+              <input
+                ref={fileInputRef}
+                id="upload-image"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                disabled={loading}
+                className="uploadFileInput"
+              />
+            </div>
+
+            <button type="submit" className="btn btn-primary btn-lg btn-block" disabled={loading}>
+              {loading ? "Uploading..." : "Upload cake"}
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );

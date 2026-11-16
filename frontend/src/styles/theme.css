@@ -1,0 +1,517 @@
+/* ==========================================================================
+   CAKE'O CLOCK — Global Design System
+   Tokens, typography and shared primitives used by every page.
+   ========================================================================== */
+
+:root {
+  /* Brand palette */
+  --brand-900: #2a0f1d;
+  --brand-800: #3d1629;
+  --brand-700: #5c1c3c;
+  --brand-600: #8c2a58;
+  --brand-500: #c2456f;
+  --brand-400: #db6e95;
+  --brand-300: #eda6be;
+  --brand-200: #f8d3df;
+  --brand-100: #fce9f0;
+  --brand-50: #fef5f8;
+
+  /* Warm neutrals */
+  --cream-50: #fffdfb;
+  --cream-100: #fff9f4;
+  --cream-200: #fbf1e8;
+  --cream-300: #f2e1d3;
+
+  /* Accents */
+  --gold-500: #c9a227;
+  --gold-400: #e0be55;
+  --gold-200: #f3e3b4;
+
+  /* Ink */
+  --ink-900: #241820;
+  --ink-700: #3b2a33;
+  --ink-500: #6e5b66;
+  --ink-400: #94808b;
+
+  /* Semantic */
+  --success: #2e7d5b;
+  --success-soft: #e4f3ec;
+  --danger: #c0392b;
+  --danger-soft: #fbe9e7;
+  --warning: #b7791f;
+
+  /* Typography */
+  --font-display: 'Fraunces', 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Layout */
+  --container: 1240px;
+  --gutter: 24px;
+  --header-h: 76px;
+
+  /* Radii */
+  --r-sm: 10px;
+  --r-md: 16px;
+  --r-lg: 24px;
+  --r-xl: 32px;
+  --r-pill: 999px;
+
+  /* Elevation */
+  --shadow-xs: 0 1px 2px rgba(36, 24, 32, 0.06);
+  --shadow-sm: 0 2px 10px rgba(36, 24, 32, 0.06);
+  --shadow-md: 0 12px 30px -12px rgba(36, 24, 32, 0.18);
+  --shadow-lg: 0 28px 60px -22px rgba(36, 24, 32, 0.28);
+  --shadow-brand: 0 14px 34px -14px rgba(194, 69, 111, 0.65);
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --t-fast: 160ms;
+  --t-med: 280ms;
+  --t-slow: 560ms;
+
+  --ring: 0 0 0 3px rgba(194, 69, 111, 0.28);
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 16px);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--cream-100);
+  color: var(--ink-900);
+  font-family: var(--font-body);
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  color: var(--ink-900);
+  overflow-wrap: break-word;
+}
+
+p {
+  overflow-wrap: break-word;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--brand-200);
+  color: var(--brand-900);
+}
+
+/* --------------------------------------------------------------------------
+   Layout primitives
+   -------------------------------------------------------------------------- */
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: clamp(56px, 8vw, 104px);
+}
+
+.section--tight {
+  padding-block: clamp(40px, 5vw, 68px);
+}
+
+.section--cream {
+  background: var(--cream-100);
+}
+
+.section--paper {
+  background: var(--cream-50);
+}
+
+.section--blush {
+  background: linear-gradient(180deg, var(--cream-50) 0%, var(--brand-50) 100%);
+}
+
+/* --------------------------------------------------------------------------
+   Typography helpers
+   -------------------------------------------------------------------------- */
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  padding: 7px 16px;
+  border: 1px solid var(--brand-200);
+  border-radius: var(--r-pill);
+  background: var(--brand-50);
+  color: var(--brand-600);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  content: '';
+  width: 18px;
+  height: 1px;
+  background: var(--brand-400);
+}
+
+.section-title {
+  margin: 0 0 14px;
+  font-size: clamp(2rem, 4.4vw, 3.25rem);
+}
+
+.section-title em {
+  font-style: italic;
+  color: var(--brand-500);
+}
+
+.section-sub {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--ink-500);
+  font-size: 1.03rem;
+}
+
+.section-head {
+  max-width: 720px;
+  margin: 0 auto clamp(36px, 5vw, 60px);
+  text-align: center;
+}
+
+.section-head .eyebrow {
+  margin-inline: auto;
+}
+
+.section-head .section-sub {
+  margin-inline: auto;
+}
+
+/* Split layout: heading on the left, supporting copy on the right. Keeps
+   short sections above the fold on a normal laptop screen. */
+.section-head--split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+  align-items: end;
+  gap: clamp(16px, 3vw, 40px);
+  max-width: none;
+  margin-bottom: clamp(28px, 3.5vw, 44px);
+  text-align: left;
+}
+
+.section-head--split .eyebrow {
+  margin-inline: 0;
+}
+
+.section-head--split .section-title {
+  margin-bottom: 0;
+  font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+}
+
+.section-head--split .section-sub {
+  margin-inline: 0;
+}
+
+@media (max-width: 760px) {
+  .section-head--split {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .section-head--split .eyebrow {
+    margin-inline: auto;
+  }
+
+  .section-head--split .section-sub {
+    margin-inline: auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 13px 26px;
+  border: 1px solid transparent;
+  border-radius: var(--r-pill);
+  background: none;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform var(--t-fast) var(--ease), box-shadow var(--t-med) var(--ease),
+    background-color var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease);
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.btn-sm {
+  padding: 10px 20px;
+  font-size: 0.85rem;
+}
+
+.btn-lg {
+  padding: 16px 34px;
+  font-size: 1rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-600) 100%);
+  color: #fff;
+  box-shadow: var(--shadow-brand);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px -16px rgba(194, 69, 111, 0.8);
+}
+
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold-400) 0%, var(--gold-500) 100%);
+  color: var(--brand-900);
+  box-shadow: 0 14px 30px -14px rgba(201, 162, 39, 0.75);
+}
+
+.btn-gold:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  border-color: var(--brand-200);
+  background: var(--cream-50);
+  color: var(--brand-700);
+}
+
+.btn-outline:hover:not(:disabled) {
+  border-color: var(--brand-500);
+  background: var(--brand-50);
+  transform: translateY(-2px);
+}
+
+.btn-danger {
+  border-color: rgba(192, 57, 43, 0.28);
+  background: var(--danger-soft);
+  color: #9c2f22;
+}
+
+.btn-danger:hover:not(:disabled) {
+  border-color: var(--danger);
+  background: var(--danger);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.btn-ghost-light {
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #fff;
+  backdrop-filter: blur(6px);
+}
+
+.btn-ghost-light:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: #fff;
+  transform: translateY(-2px);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Forms
+   -------------------------------------------------------------------------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.field > label {
+  color: var(--ink-700);
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1.5px solid var(--cream-300);
+  border-radius: var(--r-sm);
+  background: var(--cream-50);
+  color: var(--ink-900);
+  font-size: 0.97rem;
+  transition: border-color var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease),
+    background-color var(--t-fast) var(--ease);
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-color: var(--brand-400);
+  background: #fff;
+  box-shadow: var(--ring);
+}
+
+.field textarea {
+  min-height: 118px;
+  resize: vertical;
+}
+
+.field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23c2456f' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 17px;
+  padding-right: 42px;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   Utilities
+   -------------------------------------------------------------------------- */
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Alerts
+   -------------------------------------------------------------------------- */
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 13px 17px;
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.alert-error {
+  background: var(--danger-soft);
+  border-color: rgba(192, 57, 43, 0.24);
+  color: #8c2a20;
+}
+
+.alert-success {
+  background: var(--success-soft);
+  border-color: rgba(46, 125, 91, 0.24);
+  color: #1f5a40;
+}
+
+.alert-info {
+  background: var(--brand-50);
+  border-color: var(--brand-200);
+  color: var(--brand-700);
+}
+
+/* --------------------------------------------------------------------------
+   Scroll reveal
+   -------------------------------------------------------------------------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.75s var(--ease), transform 0.75s var(--ease);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./styles/theme.css";
 import "./App.css";
 import Navbar from "./component/Navbar";
 import Footer from "./component/Footer";
@@ -15,7 +16,7 @@ import WeddingStructures from "./pages/weddingStructure";
 import WeddingCakes from "./pages/weddingcake";
 import JarCakes from "./pages/jarcake";
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import CakeTypeSelectorPage from "./pages/CakeTypeSelectorPage";
 import UploadCakePage from "./pages/UploardCakePage";
@@ -23,6 +24,17 @@ import OrderForm from "./pages/OrderForm";
 import OrdersDashboard from "./pages/OrdersDashboard";
 import OwnerDashboard from "./pages/OwnerDashboard";
 import ReviewsPage from "./pages/ReviewsPage";
+import NotFound from "./pages/NotFound";
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+  }, [pathname]);
+
+  return null;
+}
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
@@ -38,6 +50,7 @@ function App() {
   return (
     <div className="App">
       <Router>
+        <ScrollToTop />
         <div className="appShell">
           <Navbar />
           <main className="appContent">
@@ -59,6 +72,7 @@ function App() {
               <Route path="/order" element={<OrderForm />} />
               <Route path="/orders" element={<ProtectedRoute><OrdersDashboard /></ProtectedRoute>} />
               <Route path="/reviews" element={<ReviewsPage />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
           <Footer />

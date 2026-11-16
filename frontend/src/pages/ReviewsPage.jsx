@@ -1,221 +1,244 @@
-import React, { useState, useEffect, useCallback } from "react";
-import axios from "axios";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import StarIcon from "@mui/icons-material/Star";
+import SearchIcon from "@mui/icons-material/Search";
+import api, { apiErrorMessage } from "../services/api";
+import { CAKE_CATEGORIES } from "../helpers/cakeCatalog";
 import "../styles/ReviewsPage.css";
 
-const CAKE_TYPES = [
-  "Birthday Cake",
-  "Anniversary Cake",
-  "Cupcake",
-  "Wedding Cake",
-  "Wedding Structure",
-  "Jar Cake"
-];
+const CAKE_TYPES = CAKE_CATEGORIES.map((category) => category.type);
 
 function ReviewsPage() {
   const [allReviews, setAllReviews] = useState([]);
-  const [filteredReviews, setFilteredReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCake, setFilterCake] = useState("All");
   const [sortBy, setSortBy] = useState("newest");
-  const [cakesWithStats, setCakesWithStats] = useState([]);
 
   const fetchAllReviews = useCallback(async () => {
+    setLoading(true);
+    setError("");
     try {
-      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-      const response = await axios.get(`${API_URL}/api/reviews`);
-      setAllReviews(response.data || []);
-      
-      // Calculate stats for each cake type
-      const stats = {};
-      CAKE_TYPES.forEach(cake => {
-        const cakeReviews = (response.data || []).filter(r => r.cakeName === cake);
-        const avgRating = cakeReviews.length > 0 
-          ? (cakeReviews.reduce((sum, r) => sum + r.rating, 0) / cakeReviews.length).toFixed(1)
-          : 0;
-        stats[cake] = {
-          count: cakeReviews.length,
-          average: avgRating
-        };
-      });
-      setCakesWithStats(stats);
-      setLoading(false);
-    } catch (error) {
-      console.error("Error fetching reviews:", error);
+      const { data } = await api.get("/api/reviews");
+      setAllReviews(data || []);
+    } catch (err) {
+      setError(apiErrorMessage(err, "Could not load reviews."));
+    } finally {
       setLoading(false);
     }
   }, []);
-
-  const applyFiltersAndSort = useCallback(() => {
-    let filtered = [...allReviews];
-
-    // Filter by cake type
-    if (filterCake !== "All") {
-      filtered = filtered.filter(review => review.cakeName === filterCake);
-    }
-
-    // Filter by search term
-    if (searchTerm) {
-      filtered = filtered.filter(review =>
-        review.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        review.cakeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        review.comment.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    // Sort
-    filtered.sort((a, b) => {
-      switch (sortBy) {
-        case "newest":
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        case "oldest":
-          return new Date(a.createdAt) - new Date(b.createdAt);
-        case "highest":
-          return b.rating - a.rating;
-        case "lowest":
-          return a.rating - b.rating;
-        default:
-          return 0;
-      }
-    });
-
-    setFilteredReviews(filtered);
-  }, [allReviews, searchTerm, filterCake, sortBy]);
 
   useEffect(() => {
     fetchAllReviews();
   }, [fetchAllReviews]);
 
-  useEffect(() => {
-    applyFiltersAndSort();
-  }, [applyFiltersAndSort]);
+  const cakesWithStats = useMemo(() => {
+    const stats = {};
+    CAKE_TYPES.forEach((cake) => {
+      const cakeReviews = allReviews.filter((r) => r.cakeName === cake);
+      const average =
+        cakeReviews.length > 0
+          ? (
+              cakeReviews.reduce((sum, r) => sum + r.rating, 0) /
+              cakeReviews.length
+            ).toFixed(1)
+          : 0;
+      stats[cake] = { count: cakeReviews.length, average };
+    });
+    return stats;
+  }, [allReviews]);
 
-  const renderStars = (rating) => {
-    return (
-      <div className="star-rating">
-        {[...Array(5)].map((_, i) => (
-          <span key={i} className={`star ${i < rating ? "filled" : "empty"}`}>
-            ★
-          </span>
-        ))}
-        <span className="rating-value">({rating}/5)</span>
-      </div>
-    );
-  };
+  const filteredReviews = useMemo(() => {
+    let filtered = [...allReviews];
 
-  const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
+    if (filterCake !== "All") {
+      filtered = filtered.filter((review) => review.cakeName === filterCake);
+    }
+
+    const term = searchTerm.trim().toLowerCase();
+    if (term) {
+      filtered = filtered.filter(
+        (review) =>
+          review.customerName?.toLowerCase().includes(term) ||
+          review.cakeName?.toLowerCase().includes(term) ||
+          review.comment?.toLowerCase().includes(term)
+      );
+    }
+
+    switch (sortBy) {
+      case "oldest":
+        return filtered.sort(
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt)
+        );
+      case "highest":
+        return filtered.sort((a, b) => b.rating - a.rating);
+      case "lowest":
+        return filtered.sort((a, b) => a.rating - b.rating);
+      default:
+        return filtered.sort(
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+        );
+    }
+  }, [allReviews, searchTerm, filterCake, sortBy]);
+
+  const overallAverage = useMemo(() => {
+    if (allReviews.length === 0) return "0.0";
+    const total = allReviews.reduce((sum, review) => sum + review.rating, 0);
+    return (total / allReviews.length).toFixed(1);
+  }, [allReviews]);
+
+  const renderStars = (rating) => (
+    <span className="star-rating" aria-label={`${rating} out of 5`}>
+      {[...Array(5)].map((_, index) => (
+        <StarIcon
+          key={index}
+          fontSize="inherit"
+          className={index < rating ? "star filled" : "star empty"}
+        />
+      ))}
+    </span>
+  );
+
+  const formatDate = (dateString) =>
+    new Date(dateString).toLocaleDateString("en-GB", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
 
   if (loading) {
     return (
       <div className="reviews-page">
-        <div style={{ textAlign: "center", padding: "50px", fontSize: "1.2rem" }}>
-          Loading reviews...
-        </div>
+        <div className="reviews-loading">Loading reviews...</div>
       </div>
     );
   }
 
   return (
     <div className="reviews-page">
-      <div className="reviews-header">
-        <h1>Customer Reviews & Ratings</h1>
-      </div>
+      <div className="container">
+        <header className="reviews-header">
+          <p className="eyebrow">Customer reviews</p>
+          <h1 className="reviews-title">What people say about our cakes</h1>
+          <p className="reviews-subtitle">
+            Real feedback from the celebrations we have baked for.
+          </p>
 
-      {/* Stats Cards */}
-      <div className="stats-section">
-        <h2>Cake Ratings Overview</h2>
-        <div className="stats-grid">
-          {CAKE_TYPES.map(cake => (
-            <div key={cake} className="stat-card">
-              <h3>{cake}</h3>
-              <div className="stat-info">
-                <div className="stat-rating">
-                  ⭐ {cakesWithStats[cake]?.average || 0}
-                </div>
-                <div className="stat-count">
-                  {cakesWithStats[cake]?.count || 0} reviews
+          <div className="reviewsOverview">
+            <div className="reviewsOverviewScore">
+              <strong>{overallAverage}</strong>
+              {renderStars(Math.round(Number(overallAverage)))}
+              <span>{allReviews.length} reviews</span>
+            </div>
+          </div>
+        </header>
+
+        {error && <div className="alert alert-error reviewsAlert">{error}</div>}
+
+        <div className="stats-section">
+          <h2 className="stats-title">Ratings by collection</h2>
+          <div className="stats-grid">
+            {CAKE_TYPES.map((cake) => (
+              <div key={cake} className="stat-card">
+                <h3>{cake}</h3>
+                <div className="stat-info">
+                  <div className="stat-rating">
+                    <StarIcon fontSize="small" />
+                    {cakesWithStats[cake]?.average || 0}
+                  </div>
+                  <div className="stat-count">
+                    {cakesWithStats[cake]?.count || 0} reviews
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Controls */}
-      <div className="reviews-controls">
-        <div className="search-box">
-          <input
-            type="text"
-            placeholder="🔍 Search reviews by name, cake, or comment..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
-
-        <div className="controls-row">
-          <select
-            value={filterCake}
-            onChange={(e) => setFilterCake(e.target.value)}
-            className="filter-select"
-          >
-            <option value="All">All Cakes</option>
-            {CAKE_TYPES.map(cake => (
-              <option key={cake} value={cake}>{cake}</option>
             ))}
-          </select>
-
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="filter-select"
-          >
-            <option value="newest">Newest First</option>
-            <option value="oldest">Oldest First</option>
-            <option value="highest">Highest Rated</option>
-            <option value="lowest">Lowest Rated</option>
-          </select>
+          </div>
         </div>
-      </div>
 
-      {/* Reviews List */}
-      <div className="reviews-container">
-        {filteredReviews.length === 0 ? (
-          <div className="no-reviews">
-            <p>😊 No reviews found. Be the first to review!</p>
+        <div className="reviews-controls">
+          <div className="search-box">
+            <SearchIcon fontSize="small" />
+            <label className="srOnly" htmlFor="reviews-search">
+              Search reviews
+            </label>
+            <input
+              id="reviews-search"
+              type="search"
+              placeholder="Search by name, cake or comment..."
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+            />
           </div>
-        ) : (
-          <div>
-            <p className="reviews-count">
-              Showing {filteredReviews.length} review{filteredReviews.length !== 1 ? 's' : ''}
-            </p>
-            <div className="reviews-list">
-              {filteredReviews.map((review, index) => (
-                <div key={index} className="review-card">
-                  <div className="review-header">
-                    <div className="review-meta">
-                      <h3 className="reviewer-name">{review.customerName}</h3>
-                      <span className="cake-badge">{review.cakeName}</span>
-                    </div>
-                    <span className="review-date">{formatDate(review.createdAt)}</span>
-                  </div>
 
-                  <div className="review-rating">
-                    {renderStars(review.rating)}
-                  </div>
-
-                  {review.email && review.email !== "Anonymous" && (
-                    <p className="review-email">✉️ {review.email}</p>
-                  )}
-
-                  <p className="review-comment">{review.comment}</p>
-                </div>
+          <div className="controls-row">
+            <select
+              value={filterCake}
+              onChange={(event) => setFilterCake(event.target.value)}
+              className="filter-select"
+              aria-label="Filter by collection"
+            >
+              <option value="All">All collections</option>
+              {CAKE_TYPES.map((cake) => (
+                <option key={cake} value={cake}>
+                  {cake}
+                </option>
               ))}
-            </div>
+            </select>
+
+            <select
+              value={sortBy}
+              onChange={(event) => setSortBy(event.target.value)}
+              className="filter-select"
+              aria-label="Sort reviews"
+            >
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="highest">Highest rated</option>
+              <option value="lowest">Lowest rated</option>
+            </select>
           </div>
-        )}
+        </div>
+
+        <div className="reviews-container">
+          {filteredReviews.length === 0 ? (
+            <div className="no-reviews">
+              <p>No reviews found. Be the first to review!</p>
+            </div>
+          ) : (
+            <>
+              <p className="reviews-count">
+                Showing {filteredReviews.length} review
+                {filteredReviews.length !== 1 ? "s" : ""}
+              </p>
+              <div className="reviews-list">
+                {filteredReviews.map((review, index) => (
+                  <article key={review._id || index} className="review-card">
+                    <div className="review-header">
+                      <div className="review-meta">
+                        <h3 className="reviewer-name">{review.customerName}</h3>
+                        <span className="cake-badge">{review.cakeName}</span>
+                      </div>
+                      <span className="review-date">
+                        {formatDate(review.createdAt)}
+                      </span>
+                    </div>
+
+                    <div className="review-rating">
+                      {renderStars(review.rating)}
+                      <span className="rating-value">{review.rating}/5</span>
+                    </div>
+
+                    {review.email && review.email !== "Anonymous" && (
+                      <p className="review-email">✉️ {review.email}</p>
+                    )}
+
+                    <p className="review-comment">{review.comment}</p>
+                  </article>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

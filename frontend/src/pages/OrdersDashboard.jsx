@@ -1,249 +1,402 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import PhoneIcon from "@mui/icons-material/Phone";
+import api, { apiErrorMessage } from "../services/api";
+import CakeImage from "../component/CakeImage";
+import { formatPrice } from "../helpers/site";
 import "../styles/OrdersDashboard.css";
+
+const STATUSES = [
+  "Pending",
+  "Confirmed",
+  "Baking",
+  "Ready",
+  "Completed",
+  "Cancelled",
+];
+
+const formatDate = (value) => {
+  if (!value) return "—";
+  return new Date(value).toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
+
+// Legacy orders may not carry a price at all, and older rows store the unit
+// price only - fall back to unit price multiplied by the quantity.
+const orderTotal = (order) =>
+  order.totalPrice || (order.cakePrice || 0) * (order.quantity || 1) || 0;
+
+const formatOrderTotal = (order) => {
+  const total = orderTotal(order);
+  return total > 0 ? formatPrice(total) : "Price on request";
+};
 
 export default function OrdersDashboard() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [search, setSearch] = useState("");
+  const [updatingId, setUpdatingId] = useState(null);
+
+  const fetchOrders = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const { data } = await api.get("/api/orders");
+      setOrders(data || []);
+    } catch (err) {
+      setError(apiErrorMessage(err, "Failed to load orders."));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [fetchOrders]);
 
-  const fetchOrders = async () => {
-    const token = localStorage.getItem("token");
+  useEffect(() => {
+    document.body.style.overflow = selectedOrder ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [selectedOrder]);
 
+  const counts = useMemo(() => {
+    const result = { All: orders.length };
+    STATUSES.forEach((status) => {
+      result[status] = orders.filter((order) => order.status === status).length;
+    });
+    return result;
+  }, [orders]);
+
+  const visibleOrders = useMemo(() => {
+    const term = search.trim().toLowerCase();
+
+    return orders.filter((order) => {
+      const matchesStatus =
+        statusFilter === "All" || order.status === statusFilter;
+      const matchesSearch =
+        !term ||
+        order.customerName?.toLowerCase().includes(term) ||
+        order.customerPhone?.includes(term) ||
+        order.cakeName?.toLowerCase().includes(term) ||
+        order.location?.toLowerCase().includes(term);
+      return matchesStatus && matchesSearch;
+    });
+  }, [orders, statusFilter, search]);
+
+  const handleStatusChange = async (orderId, status) => {
+    setUpdatingId(orderId);
     try {
-      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-      const res = await axios.get(`${API_URL}/api/orders`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setOrders(res.data);
-      setLoading(false);
+      const { data } = await api.patch(`/api/orders/${orderId}/status`, { status });
+      setOrders((current) =>
+        current.map((order) => (order._id === orderId ? data.order : order))
+      );
+      setSelectedOrder((current) =>
+        current && current._id === orderId ? data.order : current
+      );
     } catch (err) {
-      console.error(err);
-      setError("Failed to load orders. Please try again.");
-      setLoading(false);
+      setError(apiErrorMessage(err, "Failed to update the order status."));
+    } finally {
+      setUpdatingId(null);
     }
   };
 
   const handleDelete = async (orderId) => {
-    if (!window.confirm("Are you sure you want to delete this order?")) {
-      return;
-    }
+    if (!window.confirm("Delete this order permanently?")) return;
 
-    const token = localStorage.getItem("token");
     try {
-      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-      await axios.delete(`${API_URL}/api/orders/${orderId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setOrders(orders.filter((order) => order._id !== orderId));
-      alert("Order deleted successfully");
+      await api.delete(`/api/orders/${orderId}`);
+      setOrders((current) => current.filter((order) => order._id !== orderId));
+      setSelectedOrder(null);
     } catch (err) {
-      console.error(err);
-      alert("Failed to delete order");
+      setError(apiErrorMessage(err, "Failed to delete the order."));
     }
   };
 
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
-
-  if (loading) {
-    return (
-      <div className="orders-dashboard">
-        <p>Loading orders...</p>
-      </div>
-    );
-  }
+  const revenue = orders
+    .filter((order) => order.status !== "Cancelled")
+    .reduce((sum, order) => sum + orderTotal(order), 0);
 
   return (
-    <div className="orders-dashboard">
-      <h2>Customer Orders</h2>
+    <div className="ordersPage">
+      <div className="container">
+        <header className="ordersHeader">
+          <div>
+            <p className="eyebrow">Order management</p>
+            <h1 className="ordersTitle">Customer orders</h1>
+            <p className="ordersSub">
+              Move each order through your kitchen workflow and keep customers
+              in the loop.
+            </p>
+          </div>
+          <div className="ordersSummary">
+            <div className="ordersSummaryItem">
+              <strong>{orders.length}</strong>
+              <span>Orders</span>
+            </div>
+            <div className="ordersSummaryItem">
+              <strong>{counts.Pending || 0}</strong>
+              <span>Pending</span>
+            </div>
+            <div className="ordersSummaryItem">
+              <strong>{formatPrice(revenue)}</strong>
+              <span>Revenue</span>
+            </div>
+          </div>
+        </header>
 
-      {error && <p className="error-message">{error}</p>}
+        {error && <div className="alert alert-error ordersAlert">{error}</div>}
 
-      {orders.length === 0 ? (
-        <p className="no-orders">No orders yet</p>
-      ) : (
-        <div className="orders-table-container">
-          <table className="orders-table">
-            <thead>
-              <tr>
-                <th>Order Date</th>
-                <th>Cake Image</th>
-                <th>Customer Name</th>
-                <th>Phone</th>
-                <th>Cake Name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Weight</th>
-                <th>Location</th>
-                <th>Delivery Date</th>
-                <th>Description</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orders.map((order) => (
-                <tr key={order._id}>
-                  <td>{formatDate(order.createdAt)}</td>
-                  <td className="cake-image-cell">
-                    {order.cakeImage ? (
-                      <img 
-                        src={order.cakeImage} 
-                        alt={order.cakeName}
-                        className="order-cake-image"
-                        onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }}
-                      />
-                    ) : null}
-                    <span style={{ display: order.cakeImage ? 'none' : 'block' }}>No Image</span>
-                  </td>
-                  <td>{order.customerName}</td>
-                  <td>
-                    <a href={`tel:${order.customerPhone}`} className="phone-link">
-                      📞 {order.customerPhone}
+        <div className="ordersToolbar">
+          <div className="ordersTabs" role="tablist" aria-label="Order status">
+            {["All", ...STATUSES].map((status) => (
+              <button
+                key={status}
+                type="button"
+                role="tab"
+                aria-selected={statusFilter === status}
+                className={`ordersTab ${statusFilter === status ? "isActive" : ""}`}
+                onClick={() => setStatusFilter(status)}
+              >
+                {status}
+                <span className="ordersTabCount">{counts[status] || 0}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="ordersSearch">
+            <SearchIcon fontSize="small" />
+            <label className="srOnly" htmlFor="orders-search">
+              Search orders
+            </label>
+            <input
+              id="orders-search"
+              type="search"
+              placeholder="Search name, phone or cake..."
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="ordersList">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="ordersSkeleton" />
+            ))}
+          </div>
+        ) : visibleOrders.length === 0 ? (
+          <div className="ordersEmpty">
+            <h2>No orders here</h2>
+            <p>
+              {orders.length === 0
+                ? "Customer orders will appear here as soon as they come in."
+                : "No orders match this filter. Try another status or search term."}
+            </p>
+          </div>
+        ) : (
+          <div className="ordersList">
+            {visibleOrders.map((order) => (
+              <article key={order._id} className="orderCard">
+                <div className="orderCardMedia">
+                  {order.cakeImage ? (
+                    <CakeImage src={order.cakeImage} alt={order.cakeName} />
+                  ) : (
+                    <span className="orderCardNoImage">No image</span>
+                  )}
+                </div>
+
+                <div className="orderCardMain">
+                  <div className="orderCardTop">
+                    <div>
+                      <h3 className="orderCardCustomer">{order.customerName}</h3>
+                      <p className="orderCardCake">{order.cakeName}</p>
+                    </div>
+                    <span className={`orderStatus orderStatus--${order.status}`}>
+                      {order.status}
+                    </span>
+                  </div>
+
+                  <dl className="orderCardMeta">
+                    <div>
+                      <dt>Placed</dt>
+                      <dd>{formatDate(order.createdAt)}</dd>
+                    </div>
+                    <div>
+                      <dt>Delivery</dt>
+                      <dd>{formatDate(order.deliveryDate)}</dd>
+                    </div>
+                    <div>
+                      <dt>Qty</dt>
+                      <dd>{order.quantity || 1}</dd>
+                    </div>
+                    <div>
+                      <dt>Weight</dt>
+                      <dd>{order.weight || "—"}</dd>
+                    </div>
+                  </dl>
+
+                  <p className="orderCardLocation">{order.location}</p>
+                </div>
+
+                <div className="orderCardSide">
+                  <span className="orderCardTotal">
+                    {formatOrderTotal(order)}
+                  </span>
+
+                  <label className="srOnly" htmlFor={`status-${order._id}`}>
+                    Update status for {order.customerName}
+                  </label>
+                  <select
+                    id={`status-${order._id}`}
+                    className="orderStatusSelect"
+                    value={order.status}
+                    disabled={updatingId === order._id}
+                    onChange={(event) =>
+                      handleStatusChange(order._id, event.target.value)
+                    }
+                  >
+                    {STATUSES.map((status) => (
+                      <option key={status} value={status}>
+                        {status}
+                      </option>
+                    ))}
+                  </select>
+
+                  <div className="orderCardButtons">
+                    <a
+                      href={`tel:${order.customerPhone}`}
+                      className="btn btn-outline btn-sm"
+                    >
+                      <PhoneIcon fontSize="small" />
+                      Call
                     </a>
-                  </td>
-                  <td>{order.cakeName}</td>
-                  <td>Rs {order.cakePrice || "N/A"}</td>
-                  <td>{order.quantity || 1}</td>
-                  <td>{order.weight || "N/A"}</td>
-                  <td>{order.location}</td>
-                  <td>{formatDate(order.deliveryDate)}</td>
-                  <td>{order.description || "N/A"}</td>
-                  <td>
                     <button
-                      className="view-btn"
+                      type="button"
+                      className="btn btn-outline btn-sm"
                       onClick={() => setSelectedOrder(order)}
                     >
-                      👁️ View
+                      <VisibilityIcon fontSize="small" />
+                      View
                     </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
 
-      {/* Order Details Modal */}
       {selectedOrder && (
-        <div className="modal-overlay" onClick={() => setSelectedOrder(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>Order Details</h2>
-              <button 
-                className="close-btn" 
-                onClick={() => setSelectedOrder(null)}
-              >
-                ✕
-              </button>
-            </div>
+        <div
+          className="ordersModalOverlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Order details"
+          onClick={() => setSelectedOrder(null)}
+        >
+          <div
+            className="ordersModal"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="ordersModalClose"
+              onClick={() => setSelectedOrder(null)}
+              aria-label="Close"
+            >
+              <CloseIcon />
+            </button>
 
-            <div className="modal-body">
-              {/* Cake Image Section */}
-              <div className="modal-image-section">
-                <h3>Ordered Cake</h3>
+            <div className="ordersModalGrid">
+              <div className="ordersModalMedia">
                 {selectedOrder.cakeImage ? (
-                  <img 
-                    src={selectedOrder.cakeImage} 
-                    alt={selectedOrder.cakeName}
-                    className="modal-cake-image"
-                  />
+                  <CakeImage src={selectedOrder.cakeImage} alt={selectedOrder.cakeName} />
                 ) : (
-                  <div className="no-image">No Image Available</div>
+                  <div className="orderCardNoImage">No image available</div>
                 )}
               </div>
 
-              {/* Order Details Section */}
-              <div className="modal-details-section">
-                <div className="detail-row">
-                  <span className="detail-label">Order Date:</span>
-                  <span className="detail-value">{formatDate(selectedOrder.createdAt)}</span>
+              <div className="ordersModalBody">
+                <p className="ordersModalEyebrow">Order details</p>
+                <h2 className="ordersModalTitle">{selectedOrder.cakeName}</h2>
+                <p className="ordersModalCustomer">
+                  {selectedOrder.customerName} · {selectedOrder.customerPhone}
+                </p>
+
+                <dl className="ordersModalMeta">
+                  <div>
+                    <dt>Cake price</dt>
+                    <dd>{formatPrice(selectedOrder.cakePrice)}</dd>
+                  </div>
+                  <div>
+                    <dt>Quantity</dt>
+                    <dd>{selectedOrder.quantity || 1}</dd>
+                  </div>
+                  <div>
+                    <dt>Total</dt>
+                    <dd>{formatOrderTotal(selectedOrder)}</dd>
+                  </div>
+                  <div>
+                    <dt>Weight</dt>
+                    <dd>{selectedOrder.weight || "—"}</dd>
+                  </div>
+                  <div>
+                    <dt>Order date</dt>
+                    <dd>{formatDate(selectedOrder.createdAt)}</dd>
+                  </div>
+                  <div>
+                    <dt>Delivery date</dt>
+                    <dd>{formatDate(selectedOrder.deliveryDate)}</dd>
+                  </div>
+                  <div>
+                    <dt>Email</dt>
+                    <dd>{selectedOrder.customerEmail || "—"}</dd>
+                  </div>
+                  <div>
+                    <dt>Status</dt>
+                    <dd>{selectedOrder.status}</dd>
+                  </div>
+                </dl>
+
+                <div className="ordersModalSection">
+                  <h3>Delivery location</h3>
+                  <p>{selectedOrder.location}</p>
                 </div>
 
-                <div className="detail-row">
-                  <span className="detail-label">Cake Name:</span>
-                  <span className="detail-value">{selectedOrder.cakeName}</span>
+                <div className="ordersModalSection">
+                  <h3>Customer notes</h3>
+                  <p>{selectedOrder.description || "No notes added."}</p>
                 </div>
 
-                <div className="detail-row">
-                  <span className="detail-label">Cake Price:</span>
-                  <span className="detail-value">Rs {selectedOrder.cakePrice || "N/A"}</span>
-                </div>
-
-                <div className="detail-row">
-                  <span className="detail-label">Customer Name:</span>
-                  <span className="detail-value">{selectedOrder.customerName}</span>
-                </div>
-
-                <div className="detail-row">
-                  <span className="detail-label">Phone:</span>
-                  <span className="detail-value">
-                    <a href={`tel:${selectedOrder.customerPhone}`}>
-                      📞 {selectedOrder.customerPhone}
-                    </a>
-                  </span>
-                </div>
-
-                <div className="detail-row">
-                  <span className="detail-label">Email:</span>
-                  <span className="detail-value">{selectedOrder.customerEmail || "N/A"}</span>
-                </div>
-
-                <div className="detail-row">
-                  <span className="detail-label">Quantity:</span>
-                  <span className="detail-value">{selectedOrder.quantity || 1}</span>
-                </div>
-
-                <div className="detail-row">
-                  <span className="detail-label">Weight:</span>
-                  <span className="detail-value">{selectedOrder.weight || "N/A"} kg</span>
-                </div>
-
-                <div className="detail-row">
-                  <span className="detail-label">Delivery Date:</span>
-                  <span className="detail-value">{formatDate(selectedOrder.deliveryDate)}</span>
-                </div>
-
-                <div className="detail-row">
-                  <span className="detail-label">Delivery Location:</span>
-                  <span className="detail-value">{selectedOrder.location}</span>
-                </div>
-
-                <div className="detail-row">
-                  <span className="detail-label">Description:</span>
-                  <span className="detail-value">{selectedOrder.description || "N/A"}</span>
+                <div className="ordersModalActions">
+                  <a
+                    href={`tel:${selectedOrder.customerPhone}`}
+                    className="btn btn-primary"
+                  >
+                    <PhoneIcon fontSize="small" />
+                    Call customer
+                  </a>
+                  <button
+                    type="button"
+                    className="btn btn-danger"
+                    onClick={() => handleDelete(selectedOrder._id)}
+                  >
+                    <DeleteOutlineIcon fontSize="small" />
+                    Delete order
+                  </button>
                 </div>
               </div>
-            </div>
-
-            <div className="modal-footer">
-              <button 
-                className="delete-btn"
-                onClick={() => {
-                  handleDelete(selectedOrder._id);
-                  setSelectedOrder(null);
-                }}
-              >
-                🗑️ Delete Order
-              </button>
-              <button 
-                className="close-modal-btn"
-                onClick={() => setSelectedOrder(null)}
-              >
-                Close
-              </button>
             </div>
           </div>
         </div>

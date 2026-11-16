@@ -1,0 +1,51 @@
+/* ==========================================================================
+   404 page
+   ========================================================================== */
+
+.notFoundPage {
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - var(--header-h));
+  padding-block: 60px;
+  background: radial-gradient(
+      100% 110% at 50% 0%,
+      var(--brand-50) 0%,
+      transparent 62%
+    ),
+    var(--cream-100);
+}
+
+.notFoundInner {
+  max-width: 640px;
+  text-align: center;
+}
+
+.notFoundCode {
+  margin: 0 0 10px;
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, 16vw, 9rem);
+  font-weight: 700;
+  line-height: 0.9;
+  background: linear-gradient(135deg, var(--brand-400), var(--brand-700));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.notFoundTitle {
+  margin: 0 0 14px;
+  font-size: clamp(1.6rem, 3.6vw, 2.5rem);
+}
+
+.notFoundText {
+  max-width: 50ch;
+  margin: 0 auto 30px;
+  color: var(--ink-500);
+}
+
+.notFoundActions {
+  display: flex;
+  justify-content: center;
+  gap: 13px;
+  flex-wrap: wrap;
+}

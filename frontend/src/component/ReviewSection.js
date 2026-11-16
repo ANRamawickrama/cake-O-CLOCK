@@ -1,5 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import React, { useCallback, useEffect, useState } from "react";
+import StarIcon from "@mui/icons-material/Star";
+import RateReviewIcon from "@mui/icons-material/RateReview";
+import CloseIcon from "@mui/icons-material/Close";
+import api, { apiErrorMessage } from "../services/api";
+import "../styles/ReviewSection.css";
 
 export default function ReviewSection({ cakeName }) {
   const [reviews, setReviews] = useState([]);
@@ -7,35 +11,38 @@ export default function ReviewSection({ cakeName }) {
   const [submitting, setSubmitting] = useState(false);
   const [averageRating, setAverageRating] = useState(0);
   const [totalReviews, setTotalReviews] = useState(0);
-  
-  // Form states
-  const [customerName, setCustomerName] = useState('');
-  const [email, setEmail] = useState('');
+
+  const [customerName, setCustomerName] = useState("");
+  const [email, setEmail] = useState("");
   const [rating, setRating] = useState(5);
-  const [comment, setComment] = useState('');
-  const [message, setMessage] = useState('');
+  const [comment, setComment] = useState("");
+  const [message, setMessage] = useState("");
+  const [messageType, setMessageType] = useState("");
   const [showForm, setShowForm] = useState(false);
 
   const fetchReviews = useCallback(async () => {
     try {
-      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-      const response = await axios.get(`${API_URL}/api/reviews/cake/${encodeURIComponent(cakeName)}`);
-      setReviews(response.data || []);
-      setLoading(false);
+      const { data } = await api.get(
+        `/api/reviews/cake/${encodeURIComponent(cakeName)}`
+      );
+      setReviews(data || []);
     } catch (error) {
-      console.error('Error fetching reviews:', error);
+      setReviews([]);
+    } finally {
       setLoading(false);
     }
   }, [cakeName]);
 
   const fetchRating = useCallback(async () => {
     try {
-      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-      const response = await axios.get(`${API_URL}/api/reviews/rating/${encodeURIComponent(cakeName)}`);
-      setAverageRating(response.data.averageRating);
-      setTotalReviews(response.data.totalReviews);
+      const { data } = await api.get(
+        `/api/reviews/rating/${encodeURIComponent(cakeName)}`
+      );
+      setAverageRating(Number(data.averageRating) || 0);
+      setTotalReviews(data.totalReviews || 0);
     } catch (error) {
-      console.error('Error fetching rating:', error);
+      setAverageRating(0);
+      setTotalReviews(0);
     }
   }, [cakeName]);
 
@@ -44,199 +51,188 @@ export default function ReviewSection({ cakeName }) {
     fetchRating();
   }, [fetchReviews, fetchRating]);
 
-  const handleSubmitReview = async (e) => {
-    e.preventDefault();
-    setMessage('');
+  const handleSubmitReview = async (event) => {
+    event.preventDefault();
+    setMessage("");
 
     if (!customerName.trim() || !rating || !comment.trim()) {
-      setMessage('⚠️ Please fill all required fields');
+      setMessageType("error");
+      setMessage("Please fill in all the required fields.");
       return;
     }
 
     setSubmitting(true);
 
     try {
-      const reviewData = {
+      await api.post("/api/reviews", {
         cakeName,
         customerName: customerName.trim(),
-        email: email.trim() || 'Anonymous',
+        email: email.trim() || "Anonymous",
         rating: Number(rating),
-        comment: comment.trim()
-      };
+        comment: comment.trim(),
+      });
 
-      const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
-      const response = await axios.post(
-        `${API_URL}/api/reviews`,
-        reviewData
-      );
+      setCustomerName("");
+      setEmail("");
+      setRating(5);
+      setComment("");
+      setShowForm(false);
+      setMessageType("success");
+      setMessage("Thanks! Your review is live.");
 
-      if (response.status === 201) {
-        setMessage('✅ Review posted successfully!');
-        setCustomerName('');
-        setEmail('');
-        setRating(5);
-        setComment('');
-        setShowForm(false);
-
-        // Refresh reviews and rating
-        setTimeout(() => {
-          fetchReviews();
-          fetchRating();
-          setMessage('');
-        }, 1000);
-      }
+      await Promise.all([fetchReviews(), fetchRating()]);
+      setTimeout(() => setMessage(""), 4000);
     } catch (error) {
-      console.error('Error submitting review:', error);
-      setMessage('❌ Failed to post review. Try again!');
+      setMessageType("error");
+      setMessage(apiErrorMessage(error, "Failed to post review. Try again!"));
     } finally {
       setSubmitting(false);
     }
   };
 
-  const renderStars = (rating) => {
-    return (
-      <div className="stars">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <span
-            key={star}
-            className={`star ${star <= rating ? 'filled' : 'empty'}`}
-          >
-            ★
-          </span>
-        ))}
-      </div>
-    );
-  };
+  const renderStars = (value) => (
+    <span className="rs-stars" aria-label={`${value} out of 5 stars`}>
+      {[1, 2, 3, 4, 5].map((star) => (
+        <StarIcon
+          key={star}
+          fontSize="inherit"
+          className={star <= value ? "rs-starFilled" : "rs-starEmpty"}
+        />
+      ))}
+    </span>
+  );
 
   return (
-    <div className="review-section">
-      <div className="review-header">
-        <h3>⭐ Customer Reviews</h3>
-        
-        {/* Average Rating Display */}
-        <div className="rating-summary">
-          {totalReviews > 0 ? (
-            <>
-              <div className="average-rating-display">
-                <span className="rating-number">{averageRating}</span>
-                <span className="rating-stars">{renderStars(Math.round(averageRating))}</span>
-                <span className="review-count">({totalReviews} reviews)</span>
-              </div>
-            </>
-          ) : (
-            <p className="no-reviews-yet">No reviews yet. Be the first to review!</p>
-          )}
-        </div>
+    <div className="rs-section">
+      <div className="rs-header">
+        <h3 className="rs-title">Customer reviews</h3>
 
-        <button 
-          className="review-btn" 
-          onClick={() => setShowForm(!showForm)}
+        {totalReviews > 0 ? (
+          <div className="rs-summary">
+            <span className="rs-summaryNumber">{averageRating}</span>
+            <span className="rs-summaryMeta">
+              {renderStars(Math.round(averageRating))}
+              <span className="rs-summaryCount">
+                {totalReviews} {totalReviews === 1 ? "review" : "reviews"}
+              </span>
+            </span>
+          </div>
+        ) : (
+          <p className="rsEmpty">No reviews yet — be the first!</p>
+        )}
+
+        <button
+          type="button"
+          className="btn btn-outline btn-sm rs-toggle"
+          onClick={() => setShowForm((open) => !open)}
         >
-          {showForm ? '✕ Close' : '✏️ Write a Review'}
+          {showForm ? <CloseIcon fontSize="small" /> : <RateReviewIcon fontSize="small" />}
+          {showForm ? "Close" : "Write a review"}
         </button>
       </div>
 
-      {/* Review Form */}
       {showForm && (
-        <div className="review-form">
-          <h4>Share Your Experience</h4>
-          <form onSubmit={handleSubmitReview}>
-            <div className="form-group">
-              <label>Your Name *</label>
+        <form className="rs-form" onSubmit={handleSubmitReview}>
+          <div className="rs-formGrid">
+            <div className="field">
+              <label htmlFor="rs-name">Your name</label>
               <input
+                id="rs-name"
                 type="text"
-                placeholder="Enter your name"
+                placeholder="Jane Perera"
                 value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
+                onChange={(event) => setCustomerName(event.target.value)}
                 disabled={submitting}
                 required
               />
             </div>
 
-            <div className="form-group">
-              <label>Email (Optional)</label>
+            <div className="field">
+              <label htmlFor="rs-email">Email (optional)</label>
               <input
+                id="rs-email"
                 type="email"
-                placeholder="your@email.com"
+                placeholder="jane@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(event) => setEmail(event.target.value)}
                 disabled={submitting}
               />
             </div>
+          </div>
 
-            <div className="form-group">
-              <label>Rating *</label>
-              <div className="rating-selector">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    type="button"
-                    className={`star-btn ${star <= rating ? 'active' : ''}`}
-                    onClick={() => setRating(star)}
-                    disabled={submitting}
-                  >
-                    ★
-                  </button>
-                ))}
-                <span className="rating-text">{rating} out of 5</span>
-              </div>
+          <div className="field">
+            <label>Your rating</label>
+            <div className="rs-ratingSelector">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  className={`rs-starBtn ${star <= rating ? "isActive" : ""}`}
+                  onClick={() => setRating(star)}
+                  disabled={submitting}
+                  aria-label={`${star} star${star > 1 ? "s" : ""}`}
+                >
+                  <StarIcon fontSize="inherit" />
+                </button>
+              ))}
+              <span className="rs-ratingText">{rating} out of 5</span>
             </div>
+          </div>
 
-            <div className="form-group">
-              <label>Your Review *</label>
-              <textarea
-                placeholder="Share your thoughts about this cake..."
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                disabled={submitting}
-                rows="4"
-                required
-              ></textarea>
-            </div>
-
-            {message && (
-              <p className={`form-message ${message.includes('✅') ? 'success' : 'error'}`}>
-                {message}
-              </p>
-            )}
-
-            <button 
-              type="submit" 
-              className="submit-review-btn"
+          <div className="field">
+            <label htmlFor="rs-comment">Your review</label>
+            <textarea
+              id="rs-comment"
+              placeholder="Tell others how it tasted and looked..."
+              value={comment}
+              onChange={(event) => setComment(event.target.value)}
               disabled={submitting}
-            >
-              {submitting ? '⏳ Posting...' : '🚀 Post Review'}
-            </button>
-          </form>
-        </div>
+              rows="4"
+              required
+            />
+          </div>
+
+          {message && (
+            <p className={`alert ${messageType === "success" ? "alert-success" : "alert-error"}`}>
+              {message}
+            </p>
+          )}
+
+          <button type="submit" className="btn btn-primary" disabled={submitting}>
+            {submitting ? "Posting..." : "Post review"}
+          </button>
+        </form>
       )}
 
-      {/* Reviews List */}
-      <div className="reviews-list">
+      {message && !showForm && (
+        <p className={`alert ${messageType === "success" ? "alert-success" : "alert-error"}`}>
+          {message}
+        </p>
+      )}
+
+      <div className="rs-list">
         {loading ? (
-          <p className="loading">Loading reviews...</p>
+          <p className="rsEmpty">Loading reviews...</p>
         ) : reviews.length === 0 ? (
-          <p className="no-reviews">No reviews yet. Be the first to review this cake!</p>
+          <p className="rsEmpty">No reviews for this collection yet.</p>
         ) : (
           reviews.map((review, index) => (
-            <div key={index} className="review-card">
-              <div className="review-header-card">
-                <div className="reviewer-info">
-                  <h5>{review.customerName}</h5>
-                  <span className="review-date">
-                    {new Date(review.createdAt).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric'
+            <article key={review._id || index} className="rs-card">
+              <div className="rs-cardHead">
+                <div>
+                  <h4 className="rs-cardName">{review.customerName}</h4>
+                  <span className="rs-cardDate">
+                    {new Date(review.createdAt).toLocaleDateString("en-GB", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
                     })}
                   </span>
                 </div>
-                <div className="review-rating">
-                  {renderStars(review.rating)}
-                </div>
+                {renderStars(review.rating)}
               </div>
-              <p className="review-comment">{review.comment}</p>
-            </div>
+              <p className="rs-cardComment">{review.comment}</p>
+            </article>
           ))
         )}
       </div>

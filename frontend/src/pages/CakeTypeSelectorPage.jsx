@@ -1,63 +1,79 @@
-import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import SearchIcon from "@mui/icons-material/Search";
+import StarIcon from "@mui/icons-material/Star";
+import api, { apiErrorMessage } from "../services/api";
+import { CAKE_CATEGORIES } from "../helpers/cakeCatalog";
+import { formatPrice } from "../helpers/site";
+import CakeImage from "../component/CakeImage";
 import "../styles/CakeTypeSelectorPage.css";
 
-const CAKE_TYPES = [
-  "Birthday Cake",
-  "Anniversary Cake",
-  "Cupcake",
-  "Wedding Cake",
-  "Wedding Structure",
-  "Jar Cake",
-];
+const CAKE_TYPES = CAKE_CATEGORIES.map((category) => category.type);
 
 export default function CakeTypeSelectorPage() {
-  const [selectedType, setSelectedType] = useState("Birthday Cake");
+  const [selectedType, setSelectedType] = useState("All");
   const [cakes, setCakes] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [search, setSearch] = useState("");
   const [editingId, setEditingId] = useState(null);
-  const [editData, setEditData] = useState({ price: "", description: "" });
+  const [editData, setEditData] = useState({ name: "", price: "", description: "" });
+  const [savingId, setSavingId] = useState(null);
   const navigate = useNavigate();
 
-  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
   const token = localStorage.getItem("token");
 
-  // Redirect if no token
   useEffect(() => {
     if (!token) {
       navigate("/login");
-      return;
     }
   }, [token, navigate]);
 
-  const fetchCakesByType = useCallback(async (type) => {
+  const fetchMyCakes = useCallback(async () => {
+    setLoading(true);
+    setError("");
     try {
-      setLoading(true);
-      setError("");
-      const response = await axios.get(`${API_URL}/api/cakes/type/${type}`);
-      setCakes(response.data);
+      const { data } = await api.get("/api/cakes/owner/my-cakes");
+      setCakes(data || []);
     } catch (err) {
-      setError("Failed to load cakes");
-      console.error(err);
+      setError(apiErrorMessage(err, "Failed to load your cakes."));
       setCakes([]);
     } finally {
       setLoading(false);
     }
-  }, [API_URL]);
+  }, []);
 
-  // Fetch cakes when type changes
   useEffect(() => {
-    if (selectedType) {
-      fetchCakesByType(selectedType);
-    }
-  }, [selectedType, fetchCakesByType]);
+    fetchMyCakes();
+  }, [fetchMyCakes]);
+
+  const showSuccess = (message) => {
+    setSuccess(message);
+    setTimeout(() => setSuccess(""), 3000);
+  };
+
+  const visibleCakes = useMemo(() => {
+    const term = search.trim().toLowerCase();
+
+    return cakes.filter((cake) => {
+      const matchesType = selectedType === "All" || cake.type === selectedType;
+      const matchesSearch =
+        !term ||
+        (cake.name || "").toLowerCase().includes(term) ||
+        cake.type.toLowerCase().includes(term) ||
+        (cake.description || "").toLowerCase().includes(term);
+      return matchesType && matchesSearch;
+    });
+  }, [cakes, selectedType, search]);
 
   const startEdit = (cake) => {
     setEditingId(cake._id);
     setEditData({
+      name: cake.name || "",
       price: cake.price,
       description: cake.description || "",
     });
@@ -66,170 +82,293 @@ export default function CakeTypeSelectorPage() {
 
   const cancelEdit = () => {
     setEditingId(null);
-    setEditData({ price: "", description: "" });
-    setError("");
+    setEditData({ name: "", price: "", description: "" });
   };
 
   const handleUpdate = async (id) => {
-    try {
-      if (!editData.price || editData.price <= 0) {
-        setError("Price must be greater than 0");
-        return;
-      }
-
-      const response = await axios.put(
-        `${API_URL}/api/cakes/${id}`,
-        editData,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      setCakes(cakes.map((c) => (c._id === id ? response.data.cake : c)));
-      setEditingId(null);
-      setSuccess("Cake updated successfully!");
-      setTimeout(() => setSuccess(""), 3000);
-    } catch (err) {
-      const errorMsg = err.response?.data?.message || "Failed to update cake";
-      setError(errorMsg);
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this cake?")) {
+    if (!editData.price || Number(editData.price) <= 0) {
+      setError("Price must be greater than 0");
       return;
     }
 
+    setSavingId(id);
+    setError("");
     try {
-      await axios.delete(`${API_URL}/api/cakes/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const { data } = await api.put(`/api/cakes/${id}`, {
+        name: editData.name,
+        price: Number(editData.price),
+        description: editData.description,
       });
-
-      setCakes(cakes.filter((c) => c._id !== id));
-      setSuccess("Cake deleted successfully!");
-      setTimeout(() => setSuccess(""), 3000);
+      setCakes((current) =>
+        current.map((cake) => (cake._id === id ? data.cake : cake))
+      );
+      cancelEdit();
+      showSuccess("Cake updated successfully!");
     } catch (err) {
-      const errorMsg = err.response?.data?.message || "Failed to delete cake";
-      setError(errorMsg);
+      setError(apiErrorMessage(err, "Failed to update cake"));
+    } finally {
+      setSavingId(null);
     }
   };
 
+  const handleToggleFeatured = async (cake) => {
+    setSavingId(cake._id);
+    setError("");
+
+    try {
+      const { data } = await api.put(`/api/cakes/${cake._id}`, {
+        featured: !cake.featured,
+      });
+      setCakes((current) =>
+        current.map((item) => (item._id === cake._id ? data.cake : item))
+      );
+      showSuccess(
+        data.cake.featured
+          ? "Added to the home page favourites!"
+          : "Removed from the home page favourites."
+      );
+    } catch (err) {
+      setError(apiErrorMessage(err, "Failed to update cake"));
+    } finally {
+      setSavingId(null);
+    }
+  };
+
+  const handleDelete = async (id) => {    if (!window.confirm("Delete this cake? This cannot be undone.")) return;
+
+    try {
+      await api.delete(`/api/cakes/${id}`);
+      setCakes((current) => current.filter((cake) => cake._id !== id));
+      showSuccess("Cake deleted successfully!");
+    } catch (err) {
+      setError(apiErrorMessage(err, "Failed to delete cake"));
+    }
+  };
+
+  const totalValue = visibleCakes.reduce((sum, cake) => sum + cake.price, 0);
+
   return (
-    <div className="cake-type-selector-page">
-      {/* Header */}
-      <div className="selector-header">
-        <h1>🍰 Update Cakes Menu</h1>
-        <p>Select a cake type to manage and update prices</p>
-      </div>
+    <div className="managePage">
+      <div className="container">
+        <header className="manageHeader">
+          <div>
+            <p className="eyebrow">Menu management</p>
+            <h1 className="manageTitle">Your cakes</h1>
+            <p className="manageSub">
+              Update prices, rename designs and remove anything that is no
+              longer on the menu.
+            </p>
+          </div>
+          <Link to="/update" className="btn btn-primary">
+            Upload new cake
+            <ArrowForwardIcon fontSize="small" />
+          </Link>
+        </header>
 
-      {/* Messages */}
-      {error && <div className="alert alert-error">{error}</div>}
-      {success && <div className="alert alert-success">{success}</div>}
+        {error && <div className="alert alert-error manageAlert">{error}</div>}
+        {success && <div className="alert alert-success manageAlert">{success}</div>}
 
-      {/* Type Selector */}
-      <div className="type-selector-container">
-        <label htmlFor="cakeType">Select Cake Type:</label>
-        <select
-          id="cakeType"
-          value={selectedType}
-          onChange={(e) => setSelectedType(e.target.value)}
-          className="type-selector"
-        >
-          {CAKE_TYPES.map((type) => (
-            <option key={type} value={type}>
-              {type}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Cakes Display */}
-      {loading ? (
-        <div className="loading">Loading {selectedType}s...</div>
-      ) : cakes.length === 0 ? (
-        <div className="no-cakes">
-          <p>No {selectedType}s found</p>
-        </div>
-      ) : (
-        <div className="cakes-container">
-          <div className="cakes-grid">
-            {cakes.map((cake) => (
-              <div key={cake._id} className="cake-item">
-                {/* Image */}
-                <div className="cake-image-wrapper">
-                  <img src={cake.image} alt={cake.type} className="cake-img" />
-                </div>
-
-                {/* Content */}
-                {editingId === cake._id ? (
-                  // Edit Mode
-                  <div className="cake-edit-form">
-                    <div className="price-group">
-                      <label>Price (Rs.)</label>
-                      <input
-                        type="number"
-                        min="1"
-                        step="0.01"
-                        value={editData.price}
-                        onChange={(e) =>
-                          setEditData({ ...editData, price: parseFloat(e.target.value) || "" })
-                        }
-                        className="price-input"
-                      />
-                    </div>
-
-                    <div className="desc-group">
-                      <label>Description</label>
-                      <textarea
-                        value={editData.description}
-                        onChange={(e) =>
-                          setEditData({ ...editData, description: e.target.value })
-                        }
-                        className="desc-input"
-                        rows="2"
-                      />
-                    </div>
-
-                    <div className="edit-buttons">
-                      <button
-                        className="btn-save"
-                        onClick={() => handleUpdate(cake._id)}
-                      >
-                        ✓ Save
-                      </button>
-                      <button className="btn-cancel" onClick={cancelEdit}>
-                        ✕ Cancel
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  // View Mode
-                  <div className="cake-info">
-                    <h3 className="cake-name">{cake.type}</h3>
-                    <p className="cake-price">Rs. {cake.price.toFixed(2)}</p>
-                    {cake.description && (
-                      <p className="cake-desc">{cake.description}</p>
-                    )}
-
-                    <div className="cake-buttons">
-                      <button
-                        className="btn-edit"
-                        onClick={() => startEdit(cake)}
-                      >
-                        ✎ Edit Price
-                      </button>
-                      <button
-                        className="btn-delete"
-                        onClick={() => handleDelete(cake._id)}
-                      >
-                        🗑 Delete
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
+        <div className="manageStats">
+          <div className="manageStat">
+            <strong>{cakes.length}</strong>
+            <span>Cakes on your menu</span>
+          </div>
+          <div className="manageStat">
+            <strong>{visibleCakes.length}</strong>
+            <span>Showing right now</span>
+          </div>
+          <div className="manageStat">
+            <strong>{formatPrice(totalValue)}</strong>
+            <span>Combined menu value</span>
           </div>
         </div>
-      )}
+
+        <div className="manageToolbar">
+          <div className="manageTypeTabs" role="tablist" aria-label="Cake type">
+            {["All", ...CAKE_TYPES].map((type) => {
+              const count =
+                type === "All"
+                  ? cakes.length
+                  : cakes.filter((cake) => cake.type === type).length;
+
+              return (
+                <button
+                  key={type}
+                  type="button"
+                  role="tab"
+                  aria-selected={selectedType === type}
+                  className={`manageTypeTab ${selectedType === type ? "isActive" : ""}`}
+                  onClick={() => setSelectedType(type)}
+                >
+                  {type}
+                  <span className="manageTypeCount">{count}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="manageSearch">
+            <SearchIcon fontSize="small" />
+            <label className="srOnly" htmlFor="manage-search">
+              Search your cakes
+            </label>
+            <input
+              id="manage-search"
+              type="search"
+              placeholder="Search your cakes..."
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="manageGrid">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="manageSkeleton" />
+            ))}
+          </div>
+        ) : visibleCakes.length === 0 ? (
+          <div className="manageEmpty">
+            <h2>Nothing here yet</h2>
+            <p>
+              {cakes.length === 0
+                ? "You haven't uploaded any cakes yet. Add your first design to get started."
+                : "No cakes match this filter. Try a different type or search term."}
+            </p>
+            <Link to="/update" className="btn btn-primary">
+              Upload a cake
+              <ArrowForwardIcon fontSize="small" />
+            </Link>
+          </div>
+        ) : (
+          <div className="manageGrid">
+            {visibleCakes.map((cake) => (
+              <article key={cake._id} className="manageCard">
+                <div className="manageCardMedia">
+                  <CakeImage src={cake.image} alt={cake.name || cake.type} />
+                  <span className="manageCardType">{cake.type}</span>
+                  {cake.featured && (
+                    <span className="manageCardFeatured">
+                      <StarIcon fontSize="small" />
+                      Featured
+                    </span>
+                  )}
+                </div>
+
+                <div className="manageCardBody">
+                  {editingId === cake._id ? (
+                    <div className="manageEditForm">
+                      <div className="field">
+                        <label htmlFor={`name-${cake._id}`}>Design name</label>
+                        <input
+                          id={`name-${cake._id}`}
+                          type="text"
+                          placeholder="e.g. Rose Gold Tier"
+                          value={editData.name}
+                          onChange={(event) =>
+                            setEditData({ ...editData, name: event.target.value })
+                          }
+                        />
+                      </div>
+
+                      <div className="field">
+                        <label htmlFor={`price-${cake._id}`}>Price (Rs.)</label>
+                        <input
+                          id={`price-${cake._id}`}
+                          type="number"
+                          min="1"
+                          step="0.01"
+                          value={editData.price}
+                          onChange={(event) =>
+                            setEditData({
+                              ...editData,
+                              price: event.target.value,
+                            })
+                          }
+                        />
+                      </div>
+
+                      <div className="field">
+                        <label htmlFor={`desc-${cake._id}`}>Description</label>
+                        <textarea
+                          id={`desc-${cake._id}`}
+                          rows="2"
+                          value={editData.description}
+                          onChange={(event) =>
+                            setEditData({
+                              ...editData,
+                              description: event.target.value,
+                            })
+                          }
+                        />
+                      </div>
+
+                      <div className="manageEditActions">
+                        <button
+                          type="button"
+                          className="btn btn-primary btn-sm"
+                          onClick={() => handleUpdate(cake._id)}
+                          disabled={savingId === cake._id}
+                        >
+                          {savingId === cake._id ? "Saving..." : "Save changes"}
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-sm"
+                          onClick={cancelEdit}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <h3 className="manageCardTitle">
+                        {cake.name || cake.type}
+                      </h3>
+                      <p className="manageCardPrice">{formatPrice(cake.price)}</p>
+                      {cake.description && (
+                        <p className="manageCardText">{cake.description}</p>
+                      )}
+
+                      <div className="manageCardActions">
+                        <button
+                          type="button"
+                          className={`btn btn-sm ${
+                            cake.featured ? "btn-primary" : "btn-outline"
+                          }`}
+                          onClick={() => handleToggleFeatured(cake)}
+                          disabled={savingId === cake._id}
+                        >
+                          <StarIcon fontSize="small" />
+                          {cake.featured ? "Featured" : "Feature"}
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-outline btn-sm"
+                          onClick={() => startEdit(cake)}
+                        >
+                          <EditOutlinedIcon fontSize="small" />
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-danger btn-sm"
+                          onClick={() => handleDelete(cake._id)}
+                        >
+                          <DeleteOutlineIcon fontSize="small" />
+                          Delete
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

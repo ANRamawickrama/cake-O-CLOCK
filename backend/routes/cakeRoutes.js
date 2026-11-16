@@ -1,27 +1,40 @@
 const express = require('express');
 const Cake = require('../models/cake');
 const auth = require('../middleware/authMiddleware');
+const { upload, publicPathFor } = require('../middleware/upload');
 const router = express.Router();
 
-// Add new cake (protected) - accepts base64 image
-router.post('/upload', auth, async (req, res) => {
-  try {
-    const { type, price, image, description } = req.body;
+const CAKE_TYPES = Cake.CAKE_TYPES;
 
-    if (!type || !price || !image) {
+// Add new cake (protected).
+// Accepts either a multipart/form-data upload with an `image` file or a
+// JSON body containing a base64 `image` string (legacy clients).
+router.post('/upload', auth, upload.single('image'), async (req, res) => {
+  try {
+    const { type, price, name, description } = req.body;
+
+    const image = req.file ? publicPathFor(req.file) : req.body.image;
+
+    if (!type || price === undefined || price === '' || !image) {
       return res.status(400).json({ message: 'Please fill all required fields' });
     }
 
-    if (price <= 0) {
+    if (!CAKE_TYPES.includes(type)) {
+      return res.status(400).json({ message: 'Please choose a valid cake type' });
+    }
+
+    const numericPrice = Number(price);
+    if (Number.isNaN(numericPrice) || numericPrice <= 0) {
       return res.status(400).json({ message: 'Price must be greater than 0' });
     }
 
     const newCake = new Cake({
       ownerId: req.user.id,
+      name: (name || '').trim(),
       type,
-      price,
+      price: numericPrice,
       image,
-      description: description || ''
+      description: (description || '').trim(),
     });
 
     await newCake.save();
@@ -32,10 +45,23 @@ router.post('/upload', auth, async (req, res) => {
   }
 });
 
+// Get the cakes highlighted on the home page (public)
+router.get('/featured', async (req, res) => {
+  try {
+    const cakes = await Cake.find({ featured: true })
+      .sort({ createdAt: -1 })
+      .limit(6)
+      .lean();
+    res.json(cakes);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to load featured cakes' });
+  }
+});
+
 // Get all cakes
 router.get('/', async (req, res) => {
   try {
-    const cakes = await Cake.find().sort({ createdAt: -1 });
+    const cakes = await Cake.find().sort({ createdAt: -1 }).lean();
     res.json(cakes);
   } catch (err) {
     res.status(500).json({ message: 'Failed to load cakes' });
@@ -45,7 +71,11 @@ router.get('/', async (req, res) => {
 // Get cakes by type
 router.get('/type/:type', async (req, res) => {
   try {
-    const cakes = await Cake.find({ type: req.params.type }).sort({ createdAt: -1 });
+    const type = req.params.type;
+    if (!CAKE_TYPES.includes(type)) {
+      return res.status(400).json({ message: 'Please choose a valid cake type' });
+    }
+    const cakes = await Cake.find({ type }).sort({ createdAt: -1 }).lean();
     res.json(cakes);
   } catch (err) {
     res.status(500).json({ message: 'Failed to load cakes' });
@@ -55,10 +85,23 @@ router.get('/type/:type', async (req, res) => {
 // Get owner's cakes (protected)
 router.get('/owner/my-cakes', auth, async (req, res) => {
   try {
-    const cakes = await Cake.find({ ownerId: req.user.id }).sort({ createdAt: -1 });
+    const cakes = await Cake.find({ ownerId: req.user.id }).sort({ createdAt: -1 }).lean();
     res.json(cakes);
   } catch (err) {
     res.status(500).json({ message: 'Failed to load your cakes' });
+  }
+});
+
+// Get a single cake by id
+router.get('/:id', async (req, res) => {
+  try {
+    const cake = await Cake.findById(req.params.id);
+    if (!cake) {
+      return res.status(404).json({ message: 'Cake not found' });
+    }
+    res.json(cake);
+  } catch (err) {
+    res.status(400).json({ message: 'Failed to load cake' });
   }
 });
 
@@ -66,7 +109,7 @@ router.get('/owner/my-cakes', auth, async (req, res) => {
 router.put('/:id', auth, async (req, res) => {
   try {
     const cake = await Cake.findById(req.params.id);
-    
+
     if (!cake) {
       return res.status(404).json({ message: 'Cake not found' });
     }
@@ -77,21 +120,40 @@ router.put('/:id', auth, async (req, res) => {
     }
 
     // Validate price if being updated
-    if (req.body.price !== undefined && req.body.price <= 0) {
-      return res.status(400).json({ message: 'Price must be greater than 0' });
+    if (req.body.price !== undefined) {
+      const numericPrice = Number(req.body.price);
+      if (Number.isNaN(numericPrice) || numericPrice <= 0) {
+        return res.status(400).json({ message: 'Price must be greater than 0' });
+      }
+      cake.price = numericPrice;
     }
 
-    // Update allowed fields
-    const allowedFields = ['type', 'price', 'image', 'description'];
-    allowedFields.forEach(field => {
-      if (req.body[field] !== undefined) {
-        cake[field] = req.body[field];
+    if (req.body.type !== undefined) {
+      if (!CAKE_TYPES.includes(req.body.type)) {
+        return res.status(400).json({ message: 'Please choose a valid cake type' });
       }
-    });
+      cake.type = req.body.type;
+    }
+
+    if (req.body.name !== undefined) {
+      cake.name = String(req.body.name).trim();
+    }
+
+    if (req.body.description !== undefined) {
+      cake.description = String(req.body.description).trim();
+    }
+
+    if (req.body.featured !== undefined) {
+      cake.featured = Boolean(req.body.featured);
+    }
+
+    if (req.body.image !== undefined && req.body.image) {
+      cake.image = req.body.image;
+    }
 
     cake.updatedAt = new Date();
     await cake.save();
-    
+
     res.json({ message: 'Cake updated successfully', cake });
   } catch (err) {
     res.status(400).json({ message: 'Failed to update cake', error: err.message });
@@ -102,7 +164,7 @@ router.put('/:id', auth, async (req, res) => {
 router.delete('/:id', auth, async (req, res) => {
   try {
     const cake = await Cake.findById(req.params.id);
-    
+
     if (!cake) {
       return res.status(404).json({ message: 'Cake not found' });
     }
