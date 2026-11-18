@@ -5,9 +5,9 @@ export const SITE = {
   description:
     "Bespoke birthday, wedding and dessert cakes made by hand in Sri Lanka. Every design is customised to your celebration and delivered fresh.",
 
-  phone: "+947710961790",
-  phoneDisplay: "+94 77 109 61790",
-  whatsapp: "947710961790",
+  phone: "+94710961790",
+  phoneDisplay: "+94 71 0961790",
+  whatsapp: "94710961790",
 
   email: "orders@cakeoclock.lk",
   address: "Colombo, Sri Lanka",
@@ -21,7 +21,7 @@ export const SITE = {
   socials: {
     facebook: "https://facebook.com",
     instagram: "https://instagram.com",
-    whatsapp: "https://wa.me/947710961790",
+    whatsapp: "https://wa.me/94710961790",
   },
 };
 
