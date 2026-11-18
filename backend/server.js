@@ -12,6 +12,7 @@ const cakeRoutes = require('./routes/cakeRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const { copyCatalogueAssets } = require('./middleware/upload');
 
 const app = express();
 
@@ -103,14 +104,19 @@ mongoose
     serverSelectionTimeoutMS: 15000,
     socketTimeoutMS: 45000,
   })
-  .then(() => console.log('✅ MongoDB connected successfully'))
+  .then(() => {
+    console.log('✅ MongoDB connected successfully');
+    const copied = copyCatalogueAssets();
+    if (copied > 0) {
+      console.log(`✅ Restored ${copied} catalogue image(s)`);
+    }
+
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running at http://localhost:${PORT}`);
+    });
+  })
   .catch((err) => {
     console.error('❌ MongoDB connection error:', err);
     process.exit(1);
   });
-
-// ===== Start Server =====
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
-});

@@ -8,6 +8,51 @@ if (!fs.existsSync(UPLOAD_DIR)) {
   fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 }
 
+const copyCatalogueAssets = () => {
+  const frontendAssets = path.join(__dirname, "..", "..", "frontend", "src", "assets");
+  const folders = [
+    ["birthday", "birthday"],
+    ["cupcake", "cupcake"],
+    ["anniversary", "anniversary"],
+    ["structures", "structure"],
+  ];
+
+  let copied = 0;
+
+  folders.forEach(([folder, slug]) => {
+    const sourceFolder = path.join(frontendAssets, folder);
+    if (!fs.existsSync(sourceFolder)) return;
+
+    fs.readdirSync(sourceFolder)
+      .filter((file) => /\.(jpe?g|png|webp)$/i.test(file))
+      .sort((a, b) => Number(a.replace(/\D/g, "")) - Number(b.replace(/\D/g, "")))
+      .forEach((file) => {
+        const index = Number(file.replace(/\D/g, "")) || 1;
+        const destination = path.join(UPLOAD_DIR, `catalogue-${slug}-${index}${path.extname(file).toLowerCase()}`);
+        if (!fs.existsSync(destination)) {
+          fs.copyFileSync(path.join(sourceFolder, file), destination);
+          copied += 1;
+        }
+      });
+  });
+
+  const standaloneImages = [
+    ["jar.jpg", "catalogue-jar.jpg"],
+    ["weddingcake.jpg", "catalogue-wedding.jpg"],
+  ];
+
+  standaloneImages.forEach(([sourceName, destinationName]) => {
+    const source = path.join(frontendAssets, sourceName);
+    const destination = path.join(UPLOAD_DIR, destinationName);
+    if (fs.existsSync(source) && !fs.existsSync(destination)) {
+      fs.copyFileSync(source, destination);
+      copied += 1;
+    }
+  });
+
+  return copied;
+};
+
 const ALLOWED_MIME = new Set([
   "image/jpeg",
   "image/jpg",
@@ -88,4 +133,4 @@ const persistDataUri = (dataUri) => {
   return `/uploads/${filename}`;
 };
 
-module.exports = { upload, UPLOAD_DIR, publicPathFor, persistDataUri };
+module.exports = { upload, UPLOAD_DIR, publicPathFor, persistDataUri, copyCatalogueAssets };

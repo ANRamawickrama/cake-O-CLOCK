@@ -14,13 +14,23 @@ export default function CakeImage({ src, alt = "", className = "", loading = "la
   const resolved = resolveImageUrl(src);
   const [source, setSource] = useState(resolved || placeholderImage);
   const [failed, setFailed] = useState(false);
+  const [retrying, setRetrying] = useState(false);
 
   useEffect(() => {
     setSource(resolved || placeholderImage);
     setFailed(false);
+    setRetrying(false);
   }, [resolved]);
 
   const handleError = () => {
+    if (!retrying && resolved && source !== placeholderImage) {
+      setRetrying(true);
+      window.setTimeout(() => {
+        setSource(`${resolved}${resolved.includes("?") ? "&" : "?"}retry=${Date.now()}`);
+      }, 500);
+      return;
+    }
+
     if (failed) return;
     setFailed(true);
     setSource(placeholderImage);
