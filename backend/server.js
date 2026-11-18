@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const ownerRoutes = require('./routes/ownerRoutes');
@@ -48,6 +49,34 @@ app.use(
     fallthrough: true,
   })
 );
+
+// Permanent fallback for catalogue artwork while uploads are hosted on an
+// ephemeral Render filesystem. Existing catalogue rows keep their `/uploads`
+// URLs and load from the public repository assets if a file is missing.
+app.get('/uploads/:filename', (req, res, next) => {
+  const localFile = path.join(__dirname, 'uploads', path.basename(req.params.filename));
+  if (fs.existsSync(localFile)) return next();
+
+  const filename = req.params.filename;
+  let assetPath = null;
+
+  const numbered = /^catalogue-(birthday|cupcake|anniversary|structure)-(\d+)\.(jpg|jpeg|png|webp)$/i.exec(filename);
+  if (numbered) {
+    const folder = numbered[1] === 'structure' ? 'structures' : numbered[1];
+    assetPath = `frontend/src/assets/${folder}/${numbered[2]}.${numbered[3].toLower}`;
+  } else if (/^catalogue-jar\.(jpg|jpeg|png|webp)$/i.test(filename)) {
+    assetPath = 'frontend/src/assets/jar.jpg';
+  } else if (/^catalogue-wedding\.(jpg|jpeg|png|webp)$/i.test(filename)) {
+    assetPath = 'frontend/src/assets/weddingcake.jpg';
+  }
+
+  if (!assetPath) return next();
+
+  res.redirect(
+    302,
+    `https://raw.githubusercontent.com/ANRamawickrama/cake-O-CLOCK/main/${assetPath}`
+  );
+});
 
 // ===== Routes =====
 app.use('/api/owner', ownerRoutes);
