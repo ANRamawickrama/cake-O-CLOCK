@@ -18,6 +18,22 @@ export function resolveImageUrl(image) {
   }
 
   if (value.startsWith("/uploads/")) {
+    const catalogueMatch = /^\/uploads\/catalogue-(birthday|cupcake|anniversary|structure)-(\d+)\.(jpg|jpeg|png|webp)$/i.exec(value);
+    if (catalogueMatch) {
+      const folder = catalogueMatch[1] === "structure"
+        ? "structures"
+        : catalogueMatch[1];
+      return `https://raw.githubusercontent.com/ANRamawickrama/cake-O-CLOCK/main/frontend/src/assets/${folder}/${catalogueMatch[2]}.${catalogueMatch[3].toLowerCase()}`;
+    }
+
+    if (/^\/uploads\/catalogue-jar\.(jpg|jpeg|png|webp)$/i.test(value)) {
+      return "https://raw.githubusercontent.com/ANRamawickrama/cake-O-CLOCK/main/frontend/src/assets/jar.jpg";
+    }
+
+    if (/^\/uploads\/catalogue-wedding\.(jpg|jpeg|png|webp)$/i.test(value)) {
+      return "https://raw.githubusercontent.com/ANRamawickrama/cake-O-CLOCK/main/frontend/src/assets/weddingcake.jpg";
+    }
+
     return `${getApiBaseUrl()}${value}`;
   }
 
