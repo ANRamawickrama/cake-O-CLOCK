@@ -5,6 +5,7 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import api, { apiErrorMessage } from "../services/api";
 import CakeImage from "../component/CakeImage";
+import useCustomerSession from "../hooks/useCustomerSession";
 import { formatPrice } from "../helpers/site";
 import "../styles/OrderForm.css";
 
@@ -12,14 +13,17 @@ function OrderForm() {
   const location = useLocation();
   const navigate = useNavigate();
   const cake = location.state?.cake;
+  const { customer } = useCustomerSession();
 
   const [userLocation, setUserLocation] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [contactNumber, setContactNumber] = useState("");
+  const [fullName, setFullName] = useState(customer?.name || "");
+  const [contactNumber, setContactNumber] = useState(customer?.phone || "");
   const [description, setDescription] = useState("");
-  const [weight, setWeight] = useState("");
+  const [weight, setWeight] = useState(
+    cake?.weightKg ? String(cake.weightKg) : ""
+  );
   const [deliveryDate, setDeliveryDate] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(customer?.email || "");
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -87,7 +91,7 @@ function OrderForm() {
           customerEmail: email.trim(),
           customerPhone: contactNumber.trim(),
           cakeId: cake._id,
-          cakeName: cake.name,
+          cakeName: cake.type,
           cakeImage: cake.image || "",
           cakePrice: cake.price,
           quantity: Number(quantity),
@@ -96,7 +100,7 @@ function OrderForm() {
           weight: weight.trim(),
           deliveryDate,
         },
-        { timeout: 20000 }
+        { timeout: 20000, authScope: "customer" }
       );
 
       setPlacedOrder(data.order);
@@ -171,14 +175,11 @@ function OrderForm() {
             <>
               <div className="orderCakeCard">
                 <div className="orderCakeMedia">
-                  <CakeImage src={cake.image} alt={cake.name} />
+                  <CakeImage src={cake.image} alt={cake.type} />
                 </div>
                 <div className="orderCakeBody">
                   <p className="orderCakeType">{cake.type}</p>
-                  <h2 className="orderCakeTitle">{cake.name}</h2>
-                  {cake.description && (
-                    <p className="orderCakeText">{cake.description}</p>
-                  )}
+                  <h2 className="orderCakeTitle">{cake.type}</h2>
                   <p className="orderCakePrice">{formatPrice(cake.price)}</p>
                 </div>
               </div>
@@ -283,6 +284,12 @@ function OrderForm() {
                   onChange={(event) => setWeight(event.target.value)}
                   required
                 />
+                {cake?.weightKg > 0 && (
+                  <span className="fieldHint">
+                    This design is usually {cake.weightKg} kg — tell us if you
+                    need a different size.
+                  </span>
+                )}
               </div>
 
               <div className="field">

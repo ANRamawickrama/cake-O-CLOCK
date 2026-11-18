@@ -244,6 +244,17 @@
   color: var(--brand-600);
 }
 
+.manageCardWeight {
+  margin: -4px 0 10px;
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  background: var(--cream-200);
+  color: var(--ink-700);
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
 .manageCardText {
   margin: 0 0 16px;
   color: var(--ink-500);
@@ -255,13 +266,22 @@
 }
 
 .manageCardActions {
-  display: flex;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
   margin-top: auto;
 }
 
 .manageCardActions .btn {
-  flex: 1;
+  min-width: 0;
+  padding-inline: 12px;
+  font-size: 0.82rem;
+  gap: 6px;
+}
+
+/* The delete action gets its own row so it never gets pushed out of the card. */
+.manageCardActions .btn-danger {
+  grid-column: 1 / -1;
 }
 
 .manageEditForm {
@@ -271,12 +291,14 @@
 }
 
 .manageEditActions {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px;
 }
 
 .manageEditActions .btn {
-  flex: 1;
+  min-width: 0;
+  padding-inline: 12px;
 }
 
 .manageSkeleton {

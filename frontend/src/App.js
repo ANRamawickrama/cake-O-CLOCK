@@ -18,6 +18,8 @@ import JarCakes from "./pages/jarcake";
 
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
+import CustomerAccountPage from "./pages/CustomerAccountPage";
+import MyOrdersPage from "./pages/MyOrdersPage";
 import CakeTypeSelectorPage from "./pages/CakeTypeSelectorPage";
 import UploadCakePage from "./pages/UploardCakePage";
 import OrderForm from "./pages/OrderForm";
@@ -66,6 +68,8 @@ function App() {
               <Route path="/weddingcakes" element={<WeddingCakes />} />
               <Route path="/jarcake" element={<JarCakes />} />
               <Route path="/login" element={<LoginPage setToken={setToken} />} />
+              <Route path="/account" element={<CustomerAccountPage />} />
+              <Route path="/my-orders" element={<MyOrdersPage />} />
               <Route path="/dashboard" element={<ProtectedRoute><OwnerDashboard /></ProtectedRoute>} />
               <Route path="/manage" element={<ProtectedRoute><CakeTypeSelectorPage /></ProtectedRoute>} />
               <Route path="/update" element={<ProtectedRoute><UploadCakePage /></ProtectedRoute>} />

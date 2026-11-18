@@ -7,6 +7,7 @@ const path = require('path');
 require('dotenv').config();
 
 const ownerRoutes = require('./routes/ownerRoutes');
+const customerRoutes = require('./routes/customerRoutes');
 const cakeRoutes = require('./routes/cakeRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
@@ -49,6 +50,7 @@ app.use(
 
 // ===== Routes =====
 app.use('/api/owner', ownerRoutes);
+app.use('/api/customer', customerRoutes);
 app.use('/api/cakes', cakeRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reviews', reviewRoutes);

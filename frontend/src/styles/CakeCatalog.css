@@ -320,10 +320,26 @@
   border-top: 1px solid var(--cream-200);
 }
 
+.catalogCardPriceWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .catalogCardPrice {
   font-size: 1rem;
   font-weight: 800;
   color: var(--brand-600);
+}
+
+.catalogCardWeight {
+  padding: 3px 9px;
+  border-radius: var(--r-pill);
+  background: var(--cream-200);
+  color: var(--ink-700);
+  font-size: 0.72rem;
+  font-weight: 800;
 }
 
 .catalogCardOrder {
@@ -509,11 +525,18 @@
 }
 
 .catalogModalPrice {
-  margin: 0 0 24px;
+  margin: 0 0 6px;
   font-family: var(--font-display);
   font-size: 1.9rem;
   font-weight: 700;
   color: var(--brand-600);
+}
+
+.catalogModalWeight {
+  margin: 0 0 20px;
+  color: var(--ink-500);
+  font-size: 0.88rem;
+  font-weight: 600;
 }
 
 .catalogModalActions {

@@ -2,8 +2,8 @@
 
 Full-stack cake ordering and management application.
 
-- **Frontend** — React (Create React App) customer storefront plus an owner dashboard
-- **Backend** — Express + MongoDB API for cakes, orders, reviews, enquiries and owner authentication
+- **Frontend** — React (Create React App) customer storefront, customer accounts plus an owner dashboard
+- **Backend** — Express + MongoDB API for cakes, orders, reviews, enquiries, owner and customer authentication
 
 ## Project Structure
 
@@ -11,17 +11,17 @@ Full-stack cake ordering and management application.
 cake-business-site/
   backend/
     config/         # cloudinary config
-    middleware/     # JWT auth, multer image upload
-    models/         # Cake, Order, Owner, Review, ContactMessage
+    middleware/     # JWT auth (owner + customer), multer image upload
+    models/         # Cake, Order, Owner, Customer, Review, ContactMessage
     routes/         # Express routers
     uploads/        # uploaded cake images (git-ignored)
   frontend/
     src/
       component/    # Navbar, Footer, CakeCatalog, ReviewSection, ProtectedRoute
       helpers/      # site config, cake catalogue, api base url, image resolver
-      hooks/        # useReveal (scroll animations)
-      pages/        # storefront + dashboard pages
-      services/     # shared axios instance
+      hooks/        # useReveal (scroll animations), useCustomerSession
+      pages/        # storefront + account + dashboard pages
+      services/     # shared axios instance, customer session storage
       styles/       # theme.css (design tokens) + per-page CSS
 ```
 
@@ -104,6 +104,23 @@ npm start
 3. Sign in — the JWT is stored in `localStorage` and sent as
    `Authorization: Bearer <token>` on every protected request
 
+## Customer Access
+
+Customers get their own account area at http://localhost:3000/account:
+
+1. Choose **Create account** and register with a name, email and password
+2. Sign in — the customer JWT is stored separately from the owner token
+   (`customerToken` in `localStorage`) so the two sessions never clash
+3. **My orders** (`/my-orders`) lists every order with a live status tracker
+   (`Pending → Confirmed → Baking → Ready → Completed`)
+
+Orders placed while signed in are linked to the account automatically. Orders
+placed before the account was created are matched on the same email address.
+
+The navbar shows an **Account** button instead of an owner-only link, so
+customers never land on the owner dashboard. Owner access stays available at
+`/login` and through the **Owner Dashboard** link in the footer.
+
 ## Useful Scripts
 
 ### Backend
@@ -137,6 +154,13 @@ Base URL (local): `http://localhost:5000`
 - `GET /api/owner/verify` — Verify owner token
 - `GET /api/verify` — Generic token verification route
 
+### Customer
+
+- `POST /api/customer/register` — Register customer (returns JWT + customer)
+- `POST /api/customer/login` — Login customer (returns JWT + customer)
+- `GET /api/customer/verify` — Verify customer token (auth)
+- `GET /api/customer/orders` — List the signed-in customer's orders (auth)
+
 ### Cakes
 
 - `GET /api/cakes` — Get all cakes
@@ -145,9 +169,11 @@ Base URL (local): `http://localhost:5000`
 - `GET /api/cakes/owner/my-cakes` — Get owner cakes (auth)
 - `GET /api/cakes/:id` — Get a single cake
 - `POST /api/cakes/upload` — Add cake (auth) — accepts `multipart/form-data` with an
-  `image` file (stored on disk under `backend/uploads`) or a legacy base64 `image` string
+  `image` file (stored on disk under `backend/uploads`) or a legacy base64 `image` string.
+  Also accepts `weightKg` — the default size shown to customers.
 - `PUT /api/cakes/:id` — Update cake (auth + owner check). Also accepts
-  `{ "featured": true | false }` to control what appears on the home page.
+  `{ "featured": true | false }` to control what appears on the home page and
+  `{ "weightKg": 2.5 }` to change the default size.
 - `DELETE /api/cakes/:id` — Delete cake (auth + owner check)
 
 ### Orders
@@ -182,7 +208,15 @@ Protected backend routes expect a bearer token header:
 Authorization: Bearer <token>
 ```
 
-The token is returned from `POST /api/owner/login` and signed with `JWT_SECRET`.
+Tokens are signed with `JWT_SECRET` and carry a `role` claim (`owner` or
+`customer`). Owner routes reject customer tokens, and customer routes reject
+owner tokens, so neither session can reach the other's data.
+
+- Owner token — returned from `POST /api/owner/login`, stored as `token`
+- Customer token — returned from `POST /api/customer/login`, stored as `customerToken`
+
+The shared axios instance in `frontend/src/services/api.js` picks the right
+token per request and only redirects to the matching login page on a `401`.
 
 ## Images
 

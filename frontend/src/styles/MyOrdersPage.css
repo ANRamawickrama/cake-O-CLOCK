@@ -1,0 +1,282 @@
+/* ==========================================================================
+   Customer orders
+   ========================================================================== */
+
+.myOrdersPage {
+  padding-block: clamp(32px, 5vw, 56px);
+  min-height: calc(100vh - var(--header-h));
+  background: var(--cream-100);
+}
+
+.myOrdersHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.myOrdersTitle {
+  margin: 0 0 8px;
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+}
+
+.myOrdersSub {
+  max-width: 56ch;
+  margin: 0;
+  color: var(--ink-500);
+}
+
+.myOrdersHeaderActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.myOrdersAlert {
+  margin-bottom: 18px;
+}
+
+.myOrdersSection {
+  margin-bottom: 32px;
+}
+
+.myOrdersSectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 16px;
+  font-size: 1.05rem;
+  color: var(--ink-900);
+}
+
+.myOrdersSectionTitle svg {
+  color: var(--brand-500);
+}
+
+.myOrdersList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* --- Order card --- */
+
+.myOrderCard {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 20px;
+  padding: 18px;
+  border: 1px solid var(--cream-300);
+  border-radius: var(--r-lg);
+  background: var(--cream-50);
+  box-shadow: var(--shadow-xs);
+}
+
+.myOrderMedia {
+  overflow: hidden;
+  border-radius: var(--r-md, 14px);
+  background: var(--cream-200);
+  aspect-ratio: 4 / 3;
+}
+
+.myOrderMedia img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.myOrderNoImage {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  color: var(--ink-400);
+}
+
+.myOrderBody {
+  min-width: 0;
+}
+
+.myOrderTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.myOrderRef {
+  margin: 0 0 4px;
+  color: var(--ink-400);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.myOrderTitle {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.myOrderStatus {
+  padding: 5px 13px;
+  border-radius: var(--r-pill);
+  background: var(--cream-200);
+  color: var(--ink-700);
+  font-size: 0.73rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.myOrderStatus--Pending {
+  background: #fff4e0;
+  color: #a1620a;
+}
+
+.myOrderStatus--Confirmed,
+.myOrderStatus--Baking {
+  background: var(--brand-100);
+  color: var(--brand-700);
+}
+
+.myOrderStatus--Ready {
+  background: #e2f1fb;
+  color: #17608f;
+}
+
+.myOrderStatus--Completed {
+  background: var(--success-soft);
+  color: #1f5a40;
+}
+
+.myOrderStatus--Cancelled {
+  background: var(--danger-soft);
+  color: #9c2f22;
+}
+
+.myOrderMeta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 12px;
+  margin: 16px 0;
+  padding: 14px 0;
+  border-top: 1px solid var(--cream-300);
+  border-bottom: 1px solid var(--cream-300);
+}
+
+.myOrderMeta div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.myOrderMeta dt {
+  color: var(--ink-400);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.myOrderMeta dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.myOrderProgress {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.myOrderStep {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  background: var(--cream-100);
+  color: var(--ink-400);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.myOrderStepDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--cream-300);
+}
+
+.myOrderStep.isDone {
+  background: var(--brand-50);
+  color: var(--brand-700);
+}
+
+.myOrderStep.isDone .myOrderStepDot {
+  background: var(--brand-500);
+}
+
+.myOrderStep.isCurrent {
+  background: var(--brand-500);
+  color: #fff;
+}
+
+.myOrderStep.isCurrent .myOrderStepDot {
+  background: #fff;
+}
+
+.myOrderNotes {
+  margin: 14px 0 0;
+  color: var(--ink-500);
+  font-size: 0.87rem;
+}
+
+/* --- Empty & skeleton --- */
+
+.myOrdersEmpty {
+  padding: clamp(40px, 7vw, 76px) 24px;
+  border: 1px dashed var(--cream-300);
+  border-radius: var(--r-xl);
+  background: var(--cream-50);
+  text-align: center;
+}
+
+.myOrdersEmpty h2 {
+  margin: 0 0 10px;
+  font-size: 1.5rem;
+}
+
+.myOrdersEmpty p {
+  max-width: 48ch;
+  margin: 0 auto 22px;
+  color: var(--ink-500);
+}
+
+.myOrdersSkeleton {
+  height: 170px;
+  border-radius: var(--r-lg);
+  background: linear-gradient(
+    100deg,
+    var(--cream-200) 30%,
+    var(--cream-100) 50%,
+    var(--cream-200) 70%
+  );
+  background-size: 220% 100%;
+  animation: skeleton 1.4s ease-in-out infinite;
+}
+
+@media (max-width: 720px) {
+  .myOrderCard {
+    grid-template-columns: 1fr;
+  }
+
+  .myOrderMedia {
+    aspect-ratio: 16 / 10;
+  }
+}

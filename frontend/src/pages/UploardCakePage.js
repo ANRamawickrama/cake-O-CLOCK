@@ -8,15 +8,15 @@ import "../styles/UploadCakePage.css";
 
 const CAKE_TYPES = CAKE_CATEGORIES.map((category) => category.type);
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
+const WEDDING_STRUCTURE_TYPE = "Wedding Structure";
 
 export default function UploadCakePage() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
   const [type, setType] = useState("");
-  const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [description, setDescription] = useState("");
+  const [weightKg, setWeightKg] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [message, setMessage] = useState("");
@@ -60,9 +60,8 @@ export default function UploadCakePage() {
 
   const resetForm = () => {
     setType("");
-    setName("");
     setPrice("");
-    setDescription("");
+    setWeightKg("");
     setImage(null);
     setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -84,14 +83,21 @@ export default function UploadCakePage() {
       return;
     }
 
+    if (type !== WEDDING_STRUCTURE_TYPE && weightKg !== "" && (Number.isNaN(Number(weightKg)) || Number(weightKg) < 0)) {
+      setMessageType("error");
+      setMessage("Please enter a weight of 0 kg or more.");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const formData = new FormData();
       formData.append("type", type);
-      formData.append("name", name.trim());
       formData.append("price", String(Number(price)));
-      formData.append("description", description.trim());
+      if (type !== WEDDING_STRUCTURE_TYPE) {
+        formData.append("weightKg", String(Number(weightKg) || 0));
+      }
       formData.append("image", image);
 
       await api.post("/api/cakes/upload", formData, {
@@ -158,19 +164,6 @@ export default function UploadCakePage() {
             </div>
 
             <div className="field">
-              <label htmlFor="upload-name">Design name</label>
-              <input
-                id="upload-name"
-                type="text"
-                placeholder="e.g. Rose Gold Celebration Tier"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                disabled={loading}
-                maxLength={120}
-              />
-            </div>
-
-            <div className="field">
               <label htmlFor="upload-price">Price (Rs.)</label>
               <input
                 id="upload-price"
@@ -185,18 +178,21 @@ export default function UploadCakePage() {
               />
             </div>
 
-            <div className="field">
-              <label htmlFor="upload-description">Description</label>
-              <textarea
-                id="upload-description"
-                placeholder="Flavour, size, finishing details..."
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
-                disabled={loading}
-                rows="3"
-                maxLength={600}
-              />
-            </div>
+            {type !== WEDDING_STRUCTURE_TYPE && (
+              <div className="field">
+                <label htmlFor="upload-weight">Weight (kg)</label>
+                <input
+                  id="upload-weight"
+                  type="number"
+                  placeholder="2"
+                  value={weightKg}
+                  onChange={(event) => setWeightKg(event.target.value)}
+                  disabled={loading}
+                  min="0"
+                  step="0.25"
+                />
+              </div>
+            )}
 
             <div className="field">
               <label htmlFor="upload-image">Cake image</label>

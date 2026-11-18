@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order');
 const auth = require('../middleware/authMiddleware');
+const { optionalCustomerAuth } = require('../middleware/customerAuth');
 const { persistDataUri } = require('../middleware/upload');
 
 const ORDER_STATUSES = Order.ORDER_STATUSES;
 
 // POST - Create a new order (public route for customers)
-router.post('/', async (req, res) => {
+router.post('/', optionalCustomerAuth, async (req, res) => {
   try {
     const {
       customerName,
@@ -46,7 +47,8 @@ router.post('/', async (req, res) => {
 
     const newOrder = new Order({
       customerName: customerName.trim(),
-      customerEmail: (customerEmail || '').trim(),
+      customerEmail: (customerEmail || '').trim() || req.customer?.email || '',
+      customerId: req.customer ? req.customer._id : null,
       customerPhone: customerPhone.trim(),
       cakeId: cakeId || null,
       cakeName: cakeName.trim(),

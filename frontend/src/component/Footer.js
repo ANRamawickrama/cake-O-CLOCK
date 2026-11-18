@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
@@ -20,79 +20,12 @@ const SOCIALS = [
 ];
 
 function Footer() {
-  const [email, setEmail] = useState("");
-  const [subscribed, setSubscribed] = useState(false);
-
-  const handleSubscribe = (event) => {
-    event.preventDefault();
-    if (!email.trim()) return;
-    setSubscribed(true);
-    setEmail("");
-  };
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <footer className="siteFooter">
-      <div className="footerTop">
-        <div className="container footerTopInner">
-          <div className="footerPitch">
-            <h2 className="footerTitle">
-              Let&apos;s bake something <em>unforgettable</em>
-            </h2>
-            <p className="footerPitchText">
-              Tell us the occasion, the colours and the number of guests — our
-              kitchen will design and deliver a cake that feels made just for
-              you.
-            </p>
-            <div className="footerPitchActions">
-              <Link to="/menu" className="btn btn-gold">
-                Browse the Menu
-              </Link>
-              <a
-                href={`tel:${SITE.phone}`}
-                className="footerPitchCall"
-              >
-                <PhoneIcon fontSize="small" />
-                {SITE.phoneDisplay}
-              </a>
-            </div>
-          </div>
-
-          <form className="footerSubscribe" onSubmit={handleSubscribe}>
-            <h3 className="footerSubscribeTitle">Get cake updates</h3>
-            <p className="footerSubscribeText">
-              New designs, seasonal flavours and early-bird offers. No spam,
-              only sweetness.
-            </p>
-            {subscribed ? (
-              <p className="footerSubscribeDone">
-                Thank you! You&apos;re on the list.
-              </p>
-            ) : (
-              <div className="footerSubscribeForm">
-                <label className="srOnly" htmlFor="footer-email">
-                  Email address
-                </label>
-                <input
-                  id="footer-email"
-                  type="email"
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  required
-                />
-                <button type="submit" className="footerSubscribeBtn">
-                  Subscribe
-                </button>
-              </div>
-            )}
-          </form>
-        </div>
-      </div>
-
       <div className="footerMain">
         <div className="container footerGrid">
           <div className="footerCol footerColBrand">
@@ -129,6 +62,11 @@ function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link to="/account" className="footerLink">
+                  My Account
+                </Link>
+              </li>
               <li>
                 <Link to="/login" className="footerLink">
                   Owner Dashboard

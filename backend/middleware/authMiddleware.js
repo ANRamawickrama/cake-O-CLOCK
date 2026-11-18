@@ -10,6 +10,12 @@ module.exports = function auth(req, res, next) {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    // Owner routes must never accept a customer session token.
+    if (decoded.role === 'customer') {
+      return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+
     req.user = decoded;
     next();
   } catch (err) {

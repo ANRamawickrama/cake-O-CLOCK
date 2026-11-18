@@ -12,6 +12,7 @@ import CakeImage from "../component/CakeImage";
 import "../styles/CakeTypeSelectorPage.css";
 
 const CAKE_TYPES = CAKE_CATEGORIES.map((category) => category.type);
+const WEDDING_STRUCTURE_TYPE = "Wedding Structure";
 
 export default function CakeTypeSelectorPage() {
   const [selectedType, setSelectedType] = useState("All");
@@ -21,7 +22,7 @@ export default function CakeTypeSelectorPage() {
   const [success, setSuccess] = useState("");
   const [search, setSearch] = useState("");
   const [editingId, setEditingId] = useState(null);
-  const [editData, setEditData] = useState({ name: "", price: "", description: "" });
+  const [editData, setEditData] = useState({ price: "", weightKg: "" });
   const [savingId, setSavingId] = useState(null);
   const navigate = useNavigate();
 
@@ -63,9 +64,7 @@ export default function CakeTypeSelectorPage() {
       const matchesType = selectedType === "All" || cake.type === selectedType;
       const matchesSearch =
         !term ||
-        (cake.name || "").toLowerCase().includes(term) ||
-        cake.type.toLowerCase().includes(term) ||
-        (cake.description || "").toLowerCase().includes(term);
+        cake.type.toLowerCase().includes(term);
       return matchesType && matchesSearch;
     });
   }, [cakes, selectedType, search]);
@@ -73,16 +72,15 @@ export default function CakeTypeSelectorPage() {
   const startEdit = (cake) => {
     setEditingId(cake._id);
     setEditData({
-      name: cake.name || "",
       price: cake.price,
-      description: cake.description || "",
+      weightKg: cake.weightKg || "",
     });
     setError("");
   };
 
   const cancelEdit = () => {
     setEditingId(null);
-    setEditData({ name: "", price: "", description: "" });
+    setEditData({ price: "", weightKg: "" });
   };
 
   const handleUpdate = async (id) => {
@@ -94,11 +92,14 @@ export default function CakeTypeSelectorPage() {
     setSavingId(id);
     setError("");
     try {
-      const { data } = await api.put(`/api/cakes/${id}`, {
-        name: editData.name,
-        price: Number(editData.price),
-        description: editData.description,
-      });
+      const cake = cakes.find((item) => item._id === id);
+      const update = cake?.type === WEDDING_STRUCTURE_TYPE
+        ? { price: Number(editData.price) }
+        : {
+            price: Number(editData.price),
+            weightKg: Number(editData.weightKg) || 0,
+          };
+      const { data } = await api.put(`/api/cakes/${id}`, update);
       setCakes((current) =>
         current.map((cake) => (cake._id === id ? data.cake : cake))
       );
@@ -155,8 +156,7 @@ export default function CakeTypeSelectorPage() {
             <p className="eyebrow">Menu management</p>
             <h1 className="manageTitle">Your cakes</h1>
             <p className="manageSub">
-              Update prices, rename designs and remove anything that is no
-              longer on the menu.
+              Update prices and weights, or remove cakes that are no longer on the menu.
             </p>
           </div>
           <Link to="/update" className="btn btn-primary">
@@ -246,7 +246,7 @@ export default function CakeTypeSelectorPage() {
             {visibleCakes.map((cake) => (
               <article key={cake._id} className="manageCard">
                 <div className="manageCardMedia">
-                  <CakeImage src={cake.image} alt={cake.name || cake.type} />
+                  <CakeImage src={cake.image} alt={cake.type} />
                   <span className="manageCardType">{cake.type}</span>
                   {cake.featured && (
                     <span className="manageCardFeatured">
@@ -259,19 +259,6 @@ export default function CakeTypeSelectorPage() {
                 <div className="manageCardBody">
                   {editingId === cake._id ? (
                     <div className="manageEditForm">
-                      <div className="field">
-                        <label htmlFor={`name-${cake._id}`}>Design name</label>
-                        <input
-                          id={`name-${cake._id}`}
-                          type="text"
-                          placeholder="e.g. Rose Gold Tier"
-                          value={editData.name}
-                          onChange={(event) =>
-                            setEditData({ ...editData, name: event.target.value })
-                          }
-                        />
-                      </div>
-
                       <div className="field">
                         <label htmlFor={`price-${cake._id}`}>Price (Rs.)</label>
                         <input
@@ -289,20 +276,25 @@ export default function CakeTypeSelectorPage() {
                         />
                       </div>
 
-                      <div className="field">
-                        <label htmlFor={`desc-${cake._id}`}>Description</label>
-                        <textarea
-                          id={`desc-${cake._id}`}
-                          rows="2"
-                          value={editData.description}
-                          onChange={(event) =>
-                            setEditData({
-                              ...editData,
-                              description: event.target.value,
-                            })
-                          }
-                        />
-                      </div>
+                      {cake.type !== WEDDING_STRUCTURE_TYPE && (
+                        <div className="field">
+                          <label htmlFor={`weight-${cake._id}`}>Weight (kg)</label>
+                          <input
+                            id={`weight-${cake._id}`}
+                            type="number"
+                            min="0"
+                            step="0.25"
+                            placeholder="2"
+                            value={editData.weightKg}
+                            onChange={(event) =>
+                              setEditData({
+                                ...editData,
+                                weightKg: event.target.value,
+                              })
+                            }
+                          />
+                        </div>
+                      )}
 
                       <div className="manageEditActions">
                         <button
@@ -325,11 +317,11 @@ export default function CakeTypeSelectorPage() {
                   ) : (
                     <>
                       <h3 className="manageCardTitle">
-                        {cake.name || cake.type}
+                        {cake.type}
                       </h3>
                       <p className="manageCardPrice">{formatPrice(cake.price)}</p>
-                      {cake.description && (
-                        <p className="manageCardText">{cake.description}</p>
+                      {cake.type !== WEDDING_STRUCTURE_TYPE && cake.weightKg > 0 && (
+                        <p className="manageCardWeight">{cake.weightKg} kg</p>
                       )}
 
                       <div className="manageCardActions">

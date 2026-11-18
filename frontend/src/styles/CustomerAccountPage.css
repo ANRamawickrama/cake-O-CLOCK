@@ -1,0 +1,263 @@
+/* ==========================================================================
+   Customer account (sign in / register)
+   ========================================================================== */
+
+.accountPage {
+  min-height: calc(100vh - var(--header-h));
+  padding-block: clamp(32px, 5vw, 64px);
+  background: linear-gradient(180deg, var(--brand-50) 0%, var(--cream-100) 420px);
+}
+
+.accountLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(22px, 4vw, 56px);
+  align-items: center;
+  max-width: 1080px;
+}
+
+/* --- Aside --- */
+
+.accountAside {
+  padding: clamp(26px, 4vw, 46px);
+  border-radius: var(--r-xl);
+  background: linear-gradient(
+    140deg,
+    var(--brand-800) 0%,
+    var(--brand-700) 55%,
+    var(--brand-600) 100%
+  );
+  color: #fff;
+  box-shadow: var(--shadow-lg);
+}
+
+.accountBrand {
+  display: inline-flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+}
+
+.accountBrandName {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.accountBrandTag {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-400);
+}
+
+.accountAsideTitle {
+  margin: 0 0 14px;
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  color: #fff;
+}
+
+.accountAsideTitle em {
+  font-style: italic;
+  color: var(--gold-400);
+}
+
+.accountAsideText {
+  margin: 0 0 26px;
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.accountBenefits {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0 0 30px;
+  padding: 0;
+  list-style: none;
+}
+
+.accountBenefits li {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: rgba(255, 255, 255, 0.86);
+  font-size: 0.94rem;
+}
+
+.accountBenefits svg {
+  flex-shrink: 0;
+  color: var(--gold-400);
+}
+
+.accountAsideCall {
+  display: inline-block;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  color: var(--gold-200);
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: color var(--t-fast) var(--ease);
+}
+
+.accountAsideCall:hover {
+  color: #fff;
+}
+
+/* --- Panel --- */
+
+.accountPanel {
+  padding: clamp(26px, 4vw, 44px);
+  border: 1px solid var(--cream-300);
+  border-radius: var(--r-xl);
+  background: var(--cream-50);
+  box-shadow: var(--shadow-lg);
+}
+
+.accountTabs {
+  display: inline-flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  padding: 4px;
+  border-radius: var(--r-pill);
+  background: var(--cream-200);
+}
+
+.accountTab {
+  padding: 9px 20px;
+  border: none;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink-500);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--t-fast) var(--ease);
+}
+
+.accountTab.isActive {
+  background: var(--cream-50);
+  color: var(--brand-600);
+  box-shadow: var(--shadow-xs);
+}
+
+.accountPanelHead {
+  margin-bottom: 22px;
+}
+
+.accountPanelTitle {
+  margin: 0 0 8px;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.accountPanelSub {
+  margin: 0;
+  color: var(--ink-500);
+  font-size: 0.93rem;
+}
+
+.accountAlert {
+  margin-bottom: 18px;
+}
+
+.accountForm {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.accountInputWrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  border: 1.5px solid var(--cream-300);
+  border-radius: var(--r-sm);
+  background: var(--cream-100);
+  color: var(--ink-400);
+  transition: border-color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
+}
+
+.accountInputWrap:focus-within {
+  border-color: var(--brand-400);
+  box-shadow: var(--ring);
+}
+
+.accountInputWrap input {
+  flex: 1;
+  min-width: 0;
+  padding: 13px 0;
+  border: none;
+  background: transparent;
+  font-size: 0.97rem;
+}
+
+.accountInputWrap input:focus {
+  outline: none;
+}
+
+.accountToggle {
+  display: grid;
+  place-items: center;
+  padding: 4px;
+  border: none;
+  background: transparent;
+  color: var(--ink-400);
+  cursor: pointer;
+  transition: color var(--t-fast) var(--ease);
+}
+
+.accountToggle:hover {
+  color: var(--brand-600);
+}
+
+.accountSwitch {
+  margin: 20px 0 0;
+  text-align: center;
+  color: var(--ink-500);
+  font-size: 0.9rem;
+}
+
+.accountSwitch button {
+  border: none;
+  padding: 0;
+  background: none;
+  color: var(--brand-600);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.accountSwitch button:hover {
+  text-decoration: underline;
+}
+
+.accountOwnerHint {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 18px 0 0;
+  padding: 12px 14px;
+  border: 1px dashed var(--cream-300);
+  border-radius: var(--r-sm);
+  background: var(--cream-100);
+  color: var(--ink-500);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.accountOwnerHint svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+  color: var(--brand-500);
+}
+
+@media (max-width: 880px) {
+  .accountLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .accountAside {
+    order: 2;
+  }
+}

@@ -11,7 +11,7 @@ const CAKE_TYPES = Cake.CAKE_TYPES;
 // JSON body containing a base64 `image` string (legacy clients).
 router.post('/upload', auth, upload.single('image'), async (req, res) => {
   try {
-    const { type, price, name, description } = req.body;
+    const { type, price, name, description, weightKg } = req.body;
 
     const image = req.file ? publicPathFor(req.file) : req.body.image;
 
@@ -28,11 +28,17 @@ router.post('/upload', auth, upload.single('image'), async (req, res) => {
       return res.status(400).json({ message: 'Price must be greater than 0' });
     }
 
+    const numericWeight = Number(weightKg);
+    if (weightKg !== undefined && weightKg !== '' && (Number.isNaN(numericWeight) || numericWeight < 0)) {
+      return res.status(400).json({ message: 'Weight must be 0 or more' });
+    }
+
     const newCake = new Cake({
       ownerId: req.user.id,
       name: (name || '').trim(),
       type,
       price: numericPrice,
+      weightKg: Number.isNaN(numericWeight) ? 0 : numericWeight,
       image,
       description: (description || '').trim(),
     });
@@ -137,6 +143,14 @@ router.put('/:id', auth, async (req, res) => {
 
     if (req.body.name !== undefined) {
       cake.name = String(req.body.name).trim();
+    }
+
+    if (req.body.weightKg !== undefined) {
+      const numericWeight = Number(req.body.weightKg);
+      if (Number.isNaN(numericWeight) || numericWeight < 0) {
+        return res.status(400).json({ message: 'Weight must be 0 or more' });
+      }
+      cake.weightKg = numericWeight;
     }
 
     if (req.body.description !== undefined) {

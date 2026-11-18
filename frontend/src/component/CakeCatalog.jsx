@@ -17,7 +17,6 @@ const SORTS = [
   { value: "featured", label: "Featured" },
   { value: "price-asc", label: "Price: low to high" },
   { value: "price-desc", label: "Price: high to low" },
-  { value: "name", label: "Name: A to Z" },
 ];
 
 function CakeCatalog({ categoryId }) {
@@ -75,21 +74,18 @@ function CakeCatalog({ categoryId }) {
   const cakes = useMemo(() => {
     const staticCakes = (category.staticCakes || []).map((cake, index) => ({
       id: `static-${category.id}-${index}`,
-      name: `${category.shortTitle} Design ${String(index + 1).padStart(2, "0")}`,
       type: category.type,
       price: cake.price ?? category.priceFrom,
       image: cake.image,
-      description: "",
       source: "studio",
     }));
 
     const liveCakes = remoteCakes.map((cake) => ({
       id: cake._id,
-      name: cake.name || cake.type,
       type: cake.type,
       price: cake.price,
+      weightKg: cake.weightKg || 0,
       image: cake.image,
-      description: cake.description || "",
       source: "live",
     }));
 
@@ -98,10 +94,7 @@ function CakeCatalog({ categoryId }) {
     const term = search.trim().toLowerCase();
     const filtered = term
       ? merged.filter(
-          (cake) =>
-            cake.name.toLowerCase().includes(term) ||
-            cake.type.toLowerCase().includes(term) ||
-            (cake.description || "").toLowerCase().includes(term)
+          (cake) => cake.type.toLowerCase().includes(term)
         )
       : merged;
 
@@ -110,8 +103,6 @@ function CakeCatalog({ categoryId }) {
         return [...filtered].sort((a, b) => a.price - b.price);
       case "price-desc":
         return [...filtered].sort((a, b) => b.price - a.price);
-      case "name":
-        return [...filtered].sort((a, b) => a.name.localeCompare(b.name));
       default:
         return filtered;
     }
@@ -122,11 +113,10 @@ function CakeCatalog({ categoryId }) {
       state: {
         cake: {
           _id: cake.id,
-          name: cake.name,
           type: cake.type,
           price: cake.price,
+          weightKg: cake.weightKg || 0,
           image: cake.image,
-          description: cake.description,
         },
       },
     });
@@ -244,9 +234,9 @@ function CakeCatalog({ categoryId }) {
                     type="button"
                     className="catalogCardMedia"
                     onClick={() => setSelected(cake)}
-                    aria-label={`View ${cake.name}`}
+                    aria-label={`View ${cake.type}`}
                   >
-                    <CakeImage src={cake.image} alt={cake.name} loading="lazy" />
+                    <CakeImage src={cake.image} alt={cake.type} loading="lazy" />
                     {cake.source === "live" && (
                       <span className="catalogCardBadge">New</span>
                     )}
@@ -257,13 +247,19 @@ function CakeCatalog({ categoryId }) {
                   </button>
 
                   <div className="catalogCardBody">
-                    <h2 className="catalogCardTitle">{cake.name}</h2>
-                    {cake.description && (
-                      <p className="catalogCardText">{cake.description}</p>
-                    )}
+                    <h2 className="catalogCardTitle">
+                      {cake.type}
+                    </h2>
                     <div className="catalogCardFoot">
-                      <span className="catalogCardPrice">
-                        {formatPrice(cake.price)}
+                      <span className="catalogCardPriceWrap">
+                        <span className="catalogCardPrice">
+                          {formatPrice(cake.price)}
+                        </span>
+                        {cake.type !== "Wedding Structure" && cake.weightKg > 0 && (
+                          <span className="catalogCardWeight">
+                            {cake.weightKg} kg
+                          </span>
+                        )}
                       </span>
                       <button
                         type="button"
@@ -287,7 +283,7 @@ function CakeCatalog({ categoryId }) {
           className="catalogModalOverlay"
           role="dialog"
           aria-modal="true"
-          aria-label={`${selected.name} details`}
+          aria-label={`${selected.type} details`}
           onClick={() => setSelected(null)}
         >
           <div
@@ -305,20 +301,24 @@ function CakeCatalog({ categoryId }) {
 
             <div className="catalogModalGrid">
               <div className="catalogModalMedia">
-                <CakeImage src={selected.image} alt={selected.name} />
+                <CakeImage src={selected.image} alt={selected.type} />
               </div>
 
               <div className="catalogModalInfo">
                 <p className="catalogModalEyebrow">{selected.type}</p>
-                <h2 className="catalogModalTitle">{selected.name}</h2>
-
-                {selected.description && (
-                  <p className="catalogModalText">{selected.description}</p>
-                )}
+                <h2 className="catalogModalTitle">
+                  {selected.type}
+                </h2>
 
                 <p className="catalogModalPrice">
                   {formatPrice(selected.price)}
                 </p>
+
+                {selected.type !== "Wedding Structure" && selected.weightKg > 0 && (
+                  <p className="catalogModalWeight">
+                    Serves approximately {selected.weightKg} kg
+                  </p>
+                )}
 
                 <div className="catalogModalActions">
                   <button

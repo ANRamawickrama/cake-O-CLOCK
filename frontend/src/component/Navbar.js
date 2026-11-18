@@ -4,15 +4,18 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import PhoneIcon from "@mui/icons-material/Phone";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import StorefrontIcon from "@mui/icons-material/Storefront";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Logo from "../assets/logo.png";
 import { NAV_LINKS, SITE } from "../helpers/site";
+import useCustomerSession from "../hooks/useCustomerSession";
 import "../styles/Navbar.css";
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
+  const { isSignedIn, customer } = useCustomerSession();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -40,7 +43,14 @@ function Navbar() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
-  const isOwnerRoute = location.pathname.startsWith("/dashboard");
+  const isAccountRoute =
+    location.pathname.startsWith("/account") ||
+    location.pathname.startsWith("/my-orders");
+  const isOwnerRoute =
+    location.pathname.startsWith("/dashboard") ||
+    location.pathname.startsWith("/manage") ||
+    location.pathname.startsWith("/update") ||
+    location.pathname.startsWith("/orders");
 
   return (
     <>
@@ -87,12 +97,20 @@ function Navbar() {
 
             <div className="navActions">
               <Link
-                to="/login"
-                className={`ownerLink ${isOwnerRoute ? "isActive" : ""}`}
-                title="Owner dashboard"
+                to={isSignedIn ? "/my-orders" : "/account"}
+                className={`ownerLink ${isAccountRoute ? "isActive" : ""}`}
+                title={isSignedIn ? "Your orders" : "Sign in or create an account"}
               >
                 <PersonOutlineIcon fontSize="small" />
-                <span>Owner</span>
+                <span>{isSignedIn ? customer?.name?.split(" ")[0] || "My Orders" : "Account"}</span>
+              </Link>
+              <Link
+                to="/login"
+                className={`ownerIconLink ${isOwnerRoute ? "isActive" : ""}`}
+                title="Owner dashboard"
+                aria-label="Owner dashboard"
+              >
+                <StorefrontIcon fontSize="small" />
               </Link>
               <Link to="/menu" className="btn btn-primary btn-sm navCta">
                 Order Now
@@ -146,12 +164,20 @@ function Navbar() {
             <ArrowForwardIcon fontSize="small" />
           </Link>
           <Link
-            to="/login"
+            to={isSignedIn ? "/my-orders" : "/account"}
             className="btn btn-outline btn-lg btn-block"
             tabIndex={menuOpen ? 0 : -1}
           >
             <PersonOutlineIcon fontSize="small" />
-            Owner Dashboard
+            {isSignedIn ? "My Orders" : "Sign in"}
+          </Link>
+          <Link
+            to="/login"
+            className="mobileOwnerLink"
+            tabIndex={menuOpen ? 0 : -1}
+          >
+            <StorefrontIcon fontSize="small" />
+            Owner dashboard
           </Link>
           <a
             href={`tel:${SITE.phone}`}

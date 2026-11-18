@@ -193,6 +193,11 @@ export default function LoginPage({ setToken }) {
               {mode === "login" ? "Create one" : "Sign in"}
             </button>
           </p>
+
+          <p className="loginSwitch">
+            Ordering as a customer?{" "}
+            <Link to="/account">Go to your account</Link>
+          </p>
         </div>
       </div>
     </div>
