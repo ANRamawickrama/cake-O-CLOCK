@@ -56,14 +56,14 @@ function About() {
       <section className="aboutHero">
         <div className="container aboutHeroInner">
           <div className="aboutHeroCopy">
-            <p className="eyebrow">Our story</p>
+            <p className="eyebrow">Meet our artist</p>
             <h1 className="aboutTitle">
-              Every cake has a <em>story</em>
+              Meet the artist behind <em>every creation</em>
             </h1>
             <p className="aboutText">
-              Cake o'clock creates artisan and bespoke cakes that turn special
-              moments into sweet memories. Every design is made with creativity,
-              quality ingredients and plenty of care.
+              Udari Ramawickrama is the founder and creative heart behind Cake
+              o'clock. With over 10 years of experience, she brings each
+              customer’s ideas to life through thoughtful, handcrafted cakes.
             </p>
             <div className="aboutHeroActions">
               <Link to="/menu" className="btn btn-primary btn-lg">
@@ -74,6 +74,22 @@ function About() {
                 Request a custom cake
               </Link>
             </div>
+            <div className="aboutHeroStory">
+              <p className="eyebrow">Our story</p>
+              <h2 className="section-title">
+                Every celebration deserves <em>something special</em>
+              </h2>
+              <p className="aboutText">
+                Our journey began with a simple belief: every celebration
+                deserves something special. From birthdays to milestones, we
+                create artisan and bespoke cakes with beautiful designs,
+                quality ingredients and personal care.
+              </p>
+              <p className="aboutText">
+                More than the cakes we deliver, we cherish the smiles and
+                memories behind every order.
+              </p>
+            </div>
           </div>
 
           <div className="aboutHeroMedia">
@@ -82,6 +98,17 @@ function About() {
               <strong>10+</strong>
               <span>Years of experience</span>
             </span>
+            <div className="aboutHeroStats">
+              {TIMELINE.map((entry) => (
+                <div key={entry.year} className="aboutHeroStat">
+                  <strong>{entry.year}</strong>
+                  <div>
+                    <h3>{entry.title}</h3>
+                    <p>{entry.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -106,38 +133,6 @@ function About() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      <section className="section section--cream">
-        <div className="container aboutTimeline">
-          <div className="aboutTimelineCopy">
-            <p className="eyebrow">How we grew</p>
-            <h2 className="section-title">
-              Meet the artist behind <em>every creation</em>
-            </h2>
-            <p className="aboutText">
-              Udari Ramawickrama is the founder and creative heart behind Cake
-              o'clock. With over 10 years of experience, she brings each
-              customer’s ideas to life through thoughtful, handcrafted cakes.
-            </p>
-            <Link to="/contact" className="btn btn-outline">
-              Create your cake
-              <ArrowForwardIcon fontSize="small" />
-            </Link>
-          </div>
-
-          <ol className="aboutTimelineList">
-            {TIMELINE.map((entry) => (
-              <li key={entry.year} className="aboutTimelineItem">
-                <span className="aboutTimelineYear">{entry.year}</span>
-                <div>
-                  <h3 className="aboutTimelineTitle">{entry.title}</h3>
-                  <p className="aboutTimelineText">{entry.text}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
         </div>
       </section>
 

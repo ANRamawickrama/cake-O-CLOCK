@@ -234,19 +234,14 @@ function Home() {
           </div>
 
           <div className="homeStoryCopy">
-            <p className="eyebrow">Our story</p>
+            <p className="eyebrow">Meet our artist</p>
             <h2 className="section-title">
-              Baking with <em>care since day one</em>
+              Meet the artist behind <em>every creation</em>
             </h2>
             <p className="homeStoryText">
-              What started as a small family kitchen has grown into a full
-              studio of cake artists. We still measure every batch by hand,
-              choose every flavour ourselves, and treat every order as if it
-              were for our own family.
-            </p>
-            <p className="homeStoryText">
-              From a first birthday to a three-tier wedding centrepiece, our
-              team turns your vision into something people remember.
+              Udari Ramawickrama is the founder and creative heart behind Cake
+              o'clock. With over 10 years of experience, she brings each
+              customer’s ideas to life through thoughtful, handcrafted cakes.
             </p>
 
             <div className="homePromiseList">
