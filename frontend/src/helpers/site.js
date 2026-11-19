@@ -10,7 +10,8 @@ export const SITE = {
   whatsapp: "94710961790",
 
   email: "orders@cakeoclock.lk",
-  address: "Colombo, Sri Lanka",
+  address: "Cake o'Clock, Upathissa Mawatha, Matara 81000",
+  mapUrl: "https://maps.app.goo.gl/KxB5zhQwHYfTRgNa7?g_st=ic",
 
   hours: [
     { day: "Monday – Friday", time: "9:00 AM – 8:00 PM" },

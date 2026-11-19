@@ -141,7 +141,14 @@ function Contact() {
                   </span>
                   <div>
                     <span className="contactListLabel">Studio</span>
-                    <span className="contactListValue">{SITE.address}</span>
+                    <a
+                      href={SITE.mapUrl}
+                      className="contactListValue"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {SITE.address}
+                    </a>
                   </div>
                 </li>
               </ul>

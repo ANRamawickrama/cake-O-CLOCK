@@ -93,7 +93,14 @@ function Footer() {
             <ul className="footerContact">
               <li>
                 <LocationOnIcon fontSize="small" />
-                <span>{SITE.address}</span>
+                <a
+                  href={SITE.mapUrl}
+                  className="footerLink"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {SITE.address}
+                </a>
               </li>
               <li>
                 <PhoneIcon fontSize="small" />

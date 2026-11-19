@@ -97,7 +97,7 @@ function Home() {
           <div className="heroContent">
             <p className="heroEyebrow">
               <span className="heroEyebrowDot" />
-              Artisan cake studio · Colombo
+              Artisan cake studio · Matara
             </p>
             <h1 className="heroTitle">
               Cakes that make every
