@@ -3,10 +3,11 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import api, { apiErrorMessage } from "../services/api";
 import CakeImage from "../component/CakeImage";
 import useCustomerSession from "../hooks/useCustomerSession";
-import { formatPrice } from "../helpers/site";
+import { formatPrice, SITE } from "../helpers/site";
 import "../styles/OrderForm.css";
 
 function OrderForm() {
@@ -112,6 +113,29 @@ function OrderForm() {
   };
 
   if (placedOrder) {
+    const deliveryDate = new Date(placedOrder.deliveryDate).toLocaleDateString(
+      "en-GB",
+      { day: "numeric", month: "short", year: "numeric" }
+    );
+    const orderReference = `#${String(placedOrder._id).slice(-6).toUpperCase()}`;
+    const whatsappMessage = [
+      "Hello Cake'o Clock, I placed a new cake order.",
+      "",
+      `Order reference: ${orderReference}`,
+      `Name: ${placedOrder.customerName}`,
+      `Phone: ${placedOrder.customerPhone}`,
+      `Cake: ${placedOrder.cakeName}`,
+      `Quantity: ${placedOrder.quantity || 1}`,
+      `Weight: ${placedOrder.weight || "-"}`,
+      `Delivery date: ${deliveryDate}`,
+      `Delivery address: ${placedOrder.location}`,
+      `Description: ${placedOrder.description || "-"}`,
+      `Total: ${formatPrice(placedOrder.totalPrice || placedOrder.cakePrice)}`,
+    ].join("\n");
+    const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(
+      whatsappMessage
+    )}`;
+
     return (
       <div className="orderPage">
         <div className="container orderSuccessWrap">
@@ -129,7 +153,7 @@ function OrderForm() {
             <dl className="orderSuccessMeta">
               <div>
                 <dt>Order reference</dt>
-                <dd>#{String(placedOrder._id).slice(-6).toUpperCase()}</dd>
+                <dd>{orderReference}</dd>
               </div>
               <div>
                 <dt>Total</dt>
@@ -139,17 +163,20 @@ function OrderForm() {
               </div>
               <div>
                 <dt>Delivery date</dt>
-                <dd>
-                  {new Date(placedOrder.deliveryDate).toLocaleDateString("en-GB", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </dd>
+                <dd>{deliveryDate}</dd>
               </div>
             </dl>
 
             <div className="orderSuccessActions">
+              <a
+                href={whatsappUrl}
+                className="btn whatsappBtn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <WhatsAppIcon fontSize="small" />
+                Send order on WhatsApp
+              </a>
               <Link to="/menu" className="btn btn-primary">
                 Browse more cakes
               </Link>

@@ -282,6 +282,19 @@
   flex-wrap: wrap;
 }
 
+.whatsappBtn {
+  background: #25d366;
+  color: #fff;
+  border: 1px solid #25d366;
+}
+
+.whatsappBtn:hover,
+.whatsappBtn:focus-visible {
+  background: #1ebe5d;
+  border-color: #1ebe5d;
+  color: #fff;
+}
+
 @media (max-width: 900px) {
   .orderLayout {
     grid-template-columns: 1fr;
