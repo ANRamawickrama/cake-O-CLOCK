@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import StarIcon from "@mui/icons-material/Star";
 import PhoneIcon from "@mui/icons-material/Phone";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CakeOutlinedIcon from "@mui/icons-material/CakeOutlined";
@@ -317,6 +318,28 @@ function Home() {
               {SITE.phoneDisplay}
             </a>
           </div>
+        </div>
+      </section>
+
+      <section className="homeLocation">
+        <div className="container homeLocationInner">
+          <div className="homeLocationIcon" aria-hidden="true">
+            <LocationOnIcon />
+          </div>
+          <div className="homeLocationCopy">
+            <p className="eyebrow">Visit our shop</p>
+            <h2>Find Cake&apos;o Clock in Matara</h2>
+            <p>{SITE.address}</p>
+          </div>
+          <a
+            href={SITE.mapUrl}
+            className="btn btn-gold btn-lg"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <LocationOnIcon fontSize="small" />
+            Open in Google Maps
+          </a>
         </div>
       </section>
     </div>

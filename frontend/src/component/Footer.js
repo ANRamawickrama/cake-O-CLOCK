@@ -1,10 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import FacebookIcon from "@mui/icons-material/Facebook";
-import InstagramIcon from "@mui/icons-material/Instagram";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import PhoneIcon from "@mui/icons-material/Phone";
-import EmailIcon from "@mui/icons-material/Email";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
@@ -15,7 +13,6 @@ import "../styles/Footer.css";
 
 const SOCIALS = [
   { label: "Facebook", href: SITE.socials.facebook, Icon: FacebookIcon },
-  { label: "Instagram", href: SITE.socials.instagram, Icon: InstagramIcon },
   { label: "WhatsApp", href: SITE.socials.whatsapp, Icon: WhatsAppIcon },
 ];
 
@@ -106,12 +103,6 @@ function Footer() {
                 <PhoneIcon fontSize="small" />
                 <a href={`tel:${SITE.phone}`} className="footerLink">
                   {SITE.phoneDisplay}
-                </a>
-              </li>
-              <li>
-                <EmailIcon fontSize="small" />
-                <a href={`mailto:${SITE.email}`} className="footerLink">
-                  {SITE.email}
                 </a>
               </li>
             </ul>

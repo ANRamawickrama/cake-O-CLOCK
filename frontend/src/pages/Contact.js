@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import PhoneIcon from "@mui/icons-material/Phone";
-import EmailIcon from "@mui/icons-material/Email";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -118,20 +117,6 @@ function Contact() {
                       rel="noreferrer"
                     >
                       Chat with us
-                    </a>
-                  </div>
-                </li>
-                <li>
-                  <span className="contactListIcon">
-                    <EmailIcon fontSize="small" />
-                  </span>
-                  <div>
-                    <span className="contactListLabel">Email</span>
-                    <a
-                      href={`mailto:${SITE.email}`}
-                      className="contactListValue"
-                    >
-                      {SITE.email}
                     </a>
                   </div>
                 </li>

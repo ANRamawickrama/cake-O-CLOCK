@@ -9,7 +9,6 @@ export const SITE = {
   phoneDisplay: "+94 71 0961790",
   whatsapp: "94710961790",
 
-  email: "orders@cakeoclock.lk",
   address: "Cake o'Clock, Upathissa Mawatha, Matara 81000",
   mapUrl: "https://maps.app.goo.gl/KxB5zhQwHYfTRgNa7?g_st=ic",
 
@@ -20,8 +19,7 @@ export const SITE = {
   ],
 
   socials: {
-    facebook: "https://facebook.com",
-    instagram: "https://instagram.com",
+    facebook: "https://www.facebook.com/profile.php?id=100039947326917",
     whatsapp: "https://wa.me/94710961790",
   },
 };
