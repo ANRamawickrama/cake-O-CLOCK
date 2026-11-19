@@ -9,7 +9,7 @@ import LocalShippingIcon from "@mui/icons-material/LocalShipping";
 import CakeOutlinedIcon from "@mui/icons-material/CakeOutlined";
 import api from "../services/api";
 import HomeHeroImage from "../assets/homee.jpg";
-import AboutImage from "../assets/about.jpg";
+import AboutImage from "../assets/udari.jpg";
 import useReveal from "../hooks/useReveal";
 import CakeImage from "../component/CakeImage";
 import { CAKE_CATEGORIES } from "../helpers/cakeCatalog";
@@ -226,7 +226,7 @@ function Home() {
       <section className="section section--cream">
         <div className="container homeStory reveal" ref={storyRef}>
           <div className="homeStoryMedia">
-            <img src={AboutImage} alt="Our cake studio" />
+            <img src={AboutImage} alt="Udari Ramawickrama creating a celebration cake" />
             <div className="homeStoryBadge">
               <strong>10+</strong>
               <span>Years of craft</span>

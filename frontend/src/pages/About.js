@@ -5,53 +5,48 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import GroupsIcon from "@mui/icons-material/Groups";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import AboutImage from "../assets/about.jpg";
+import AboutImage from "../assets/udari.jpg";
 import HomeImage from "../assets/homee.jpg";
 import "../styles/About.css";
 
 const VALUES = [
   {
     Icon: AutoAwesomeIcon,
-    title: "Designed by hand",
-    text: "Every cake starts as a sketch from our cake artists — never a template copied from a screen.",
+    title: "Creative designs",
+    text: "Every cake is thoughtfully designed around your celebration and personal style.",
   },
   {
     Icon: GroupsIcon,
-    title: "Small team, big care",
-    text: "The same people who take your call are the ones who pipe, stack and pack your cake.",
+    title: "Made with care",
+    text: "We bring passion, patience and a personal touch to every creation.",
   },
   {
     Icon: VerifiedIcon,
-    title: "Food-safe kitchen",
-    text: "Hygienic preparation, chilled storage and fresh delivery windows on every order.",
+    title: "Quality ingredients",
+    text: "Beautiful cakes deserve delicious flavours, made with carefully selected ingredients.",
   },
   {
     Icon: LocalShippingIcon,
-    title: "On-time delivery",
-    text: "We plan our baking schedule around your celebration so it arrives when it should.",
+    title: "Made for moments",
+    text: "From birthdays to milestones, we create cakes that make memories sweeter.",
   },
 ];
 
 const TIMELINE = [
   {
-    year: "2015",
-    title: "A kitchen and a dream",
-    text: "Cake'O Clock started as a home kitchen taking weekend orders for friends and family.",
+    year: "10+",
+    title: "Years of experience",
+    text: "A decade of learning, creating and turning cake ideas into beautiful realities.",
   },
   {
-    year: "2018",
-    title: "Our first storefront",
-    text: "Demand grew into a small shopfront with a proper prep kitchen and a delivery team.",
+    year: "2,500+",
+    title: "Cakes delivered",
+    text: "Every cake is made with the same dedication, care and attention to detail.",
   },
   {
-    year: "2021",
-    title: "Wedding specialists",
-    text: "We added large-format cake structures and full wedding setup to our service list.",
-  },
-  {
-    year: "Today",
-    title: "2,500+ celebrations",
-    text: "More than two thousand cakes later, every order is still baked by hand to order.",
+    year: "Always",
+    title: "A personal touch",
+    text: "Because every celebration is unique, every Cake o'clock creation is made just for you.",
   },
 ];
 
@@ -63,13 +58,12 @@ function About() {
           <div className="aboutHeroCopy">
             <p className="eyebrow">Our story</p>
             <h1 className="aboutTitle">
-              Always in good <em>taste</em>
+              Every cake has a <em>story</em>
             </h1>
             <p className="aboutText">
-              Our mission is to bring you the largest selection of handcrafted
-              cakes and desserts, made with the same care we would give our own
-              family. We are here for our customers, and we want each one of
-              them to have a unique, one-of-a-kind experience at our cake shop.
+              Cake o'clock creates artisan and bespoke cakes that turn special
+              moments into sweet memories. Every design is made with creativity,
+              quality ingredients and plenty of care.
             </p>
             <div className="aboutHeroActions">
               <Link to="/menu" className="btn btn-primary btn-lg">
@@ -83,10 +77,10 @@ function About() {
           </div>
 
           <div className="aboutHeroMedia">
-            <img src={AboutImage} alt="Inside the Cake'O Clock kitchen" />
+            <img src={AboutImage} alt="Udari Ramawickrama creating a celebration cake" />
             <span className="aboutHeroBadge">
               <strong>10+</strong>
-              <span>Years of baking</span>
+              <span>Years of experience</span>
             </span>
           </div>
         </div>
@@ -120,15 +114,15 @@ function About() {
           <div className="aboutTimelineCopy">
             <p className="eyebrow">How we grew</p>
             <h2 className="section-title">
-              From a home kitchen to <em>your celebrations</em>
+              Meet the artist behind <em>every creation</em>
             </h2>
             <p className="aboutText">
-              We never wanted to become a factory. Every step of the business
-              has been about making the same cakes we would happily serve at our
-              own table — and passing them on to yours.
+              Udari Ramawickrama is the founder and creative heart behind Cake
+              o'clock. With over 10 years of experience, she brings each
+              customer’s ideas to life through thoughtful, handcrafted cakes.
             </p>
-            <Link to="/reviews" className="btn btn-outline">
-              Read what customers say
+            <Link to="/contact" className="btn btn-outline">
+              Create your cake
               <ArrowForwardIcon fontSize="small" />
             </Link>
           </div>
@@ -152,11 +146,11 @@ function About() {
           <img src={HomeImage} alt="" aria-hidden="true" />
           <div className="aboutCtaBody">
             <h2 className="aboutCtaTitle">
-              Let's bake your <em>next memory</em>
+              Let’s make your <em>moment sweeter</em>
             </h2>
             <p className="aboutCtaText">
-              Browse the collection or tell us exactly what you have in mind —
-              we will craft it from scratch.
+              Have a special idea in mind? We would love to create something
+              beautiful for you.
             </p>
             <div className="aboutCtaActions">
               <Link to="/menu" className="btn btn-gold btn-lg">
