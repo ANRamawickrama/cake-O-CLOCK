@@ -4,7 +4,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
 import PhoneIcon from "@mui/icons-material/Phone";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import StorefrontIcon from "@mui/icons-material/Storefront";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import Logo from "../assets/logo.png";
 import { NAV_LINKS, SITE } from "../helpers/site";
@@ -46,12 +45,6 @@ function Navbar() {
   const isAccountRoute =
     location.pathname.startsWith("/account") ||
     location.pathname.startsWith("/my-orders");
-  const isOwnerRoute =
-    location.pathname.startsWith("/dashboard") ||
-    location.pathname.startsWith("/manage") ||
-    location.pathname.startsWith("/update") ||
-    location.pathname.startsWith("/orders");
-
   return (
     <>
       <header className={`siteHeader ${scrolled ? "isScrolled" : ""}`}>
@@ -103,14 +96,6 @@ function Navbar() {
               >
                 <PersonOutlineIcon fontSize="small" />
                 <span>{isSignedIn ? customer?.name?.split(" ")[0] || "My Orders" : "Account"}</span>
-              </Link>
-              <Link
-                to="/login"
-                className={`ownerIconLink ${isOwnerRoute ? "isActive" : ""}`}
-                title="Owner dashboard"
-                aria-label="Owner dashboard"
-              >
-                <StorefrontIcon fontSize="small" />
               </Link>
               <Link to="/menu" className="btn btn-primary btn-sm navCta">
                 Order Now
@@ -170,14 +155,6 @@ function Navbar() {
           >
             <PersonOutlineIcon fontSize="small" />
             {isSignedIn ? "My Orders" : "Sign in"}
-          </Link>
-          <Link
-            to="/login"
-            className="mobileOwnerLink"
-            tabIndex={menuOpen ? 0 : -1}
-          >
-            <StorefrontIcon fontSize="small" />
-            Owner dashboard
           </Link>
           <a
             href={`tel:${SITE.phone}`}

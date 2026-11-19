@@ -64,11 +64,6 @@ function Footer() {
                   My Account
                 </Link>
               </li>
-              <li>
-                <Link to="/login" className="footerLink">
-                  Owner Dashboard
-                </Link>
-              </li>
             </ul>
           </div>
 
