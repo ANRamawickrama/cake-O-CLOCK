@@ -83,7 +83,10 @@ function CakeCatalog({ categoryId }) {
     const liveCakes = remoteCakes.map((cake) => ({
       id: cake._id,
       type: cake.type,
-      price: cake.price,
+      price:
+        category.id === "birthday" || category.id === "anniversary"
+          ? category.priceFrom
+          : cake.price,
       weightKg: cake.weightKg || 0,
       image: cake.image,
       source: "live",

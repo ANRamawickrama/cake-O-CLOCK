@@ -8,6 +8,7 @@ import "../styles/UploadCakePage.css";
 
 const CAKE_TYPES = CAKE_CATEGORIES.map((category) => category.type);
 const MAX_IMAGE_BYTES = 8 * 1024 * 1024;
+const MAX_IMAGES = 50;
 const WEDDING_STRUCTURE_TYPE = "Wedding Structure";
 
 export default function UploadCakePage() {
@@ -17,8 +18,8 @@ export default function UploadCakePage() {
   const [type, setType] = useState("");
   const [price, setPrice] = useState("");
   const [weightKg, setWeightKg] = useState("");
-  const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [images, setImages] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
   const [loading, setLoading] = useState(false);
@@ -30,31 +31,35 @@ export default function UploadCakePage() {
   }, [navigate]);
 
   useEffect(() => {
-    return () => {
-      if (imagePreview) URL.revokeObjectURL(imagePreview);
-    };
-  }, [imagePreview]);
+    return () => imagePreviews.forEach((preview) => URL.revokeObjectURL(preview));
+  }, [imagePreviews]);
 
   const handleImageChange = (event) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    const selectedImages = Array.from(event.target.files || []);
+    if (!selectedImages.length) return;
 
-    if (!file.type.startsWith("image/")) {
+    if (selectedImages.length > MAX_IMAGES) {
       setMessageType("error");
-      setMessage("Please choose an image file.");
+      setMessage(`Please choose no more than ${MAX_IMAGES} images at a time.`);
       return;
     }
 
-    if (file.size > MAX_IMAGE_BYTES) {
+    const invalidImage = selectedImages.find((file) => !file.type.startsWith("image/"));
+    if (invalidImage) {
       setMessageType("error");
-      setMessage("That image is larger than 8 MB. Please choose a smaller file.");
+      setMessage("Please choose image files only.");
       return;
     }
 
-    if (imagePreview) URL.revokeObjectURL(imagePreview);
+    const oversizedImage = selectedImages.find((file) => file.size > MAX_IMAGE_BYTES);
+    if (oversizedImage) {
+      setMessageType("error");
+      setMessage("Each image must be smaller than 8 MB.");
+      return;
+    }
 
-    setImage(file);
-    setImagePreview(URL.createObjectURL(file));
+    setImages(selectedImages);
+    setImagePreviews(selectedImages.map((file) => URL.createObjectURL(file)));
     setMessage("");
   };
 
@@ -62,8 +67,8 @@ export default function UploadCakePage() {
     setType("");
     setPrice("");
     setWeightKg("");
-    setImage(null);
-    setImagePreview(null);
+    setImages([]);
+    setImagePreviews([]);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -71,9 +76,9 @@ export default function UploadCakePage() {
     event.preventDefault();
     setMessage("");
 
-    if (!type || !price || !image) {
+    if (!type || !price || !images.length) {
       setMessageType("error");
-      setMessage("Please choose a type, a price and an image.");
+      setMessage("Please choose a type, a price and at least one image.");
       return;
     }
 
@@ -98,15 +103,15 @@ export default function UploadCakePage() {
       if (type !== WEDDING_STRUCTURE_TYPE) {
         formData.append("weightKg", String(Number(weightKg) || 0));
       }
-      formData.append("image", image);
+      images.forEach((image) => formData.append("images", image));
 
       await api.post("/api/cakes/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
-        timeout: 45000,
+        timeout: 120000,
       });
 
       setMessageType("success");
-      setMessage("Cake uploaded successfully!");
+      setMessage(`${images.length} cake${images.length === 1 ? "" : "s"} uploaded successfully!`);
       resetForm();
 
       setTimeout(() => {
@@ -195,16 +200,20 @@ export default function UploadCakePage() {
             )}
 
             <div className="field">
-              <label htmlFor="upload-image">Cake image</label>
+              <label htmlFor="upload-image">Cake images</label>
               <label className="uploadDropzone" htmlFor="upload-image">
-                {imagePreview ? (
-                  <img src={imagePreview} alt="Selected cake" />
+                {imagePreviews.length ? (
+                  <div className="uploadPreviewGrid">
+                    {imagePreviews.map((preview, index) => (
+                      <img key={preview} src={preview} alt={`Selected cake ${index + 1}`} />
+                    ))}
+                  </div>
                 ) : (
                   <>
                     <CloudUploadIcon fontSize="large" />
-                    <span className="uploadDropzoneTitle">Choose an image</span>
+                    <span className="uploadDropzoneTitle">Choose one or more images</span>
                     <span className="uploadDropzoneHint">
-                      JPG, PNG, WEBP or GIF · up to 8 MB
+                      JPG, PNG, WEBP or GIF · up to 8 MB each
                     </span>
                   </>
                 )}
@@ -214,6 +223,7 @@ export default function UploadCakePage() {
                 id="upload-image"
                 type="file"
                 accept="image/*"
+                multiple
                 onChange={handleImageChange}
                 disabled={loading}
                 className="uploadFileInput"

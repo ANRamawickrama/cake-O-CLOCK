@@ -6,16 +6,26 @@ const router = express.Router();
 
 const CAKE_TYPES = Cake.CAKE_TYPES;
 
-// Add new cake (protected).
-// Accepts either a multipart/form-data upload with an `image` file or a
-// JSON body containing a base64 `image` string (legacy clients).
-router.post('/upload', auth, upload.single('image'), async (req, res) => {
+// Add one or more cakes (protected). Every uploaded image becomes a cake
+// record with the shared type, price and weight values.
+router.post(
+  '/upload',
+  auth,
+  upload.fields([
+    { name: 'images', maxCount: 50 },
+    { name: 'image', maxCount: 1 },
+  ]),
+  async (req, res) => {
   try {
     const { type, price, name, description, weightKg } = req.body;
 
-    const image = req.file ? publicPathFor(req.file) : req.body.image;
+    const uploadedImages = [
+      ...(req.files?.images || []),
+      ...(req.files?.image || []),
+    ].map(publicPathFor);
+    const images = uploadedImages.length > 0 ? uploadedImages : [req.body.image];
 
-    if (!type || price === undefined || price === '' || !image) {
+    if (!type || price === undefined || price === '' || !images[0]) {
       return res.status(400).json({ message: 'Please fill all required fields' });
     }
 
@@ -33,23 +43,28 @@ router.post('/upload', auth, upload.single('image'), async (req, res) => {
       return res.status(400).json({ message: 'Weight must be 0 or more' });
     }
 
-    const newCake = new Cake({
-      ownerId: req.user.id,
-      name: (name || '').trim(),
-      type,
-      price: numericPrice,
-      weightKg: Number.isNaN(numericWeight) ? 0 : numericWeight,
-      image,
-      description: (description || '').trim(),
-    });
+    const cakes = await Cake.insertMany(
+      images.map((image) => ({
+        ownerId: req.user.id,
+        name: (name || '').trim(),
+        type,
+        price: numericPrice,
+        weightKg: Number.isNaN(numericWeight) ? 0 : numericWeight,
+        image,
+        description: (description || '').trim(),
+      }))
+    );
 
-    await newCake.save();
-    res.status(201).json({ message: 'Cake uploaded successfully', cake: newCake });
+    res.status(201).json({
+      message: `${cakes.length} cake${cakes.length === 1 ? '' : 's'} uploaded successfully`,
+      cakes,
+    });
   } catch (err) {
     console.error('Error uploading cake:', err);
     res.status(400).json({ message: 'Failed to upload cake', error: err.message });
   }
-});
+  }
+);
 
 // Get the cakes highlighted on the home page (public)
 router.get('/featured', async (req, res) => {

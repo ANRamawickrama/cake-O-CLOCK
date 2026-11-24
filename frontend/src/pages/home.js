@@ -184,7 +184,13 @@ function Home() {
                         <p className="homeFeaturedText">{cake.description}</p>
                       )}
                       <span className="homeFeaturedPrice">
-                        {formatPrice(cake.price)}
+                        {formatPrice(
+                          category &&
+                            (category.id === "birthday" ||
+                              category.id === "anniversary")
+                            ? category.priceFrom
+                            : cake.price
+                        )}
                       </span>
                     </div>
                   </Link>

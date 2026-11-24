@@ -23,7 +23,7 @@ export const AnniversaryCakes = [
 
     {
     image: Cake2,
-    price: 4800
+    price: 5000
     },
 
     {
@@ -95,5 +95,5 @@ export const AnniversaryCakes = [
     image: Cake16,
     price: 8000
     }
-]
+].map((cake) => ({ ...cake, price: 5000 }));
 

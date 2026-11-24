@@ -20,15 +20,11 @@ const { UPLOAD_DIR } = require('../middleware/upload');
 
 const FRONTEND_ASSETS = path.join(__dirname, '..', '..', 'frontend', 'src', 'assets');
 
-const BIRTHDAY_PRICES = [
-  2500, 3500, 4000, 4500, ...Array(36).fill(5500),
-];
+const BIRTHDAY_PRICES = Array(40).fill(4800);
 const CUPCAKE_PRICES = [
   2500, 3500, 4000, 4500, ...Array(12).fill(5500),
 ];
-const ANNIVERSARY_PRICES = [
-  4500, 4800, 5000, 5200, 5500, 5800, 6000, 6200, 6500, 6800, 7000, 7200, 7400, 7500, 7800, 8000,
-];
+const ANNIVERSARY_PRICES = Array(16).fill(5000);
 
 const BIRTHDAY_NAMES = [
   'Chocolate Truffle Celebration', 'Vanilla Bean Classic', 'Strawberry & Cream Dream',

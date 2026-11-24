@@ -240,5 +240,5 @@ export const BirthdayCakes = [
     price: 5500,
     }
 
-]
+].map((cake) => ({ ...cake, price: 4800 }));
 
