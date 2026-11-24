@@ -97,18 +97,20 @@ export default function UploadCakePage() {
     setLoading(true);
 
     try {
-      const formData = new FormData();
-      formData.append("type", type);
-      formData.append("price", String(Number(price)));
-      if (type !== WEDDING_STRUCTURE_TYPE) {
-        formData.append("weightKg", String(Number(weightKg) || 0));
-      }
-      images.forEach((image) => formData.append("images", image));
+      for (let index = 0; index < images.length; index += 1) {
+        const formData = new FormData();
+        formData.append("type", type);
+        formData.append("price", String(Number(price)));
+        if (type !== WEDDING_STRUCTURE_TYPE) {
+          formData.append("weightKg", String(Number(weightKg) || 0));
+        }
+        formData.append("image", images[index]);
 
-      await api.post("/api/cakes/upload", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        timeout: 120000,
-      });
+        await api.post("/api/cakes/upload", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+          timeout: 45000,
+        });
+      }
 
       setMessageType("success");
       setMessage(`${images.length} cake${images.length === 1 ? "" : "s"} uploaded successfully!`);
